@@ -6,7 +6,6 @@
     android:numColumns="auto_fit"
     android:verticalSpacing="3dp"
     android:horizontalSpacing="3dp"
-    android:stretchMode="columnWidth"
     android:id="@+id/movies_grid"
     android:columnWidth="150dp"
     tools:context="com.futuretraxex.freakpirate.moviepedia.MainActivityFragment">

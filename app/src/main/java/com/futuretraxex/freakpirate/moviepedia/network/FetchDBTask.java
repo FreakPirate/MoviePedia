@@ -27,7 +27,7 @@ import java.util.Arrays;
 /**
  * Created by FreakPirate on 2/25/2016.
  */
-public class FetchDBTask extends AsyncTask <String, Void, String> {
+public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
 
     private final String LOG_TAG = FetchDBTask.class.getSimpleName();
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
@@ -39,7 +39,7 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected MovieDetails[] doInBackground(String... params) {
 
         if (params.length == 0){
             return null;
@@ -107,25 +107,25 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
             }
         }
 
-        return jsonStr;
+        GridJSONParser parser = new GridJSONParser(jsonStr);
+        MovieDetails[] detailsList = null;
+
+        try {
+            detailsList = parser.parse();
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "ERROR", e);
+            e.printStackTrace();
+        }
+
+        return detailsList;
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(MovieDetails[] result) {
         if (result != null){
-            GridJSONParser parser = new GridJSONParser(result);
-            MovieDetails[] detailsList;
-
-            try {
-                detailsList = parser.parse();
-
-                GridViewAdapter viewAdapter = new GridViewAdapter(context, Arrays.asList(detailsList));
-                GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
-                gridView.setAdapter(viewAdapter);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "ERROR", e);
-                e.printStackTrace();
-            }
+            GridViewAdapter viewAdapter = new GridViewAdapter(context, Arrays.asList(result));
+            GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
+            gridView.setAdapter(viewAdapter);
         }
     }
 
