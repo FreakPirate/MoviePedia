@@ -33,6 +33,7 @@ public class GridViewAdapter extends ArrayAdapter<MoviePoster> {
      * @param parent The parent ViewGroup that is used for inflation.
      * @return The View for the position in the AdapterView.
      */
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Gets the MoviePoster object from the ArrayAdapter at the appropriate position

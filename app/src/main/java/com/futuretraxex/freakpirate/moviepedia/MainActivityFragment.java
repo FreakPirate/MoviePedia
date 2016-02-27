@@ -7,12 +7,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import com.futuretraxex.freakpirate.moviepedia.network.FetchDBTask;
+
 import java.util.Arrays;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
+
+    private final String SORT_BY_POPULARITY = "popularity.desc";
 
     MoviePoster [] moviePosters = {
             new MoviePoster(R.drawable.ic_poster),
@@ -40,6 +44,9 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        FetchDBTask dbTask = new FetchDBTask();
+        dbTask.execute(SORT_BY_POPULARITY);
 
         GridViewAdapter moviePosterAdapter = new GridViewAdapter(getActivity(), Arrays.asList(moviePosters));
 
