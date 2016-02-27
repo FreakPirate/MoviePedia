@@ -20,15 +20,15 @@ public class MainActivityFragment extends Fragment {
     private final String SORT_ORDER_POPULARITY = "popularity.desc";
     private final String SORT_ORDER_RATING = "vote_average.desc";
 
-    MoviePoster [] moviePosters = {
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster)
-    };
+//    MoviePoster [] moviePosters = {
+//            new MoviePoster(R.drawable.ic_poster),
+//            new MoviePoster(R.drawable.ic_poster),
+//            new MoviePoster(R.drawable.ic_poster),
+//            new MoviePoster(R.drawable.ic_poster),
+//            new MoviePoster(R.drawable.ic_poster),
+//            new MoviePoster(R.drawable.ic_poster),
+//            new MoviePoster(R.drawable.ic_poster)
+//    };
 
     public MainActivityFragment() {
     }
@@ -49,7 +49,7 @@ public class MainActivityFragment extends Fragment {
 
     private void networkHandler(){
 
-        FetchDBTask dbTask = new FetchDBTask();
+        FetchDBTask dbTask = new FetchDBTask(getActivity());
         dbTask.execute(SORT_ORDER_POPULARITY);
     }
 }

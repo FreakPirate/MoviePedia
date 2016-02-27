@@ -21,7 +21,7 @@ public class GridJSONParser {
     private final String PARAM_ID = "id";
 
     private final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-    private final String size = "w185";
+    private final String size = "w342";
 
     private String jsonStr;
 

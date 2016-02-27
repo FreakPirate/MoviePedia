@@ -1,10 +1,15 @@
 package com.futuretraxex.freakpirate.moviepedia.network;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.GridView;
 
+import com.futuretraxex.freakpirate.moviepedia.GridViewAdapter;
 import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.URIBuilder;
 import com.futuretraxex.freakpirate.moviepedia.parsers.GridJSONParser;
 
@@ -17,6 +22,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created by FreakPirate on 2/25/2016.
@@ -25,6 +31,12 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
 
     private final String LOG_TAG = FetchDBTask.class.getSimpleName();
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
+
+    private Activity context;
+
+    public FetchDBTask(Activity context){
+        this.context = context;
+    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -106,11 +118,14 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
 
             try {
                 detailsList = parser.parse();
+
+                GridViewAdapter viewAdapter = new GridViewAdapter(context, Arrays.asList(detailsList));
+                GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
+                gridView.setAdapter(viewAdapter);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "ERROR", e);
                 e.printStackTrace();
             }
-
         }
     }
 

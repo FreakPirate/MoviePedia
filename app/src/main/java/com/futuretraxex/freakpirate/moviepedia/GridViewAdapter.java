@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class GridViewAdapter extends ArrayAdapter<MovieDetails> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Gets the MoviePoster object from the ArrayAdapter at the appropriate position
         MovieDetails details = getItem(position);
+        ImageView view = (ImageView) convertView;
 
         // Adapters recycle views to AdapterViews.
         // If this is a new View object we're getting, then inflate the layout.
@@ -49,13 +52,15 @@ public class GridViewAdapter extends ArrayAdapter<MovieDetails> {
             convertView = LayoutInflater.from(getContext()).inflate(
                     R.layout.grid_item, parent, false);
         }
+        if (view == null) {
+            view = new ImageView(context);
+        }
 
         Picasso.with(context)
                 .load(details.getPosterPath())
-                .fit()
-                .into((ImageView) convertView);
+                .into(view);
 
-        return convertView;
+        return view;
     }
 
 }
