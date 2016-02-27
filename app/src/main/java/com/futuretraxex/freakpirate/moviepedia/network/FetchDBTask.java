@@ -1,20 +1,16 @@
 package com.futuretraxex.freakpirate.moviepedia.network;
 
 import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.GridView;
-
 import com.futuretraxex.freakpirate.moviepedia.GridViewAdapter;
 import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.URIBuilder;
 import com.futuretraxex.freakpirate.moviepedia.parsers.GridJSONParser;
-
 import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

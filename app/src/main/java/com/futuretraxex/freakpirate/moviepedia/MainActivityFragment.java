@@ -1,16 +1,11 @@
 package com.futuretraxex.freakpirate.moviepedia;
 
-import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-
 import com.futuretraxex.freakpirate.moviepedia.network.FetchDBTask;
-
-import java.util.Arrays;
 
 /**
  * A placeholder fragment containing a simple view.
