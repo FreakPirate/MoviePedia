@@ -2,6 +2,8 @@ package com.futuretraxex.freakpirate.moviepedia.parsers;
 
 import android.util.Log;
 
+import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,39 +13,48 @@ import org.json.JSONObject;
  */
 public class GridJSONParser {
 
-    private final static String LOG_TAG = GridJSONParser.class.getSimpleName();
+    private final String LOG_TAG = GridJSONParser.class.getSimpleName();
 
-    private final static String PARAM_RESULTS = "results";
-    private final static String PARAM_POSTER_PATH = "poster_path";
-    private final static String PARAM_TITLE = "title";
-    private final static String PARAM_ID = "id";
+    private final String PARAM_RESULTS = "results";
+    private final String PARAM_POSTER_PATH = "poster_path";
+    private final String PARAM_TITLE = "title";
+    private final String PARAM_ID = "id";
 
-    public static String[] parse(String tmdbJsonStr) throws JSONException{
+    private final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private final String size = "w185";
 
-        JSONObject tmdbJsonObj = new JSONObject(tmdbJsonStr);
-        JSONArray resultsArray = tmdbJsonObj.getJSONArray(PARAM_RESULTS);
+    private String jsonStr;
 
-        String[] resultStrs = new String[20];
+    public GridJSONParser(String jsonStr){
+        this.jsonStr = jsonStr;
+    }
 
-        for (int i=0; i<resultsArray.length(); i++){
-            String poster_path;
-            String title;
-            String id;
+    public MovieDetails[] parse() throws JSONException{
 
-            JSONObject movieDetails = resultsArray.getJSONObject(i);
+        JSONObject gridJsonObj = new JSONObject(jsonStr);
+        JSONArray gridArray = gridJsonObj.getJSONArray(PARAM_RESULTS);
 
-            poster_path = movieDetails.getString(PARAM_POSTER_PATH);
-            title = movieDetails.getString(PARAM_TITLE);
-            id = movieDetails.getString(PARAM_ID);
+        MovieDetails[] detailsList = new MovieDetails[20];
 
-            // Asterisks (*) here acts as a splitter for title, path and Id's
-            resultStrs [i] = title + "~" + poster_path + "~" + id;
+        for (int i=0; i<gridArray.length(); i++){
+
+            JSONObject movieDetails = gridArray.getJSONObject(i);
+
+            String posterPath = movieDetails.getString(PARAM_POSTER_PATH);
+            String movieTitle = movieDetails.getString(PARAM_TITLE);
+            String movieID = movieDetails.getString(PARAM_ID);
+
+            posterPath = POSTER_BASE_URL + size + '/' + posterPath;
+
+            MovieDetails temp = new MovieDetails(movieTitle, posterPath, movieID);
+
+            detailsList[i] = temp;
         }
 
-        for (String s : resultStrs){
-            Log.v(LOG_TAG, "Movie: " + s);
+        for (int i=0; i<20; i++){
+            Log.v(LOG_TAG, "Movie: " + detailsList[i].getMovieTitle());
         }
 
-        return resultStrs;
+        return detailsList;
     }
 }

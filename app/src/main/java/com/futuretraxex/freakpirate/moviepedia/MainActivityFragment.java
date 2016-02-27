@@ -1,5 +1,6 @@
 package com.futuretraxex.freakpirate.moviepedia;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +17,8 @@ import java.util.Arrays;
  */
 public class MainActivityFragment extends Fragment {
 
-    private final String SORT_BY_POPULARITY = "popularity.desc";
+    private final String SORT_ORDER_POPULARITY = "popularity.desc";
+    private final String SORT_ORDER_RATING = "vote_average.desc";
 
     MoviePoster [] moviePosters = {
             new MoviePoster(R.drawable.ic_poster),
@@ -25,16 +27,7 @@ public class MainActivityFragment extends Fragment {
             new MoviePoster(R.drawable.ic_poster),
             new MoviePoster(R.drawable.ic_poster),
             new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.drawable.ic_poster),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
-            new MoviePoster(R.mipmap.ic_interstellar),
+            new MoviePoster(R.drawable.ic_poster)
     };
 
     public MainActivityFragment() {
@@ -45,14 +38,18 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        FetchDBTask dbTask = new FetchDBTask();
-        dbTask.execute(SORT_BY_POPULARITY);
+//        GridViewAdapter moviePosterAdapter = new GridViewAdapter(getActivity(), Arrays.asList(moviePosters));
+//        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
+//        gridView.setAdapter(moviePosterAdapter);
 
-        GridViewAdapter moviePosterAdapter = new GridViewAdapter(getActivity(), Arrays.asList(moviePosters));
-
-        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
-        gridView.setAdapter(moviePosterAdapter);
+        networkHandler();
 
         return rootView;
+    }
+
+    private void networkHandler(){
+
+        FetchDBTask dbTask = new FetchDBTask();
+        dbTask.execute(SORT_ORDER_POPULARITY);
     }
 }

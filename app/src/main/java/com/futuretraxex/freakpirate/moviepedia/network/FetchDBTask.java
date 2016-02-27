@@ -1,8 +1,10 @@
 package com.futuretraxex.freakpirate.moviepedia.network;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
 import com.futuretraxex.freakpirate.moviepedia.URIBuilder;
 import com.futuretraxex.freakpirate.moviepedia.parsers.GridJSONParser;
 
@@ -22,6 +24,7 @@ import java.net.URL;
 public class FetchDBTask extends AsyncTask <String, Void, String> {
 
     private final String LOG_TAG = FetchDBTask.class.getSimpleName();
+    private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
 
     @Override
     protected String doInBackground(String... params) {
@@ -30,16 +33,17 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
             return null;
         }
 
+        Uri gridURI = URIBuilder.buildGridUri(BASE_URL, params[0]);
+
         HttpURLConnection urlConnection = null;
         BufferedReader  reader = null;
 
-        String tmdbJsonStr = null;
+        String jsonStr = null;
 
         try {
-            URIBuilder uriBuilder = new URIBuilder(params[0]);
-            URL tmdbURL = new URL(uriBuilder.build().toString());
+            URL url = new URL(gridURI.toString());
 
-            urlConnection = (HttpURLConnection) tmdbURL.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
@@ -68,8 +72,8 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
                 return null;
             }
 
-            tmdbJsonStr = buffer.toString();
-            Log.v(LOG_TAG, "JSON String: " + tmdbJsonStr);
+            jsonStr = buffer.toString();
+            Log.v(LOG_TAG, "JSON String: " + jsonStr);
 
         }catch (MalformedURLException e){
             Log.e(LOG_TAG, "ERROR", e);
@@ -91,55 +95,27 @@ public class FetchDBTask extends AsyncTask <String, Void, String> {
             }
         }
 
-        return tmdbJsonStr;
+        return jsonStr;
     }
 
     @Override
     protected void onPostExecute(String result) {
-        int index = 20;
-
         if (result != null){
+            GridJSONParser parser = new GridJSONParser(result);
+            MovieDetails[] detailsList;
+
             try {
-                String[] movieDB = GridJSONParser.parse(result);
-
-                String[] titleList = new String[index];
-                String[] posterList = new String[index];
-                String[] idList = new String[index];
-
-                for (int i=0; i<index; i++){
-                    String movieDetail = movieDB[i];
-                    String[] splitParts = movieDetail.split("~");
-
-                    titleList[i] = splitParts[0];
-                    posterList[i] = splitParts[1];
-                    idList[i] = splitParts[2];
-                }
-
-                posterList = imageURLCreator(posterList, index, "w185");
-
-                for (int i=0; i<index; i++){
-                    Log.v(LOG_TAG, titleList[i]);
-                }
-
-            }catch (JSONException e){
+                detailsList = parser.parse();
+            } catch (JSONException e) {
                 Log.e(LOG_TAG, "ERROR", e);
+                e.printStackTrace();
             }
+
         }
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-    }
-
-    private String[] imageURLCreator(String[] posterPathList, int index, String size){
-
-        String BASE_URL = "http://image.tmdb.org/t/p/";
-
-        for (int i=0; i<index; i++){
-            posterPathList[i] = BASE_URL + size + '/' + posterPathList[i];
-        }
-
-        return posterPathList;
     }
 }
