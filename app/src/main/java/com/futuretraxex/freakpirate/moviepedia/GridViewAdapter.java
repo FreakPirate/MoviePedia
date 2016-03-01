@@ -57,7 +57,8 @@ public class GridViewAdapter extends ArrayAdapter<MovieDetails> {
         }
 
         Picasso.with(context)
-                .load(details.getPosterPath())
+                .load(details.getPOSTER_PATH())
+//                .placeholder(R.drawable.placeholder_poster)
                 .into(view);
 
         return view;

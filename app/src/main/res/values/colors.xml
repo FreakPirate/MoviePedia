@@ -4,6 +4,11 @@
     <color name="colorPrimaryDark">#039BE5</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="body_text_1">#de000000</color>
+    <color name="body_text_2">#8a000000</color>
+
+    <color name="line_break_color">#92a3a3a3</color>
+
     <!-- Original Theme-->
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <!--<color name="colorPrimaryDark">#303F9F</color>-->

@@ -1,10 +1,16 @@
 package com.futuretraxex.freakpirate.moviepedia.network;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+
+import com.futuretraxex.freakpirate.moviepedia.DetailActivity;
+import com.futuretraxex.freakpirate.moviepedia.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.GridViewAdapter;
 import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
 import com.futuretraxex.freakpirate.moviepedia.R;
@@ -122,6 +128,19 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
             GridViewAdapter viewAdapter = new GridViewAdapter(context, Arrays.asList(result));
             GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
             gridView.setAdapter(viewAdapter);
+
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    MovieDetails details = (MovieDetails) parent.getItemAtPosition(position);
+
+                    Intent intent = new Intent(context, DetailActivity.class);
+                    intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);
+                    context.startActivity(intent);
+                }
+
+            });
         }
     }
 

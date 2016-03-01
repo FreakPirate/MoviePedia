@@ -3,4 +3,28 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="cover_min_height">190dp</dimen>
+
+    <item name="image_aspect_ratio" format="float" type="dimen">.675</item>
+    <dimen name="movie_poster_margin_top">-16dp</dimen>
+    <dimen name="movie_poster_margin_left">16dp</dimen>
+    <dimen name="movie_poster_margin_bottom">16dp</dimen>
+
+    <!-- Texts -->
+    <dimen name="text_size_xsmall">11sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_medium">14sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+    <dimen name="text_size_xlarge">20sp</dimen>
+    <dimen name="text_size_xxlarge">22sp</dimen>
+    <dimen name="text_size_xxxlarge">24sp</dimen>
+    <dimen name="text_size_diff_large_small">6sp</dimen>
+
+    <dimen name="title_layout">16dp</dimen>
+
+    <dimen name="line_break_height">1dp</dimen>
+
+    <dimen name="synopsis_padding">16dp</dimen>
 </resources>
+

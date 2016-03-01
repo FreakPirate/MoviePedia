@@ -17,4 +17,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="MovieDetailAnchor">
+        <item name="android:layout_alignTop">@id/movie_cover_container</item>
+        <item name="android:layout_alignBottom">@id/movie_cover_container</item>
+    </style>
+
 </resources>

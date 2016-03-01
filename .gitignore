@@ -9,3 +9,5 @@
 api_key
 /.idea
 *.idea
+.idea
+gradle.properties

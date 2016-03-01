@@ -19,11 +19,18 @@ public class GridJSONParser {
     private final String PARAM_POSTER_PATH = "poster_path";
     private final String PARAM_TITLE = "title";
     private final String PARAM_ID = "id";
+    private final String PARAM_RELEASE_DATE = "release_date";
+    private final String PARAM_PLOT_SYNOPSIS = "overview";
+    private final String PARAM_BACKDROP_PATH = "backdrop_path";
+    private final String PARAM_AVERAGE_RATING = "vote_average";
 
-    private final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-    private final String size = "w342";
+    private final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
+    private final String poster_size = "w342";
+    private final String cover_size = "w780";
 
     private String jsonStr;
+
+    private int index = 20;
 
     public GridJSONParser(String jsonStr){
         this.jsonStr = jsonStr;
@@ -34,25 +41,31 @@ public class GridJSONParser {
         JSONObject gridJsonObj = new JSONObject(jsonStr);
         JSONArray gridArray = gridJsonObj.getJSONArray(PARAM_RESULTS);
 
-        MovieDetails[] detailsList = new MovieDetails[20];
+        MovieDetails[] detailsList = new MovieDetails[index];
 
         for (int i=0; i<gridArray.length(); i++){
 
-            JSONObject movieDetails = gridArray.getJSONObject(i);
+            JSONObject detailObject = gridArray.getJSONObject(i);
 
-            String posterPath = movieDetails.getString(PARAM_POSTER_PATH);
-            String movieTitle = movieDetails.getString(PARAM_TITLE);
-            String movieID = movieDetails.getString(PARAM_ID);
+            String movieTitle = detailObject.getString(PARAM_TITLE);
+            String movieID = detailObject.getString(PARAM_ID);
+            String posterPath = detailObject.getString(PARAM_POSTER_PATH);
+            String backdropPath = detailObject.getString(PARAM_BACKDROP_PATH);
+            String plotSynopsis = detailObject.getString(PARAM_PLOT_SYNOPSIS);
+            String averageRating = detailObject.getString(PARAM_AVERAGE_RATING);
+            String releaseDate = detailObject.getString(PARAM_RELEASE_DATE);
 
-            posterPath = POSTER_BASE_URL + size + '/' + posterPath;
+            posterPath = IMAGE_BASE_URL + poster_size + '/' + posterPath;
+            backdropPath = IMAGE_BASE_URL + cover_size + '/' + backdropPath;
 
-            MovieDetails temp = new MovieDetails(movieTitle, posterPath, movieID);
+            MovieDetails temp = new MovieDetails(movieTitle, movieID, posterPath, backdropPath,
+                    plotSynopsis, averageRating, releaseDate);
 
             detailsList[i] = temp;
         }
 
-        for (int i=0; i<20; i++){
-            Log.v(LOG_TAG, "Movie: " + detailsList[i].getMovieTitle());
+        for (int i=0; i<index; i++){
+            Log.v(LOG_TAG, "Movie: " + detailsList[i].getMOVIE_TITLE());
         }
 
         return detailsList;
