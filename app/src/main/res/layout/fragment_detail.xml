@@ -137,6 +137,7 @@
                 android:textColor="@color/body_text_2"
                 android:textSize="@dimen/text_size_medium"
                 android:paddingTop="0dp"
+                android:paddingBottom="10dp"
                 android:paddingLeft="@dimen/synopsis_padding"
                 android:paddingRight="@dimen/synopsis_padding"
                 android:text="@string/placeholder_movie_plot"/>

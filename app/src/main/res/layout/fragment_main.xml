@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:numColumns="auto_fit"
+    android:verticalSpacing="2.4dp"
+    android:horizontalSpacing="3dp"
     android:id="@+id/movies_grid"
     android:columnWidth="150dp"
     tools:context="com.futuretraxex.freakpirate.moviepedia.MainActivityFragment">

@@ -54,7 +54,7 @@ public class DetailActivityFragment extends Fragment {
             Picasso.with(context)
                     .load(info.getPOSTER_PATH())
 //                    .error(R.drawable.placeholder_poster)
-                    .resize(200,250)
+                    .resize(300, 450)
                     .into(moviePosterImageView);
 
             Picasso.with(context)
@@ -63,12 +63,17 @@ public class DetailActivityFragment extends Fragment {
                     .into(movieCoverImageView);
 
             movieTitle.setText(info.getMOVIE_TITLE());
-            movieReleaseDate.setText(info.getRELEASE_DATE());
-            movieAverageRating.setText(info.getAVERAGE_RATINGS());
+
+            String releaseDate = "Release Date: " + info.getRELEASE_DATE();
+            String averageRating = "Average Rating: " + info.getAVERAGE_RATINGS();
+            String id = "Movie ID: " + info.getMOVIE_ID();
+
+            movieReleaseDate.setText(releaseDate);
+            movieAverageRating.setText(averageRating);
             movieSynopsis.setText(info.getPLOT_SYNOPSIS());
 
             movieID.setVisibility(View.VISIBLE);
-            movieID.setText(info.getMOVIE_ID());
+            movieID.setText(id);
 
         moviePosterImageView.bringToFront();
         }else {
