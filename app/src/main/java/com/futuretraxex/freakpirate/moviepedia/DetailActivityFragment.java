@@ -54,6 +54,7 @@ public class DetailActivityFragment extends Fragment {
             Picasso.with(context)
                     .load(info.getPOSTER_PATH())
 //                    .error(R.drawable.placeholder_poster)
+                    .resize(200,250)
                     .into(moviePosterImageView);
 
             Picasso.with(context)
