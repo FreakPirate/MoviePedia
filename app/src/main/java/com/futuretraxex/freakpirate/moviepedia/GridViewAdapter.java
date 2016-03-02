@@ -53,13 +53,12 @@ public class GridViewAdapter extends ArrayAdapter<MovieDetails> {
                     R.layout.grid_item, parent, false);
         }
         if (view == null) {
-            view = new ImageView(context);
+            view = (ImageView) convertView.findViewById(R.id.poster_image);
         }
 
         Picasso.with(context)
                 .load(details.getPOSTER_PATH())
 //                .placeholder(R.drawable.placeholder_poster)
-                .resize(360,540)
                 .into(view);
 
         return view;

@@ -1,5 +1,6 @@
 package com.futuretraxex.freakpirate.moviepedia;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 /**
@@ -30,8 +33,13 @@ public class DetailActivityFragment extends Fragment {
     @Bind(R.id.plot_synopsis) TextView movieSynopsis;
     @Bind(R.id.movie_id) TextView movieID;
 
-    @Bind(R.id.movie_poster_detail) ImageView moviePosterImageView;
+    @Bind(R.id.movie_poster) ImageView moviePosterImageView;
     @Bind(R.id.movie_cover) ImageView movieCoverImageView;
+
+    @Bind(R.id.movie_poster_container) RelativeLayout layout;
+
+    @BindColor(R.color.poster_white) int white;
+    @BindColor(R.color.poster_gray) int gray;
 
     private Context context;
 
@@ -50,36 +58,37 @@ public class DetailActivityFragment extends Fragment {
 
         if (intent != null && intent.hasExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING)) {
             info = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
-
-            Picasso.with(context)
-                    .load(info.getPOSTER_PATH())
-//                    .error(R.drawable.placeholder_poster)
-                    .resize(300, 450)
-                    .into(moviePosterImageView);
-
-            Picasso.with(context)
-                    .load(info.getBACKDROP_PATH())
-//                    .error(R.drawable.placeholder_backdrop)
-                    .into(movieCoverImageView);
-
-            movieTitle.setText(info.getMOVIE_TITLE());
-
-            String releaseDate = "Release Date: " + info.getRELEASE_DATE();
-            String averageRating = "Average Rating: " + info.getAVERAGE_RATINGS();
-            String id = "Movie ID: " + info.getMOVIE_ID();
-
-            movieReleaseDate.setText(releaseDate);
-            movieAverageRating.setText(averageRating);
-            movieSynopsis.setText(info.getPLOT_SYNOPSIS());
-
-            movieID.setVisibility(View.VISIBLE);
-            movieID.setText(id);
-
-        moviePosterImageView.bringToFront();
+            inflateView();
         }else {
             Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
         }
 
         return rootView;
+    }
+
+    public void inflateView(){
+
+        Picasso.with(context)
+                .load(info.getPOSTER_PATH())
+//                    .error(R.drawable.placeholder_poster)
+                .into(moviePosterImageView);
+
+        Picasso.with(context)
+                .load(info.getBACKDROP_PATH())
+//                    .error(R.drawable.placeholder_backdrop)
+                .into(movieCoverImageView);
+
+        movieTitle.setText(info.getMOVIE_TITLE());
+
+        String releaseDate = "Release Date: " + info.getRELEASE_DATE();
+        String averageRating = "Average Rating: " + info.getAVERAGE_RATINGS();
+        String id = "Movie ID: " + info.getMOVIE_ID();
+
+        movieReleaseDate.setText(releaseDate);
+        movieAverageRating.setText(averageRating);
+        movieSynopsis.setText(info.getPLOT_SYNOPSIS());
+
+        movieID.setVisibility(View.VISIBLE);
+        movieID.setText(id);
     }
 }

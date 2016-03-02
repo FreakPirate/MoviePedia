@@ -9,6 +9,10 @@
 
     <color name="line_break_color">#92a3a3a3</color>
 
+    <color name="poster_gray">@android:color/darker_gray</color>
+    <color name="poster_black">@android:color/black</color>
+    <color name="poster_white">@android:color/white</color>
+
     <!-- Original Theme-->
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <!--<color name="colorPrimaryDark">#303F9F</color>-->

@@ -7,7 +7,7 @@
     <dimen name="cover_min_height">190dp</dimen>
 
     <item name="image_aspect_ratio" format="float" type="dimen">.675</item>
-    <dimen name="movie_poster_margin_top">-16dp</dimen>
+    <dimen name="movie_poster_margin_top">16dp</dimen>
     <dimen name="movie_poster_margin_left">16dp</dimen>
     <dimen name="movie_poster_margin_bottom">16dp</dimen>
 
@@ -21,7 +21,7 @@
     <dimen name="text_size_xxxlarge">24sp</dimen>
     <dimen name="text_size_diff_large_small">6sp</dimen>
 
-    <dimen name="title_layout">16dp</dimen>
+    <dimen name="title_layout">26dp</dimen>
 
     <dimen name="line_break_height">1dp</dimen>
 
