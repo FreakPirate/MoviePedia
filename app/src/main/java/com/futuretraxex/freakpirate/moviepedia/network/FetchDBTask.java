@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 
 import com.futuretraxex.freakpirate.moviepedia.DetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.GlobalData;
@@ -26,6 +28,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
+import butterknife.Bind;
+
 /**
  * Created by FreakPirate on 2/25/2016.
  */
@@ -34,10 +38,14 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     private final String LOG_TAG = FetchDBTask.class.getSimpleName();
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
 
+    private ProgressBar progressBar;
+
+    private View rootView;
     private Activity context;
 
-    public FetchDBTask(Activity context){
+    public FetchDBTask(Activity context, View rootView){
         this.context = context;
+        this.rootView = rootView;
     }
 
     @Override
@@ -125,6 +133,10 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     @Override
     protected void onPostExecute(MovieDetails[] result) {
         if (result != null){
+
+            //Hiding progress bar
+            progressBar.setVisibility(View.GONE);
+
             GridViewAdapter viewAdapter = new GridViewAdapter(context, Arrays.asList(result));
             GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
             gridView.setAdapter(viewAdapter);
@@ -147,5 +159,9 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
+        //Setting progress bar until posters get visible
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 }

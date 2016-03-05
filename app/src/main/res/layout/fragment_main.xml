@@ -1,15 +1,28 @@
-<GridView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:numColumns="auto_fit"
-    android:id="@+id/movies_grid"
-    android:padding="3dp"
-    android:verticalSpacing="3dp"
-    android:horizontalSpacing="3dp"
-    android:background="#D2D2D2"
-    android:columnWidth="170dp"
-    tools:context="com.futuretraxex.freakpirate.moviepedia.MainActivityFragment">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-</GridView>
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:id="@+id/movies_grid"
+        android:padding="3dp"
+        android:verticalSpacing="3dp"
+        android:horizontalSpacing="3dp"
+        android:background="#D2D2D2"
+        android:columnWidth="170dp"
+        tools:context="com.futuretraxex.freakpirate.moviepedia.MainActivityFragment"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminateTintMode="add"
+        android:visibility="gone"/>
+
+</RelativeLayout>

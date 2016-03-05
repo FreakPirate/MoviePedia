@@ -13,6 +13,10 @@
     <color name="poster_black">@android:color/black</color>
     <color name="poster_white">@android:color/white</color>
 
+    <color name="color_preloader_start">#80CBC4</color>
+    <color name="color_preloader_center">#009688</color>
+    <color name="color_preloader_end">#004D40</color>
+
     <!-- Original Theme-->
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <!--<color name="colorPrimaryDark">#303F9F</color>-->

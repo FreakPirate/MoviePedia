@@ -39,14 +39,14 @@ public class MainActivityFragment extends Fragment {
 //        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
 //        gridView.setAdapter(moviePosterAdapter);
 
-        networkHandler();
+        networkHandler(rootView);
 
         return rootView;
     }
 
-    private void networkHandler(){
+    private void networkHandler(View rootView){
 
-        FetchDBTask dbTask = new FetchDBTask(getActivity());
+        FetchDBTask dbTask = new FetchDBTask(getActivity(), rootView);
         dbTask.execute(SORT_ORDER_POPULARITY);
     }
 }
