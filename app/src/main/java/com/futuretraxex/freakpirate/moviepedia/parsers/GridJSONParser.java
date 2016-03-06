@@ -26,7 +26,7 @@ public class GridJSONParser {
 
     private final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private final String poster_size = "w342";
-    private final String cover_size = "w780";
+    private final String cover_size = "w500";
 
     private String jsonStr;
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/error_egg_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/poster_gray"
+    android:paddingTop="50dp"
+    android:clickable="true">
+
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/error_egg_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/egg_error"/>
+    <TextView
+        android:id="@+id/error_egg_text_view"
+        android:gravity="center"
+        android:paddingTop="30dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_xxxlarge"
+        android:text="@string/network_error"/>
+</LinearLayout>
