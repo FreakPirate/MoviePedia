@@ -1,7 +1,5 @@
-package com.futuretraxex.freakpirate.moviepedia;
+package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
@@ -18,10 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -58,7 +56,7 @@ public class DetailActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detail_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);

@@ -1,23 +1,21 @@
-package com.futuretraxex.freakpirate.moviepedia.network;
+package com.futuretraxex.freakpirate.moviepedia.backend;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
-import com.futuretraxex.freakpirate.moviepedia.DetailActivity;
-import com.futuretraxex.freakpirate.moviepedia.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.GridViewAdapter;
-import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
+import com.futuretraxex.freakpirate.moviepedia.ui.activity.DetailActivity;
+import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
 import com.futuretraxex.freakpirate.moviepedia.R;
-import com.futuretraxex.freakpirate.moviepedia.URIBuilder;
-import com.futuretraxex.freakpirate.moviepedia.parsers.GridJSONParser;
+import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
 import org.json.JSONException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,8 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-
-import butterknife.Bind;
 
 /**
  * Created by FreakPirate on 2/25/2016.
@@ -124,7 +120,7 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
             }
         }
 
-        GridJSONParser parser = new GridJSONParser(jsonStr);
+        BrowseMoviesParser parser = new BrowseMoviesParser(jsonStr);
         MovieDetails[] detailsList = null;
 
         try {
@@ -144,7 +140,7 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
             //Hiding progress bar
             progressBar.setVisibility(View.GONE);
 
-            GridViewAdapter viewAdapter = new GridViewAdapter(context, Arrays.asList(result));
+            BrowseMoviesAdapter viewAdapter = new BrowseMoviesAdapter(context, Arrays.asList(result));
             GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
             gridView.setAdapter(viewAdapter);
 

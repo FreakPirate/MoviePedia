@@ -1,4 +1,4 @@
-package com.futuretraxex.freakpirate.moviepedia;
+package com.futuretraxex.freakpirate.moviepedia.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,19 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.R;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
-public class GridViewAdapter extends ArrayAdapter<MovieDetails> {
-    private static final String LOG_TAG = GridViewAdapter.class.getSimpleName();
+public class BrowseMoviesAdapter extends ArrayAdapter<MovieDetails> {
+    private static final String LOG_TAG = BrowseMoviesAdapter.class.getSimpleName();
     private Context context;
 
-    public GridViewAdapter(Activity context, List<MovieDetails> details) {
+    public BrowseMoviesAdapter(Activity context, List<MovieDetails> details) {
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter, the adapter is not
@@ -50,7 +50,7 @@ public class GridViewAdapter extends ArrayAdapter<MovieDetails> {
         // and we modify the View widgets as usual.
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.grid_item, parent, false);
+                    R.layout.item_browse_movies, parent, false);
         }
         if (view == null) {
             view = (ImageView) convertView.findViewById(R.id.poster_image);

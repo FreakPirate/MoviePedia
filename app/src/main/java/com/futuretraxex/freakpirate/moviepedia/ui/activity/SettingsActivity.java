@@ -1,33 +1,34 @@
-package com.futuretraxex.freakpirate.moviepedia;
+package com.futuretraxex.freakpirate.moviepedia.ui.activity;
 
 /**
  * Created by FreakPirate on 3/7/2016.
  */
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.view.KeyEvent;
+
+import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings.
+ * A {@link android.preference.PreferenceActivity} that presents a set of application settings.
  * <p>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends PreferenceActivity
+public class SettingsActivity extends android.preference.PreferenceActivity
         implements Preference.OnPreferenceChangeListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Add 'general' preferences, defined in the XML file
-        addPreferencesFromResource(R.xml.preference_browse_movies);
+        addPreferencesFromResource(R.xml.layout_preference);
 
 //        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_adult_key)));
 

@@ -1,7 +1,9 @@
-package com.futuretraxex.freakpirate.moviepedia;
+package com.futuretraxex.freakpirate.moviepedia.backend;
 
 import android.net.Uri;
 import android.util.Log;
+
+import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
 
 /**
  * Created by FreakPirate on 2/25/2016.

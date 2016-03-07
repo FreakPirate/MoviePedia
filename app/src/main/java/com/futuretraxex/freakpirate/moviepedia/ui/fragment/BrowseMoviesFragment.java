@@ -1,7 +1,6 @@
-package com.futuretraxex.freakpirate.moviepedia;
+package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,23 +8,19 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.futuretraxex.freakpirate.moviepedia.network.FetchDBTask;
-
-import butterknife.Bind;
+import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.backend.FetchDBTask;
+import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class BrowseMoviesFragment extends Fragment {
 
     private String SORT_ORDER;
     private Boolean SAFE_SEARCH;
@@ -42,23 +37,23 @@ public class MainActivityFragment extends Fragment {
 //            new MoviePoster(R.drawable.ic_poster)
 //    };
 
-    public MainActivityFragment() {
+    public BrowseMoviesFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        GridViewAdapter moviePosterAdapter = new GridViewAdapter(getActivity(), Arrays.asList(moviePosters));
+//        BrowseMoviesAdapter moviePosterAdapter = new BrowseMoviesAdapter(getActivity(), Arrays.asList(moviePosters));
 //        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
 //        gridView.setAdapter(moviePosterAdapter);
         setHasOptionsMenu(true);
 
         if(isNetworkAvailable()){
-            rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
             updateUI();
         }else {
-            rootView = inflater.inflate(R.layout.egg_error_layout, container, false);
+            rootView = inflater.inflate(R.layout.error_egg, container, false);
 
             TextView textView = (TextView) rootView.findViewById(R.id.error_egg_text_view);
             textView.setText(getActivity().getResources().getString(R.string.network_error));

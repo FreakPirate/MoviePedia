@@ -14,7 +14,7 @@
         android:horizontalSpacing="3dp"
         android:background="#D2D2D2"
         android:columnWidth="170dp"
-        tools:context="com.futuretraxex.freakpirate.moviepedia.MainActivityFragment"/>
+        tools:context=".ui.fragment.BrowseMoviesFragment"/>
 
     <ProgressBar
         android:layout_width="wrap_content"

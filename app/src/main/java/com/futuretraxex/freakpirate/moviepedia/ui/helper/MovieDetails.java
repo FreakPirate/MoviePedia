@@ -1,4 +1,4 @@
-package com.futuretraxex.freakpirate.moviepedia;
+package com.futuretraxex.freakpirate.moviepedia.ui.helper;
 
 import android.os.Parcel;
 import android.os.Parcelable;

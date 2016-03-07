@@ -1,8 +1,8 @@
-package com.futuretraxex.freakpirate.moviepedia.parsers;
+package com.futuretraxex.freakpirate.moviepedia.data.parsers;
 
 import android.util.Log;
 
-import com.futuretraxex.freakpirate.moviepedia.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,9 +11,9 @@ import org.json.JSONObject;
 /**
  * Created by FreakPirate on 2/25/2016.
  */
-public class GridJSONParser {
+public class BrowseMoviesParser {
 
-    private final String LOG_TAG = GridJSONParser.class.getSimpleName();
+    private final String LOG_TAG = BrowseMoviesParser.class.getSimpleName();
 
     private final String PARAM_RESULTS = "results";
     private final String PARAM_POSTER_PATH = "poster_path";
@@ -32,7 +32,7 @@ public class GridJSONParser {
 
     private int index = 20;
 
-    public GridJSONParser(String jsonStr){
+    public BrowseMoviesParser(String jsonStr){
         this.jsonStr = jsonStr;
     }
 
