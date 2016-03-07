@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
-import com.futuretraxex.freakpirate.moviepedia.backend.FetchDBTask;
+import com.futuretraxex.freakpirate.moviepedia.backend.FetchBrowseMovieDB;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 
 /**
@@ -82,7 +82,7 @@ public class BrowseMoviesFragment extends Fragment {
 
     private void networkHandler(View rootView, String sortOrder, Boolean safeSearch){
 
-        FetchDBTask dbTask = new FetchDBTask(getActivity(), rootView, safeSearch);
+        FetchBrowseMovieDB dbTask = new FetchBrowseMovieDB(getActivity(), rootView, safeSearch);
         dbTask.execute(sortOrder);
     }
 

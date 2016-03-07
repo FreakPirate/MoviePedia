@@ -2,7 +2,8 @@ package com.futuretraxex.freakpirate.moviepedia.data.parsers;
 
 import android.util.Log;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,8 +13,6 @@ import org.json.JSONObject;
  * Created by FreakPirate on 2/25/2016.
  */
 public class BrowseMoviesParser {
-
-    private final String LOG_TAG = BrowseMoviesParser.class.getSimpleName();
 
     private final String PARAM_RESULTS = "results";
     private final String PARAM_POSTER_PATH = "poster_path";
@@ -36,12 +35,12 @@ public class BrowseMoviesParser {
         this.jsonStr = jsonStr;
     }
 
-    public MovieDetails[] parse() throws JSONException{
+    public MovieData[] parse() throws JSONException{
 
         JSONObject gridJsonObj = new JSONObject(jsonStr);
         JSONArray gridArray = gridJsonObj.getJSONArray(PARAM_RESULTS);
 
-        MovieDetails[] detailsList = new MovieDetails[index];
+        MovieData[] detailsList = new MovieData[index];
 
         for (int i=0; i<gridArray.length(); i++){
 
@@ -58,15 +57,15 @@ public class BrowseMoviesParser {
             posterPath = IMAGE_BASE_URL + poster_size + '/' + posterPath;
             backdropPath = IMAGE_BASE_URL + cover_size + '/' + backdropPath;
 
-            MovieDetails temp = new MovieDetails(movieTitle, movieID, posterPath, backdropPath,
+            MovieData temp = new MovieData(movieTitle, movieID, posterPath, backdropPath,
                     plotSynopsis, averageRating, releaseDate);
 
             detailsList[i] = temp;
         }
 
-        for (int i=0; i<index; i++){
-            Log.v(LOG_TAG, "Movie: " + detailsList[i].getMOVIE_TITLE());
-        }
+//        for (int i=0; i<index; i++){
+//            Log.v(GlobalData.LOG_TAG_BROWSE_MOVIE_PARSER, "Movie: " + detailsList[i].getMOVIE_TITLE());
+//        }
 
         return detailsList;
     }

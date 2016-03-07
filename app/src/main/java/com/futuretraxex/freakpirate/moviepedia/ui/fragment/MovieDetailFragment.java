@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.squareup.picasso.Picasso;
@@ -29,9 +29,9 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailActivityFragment extends Fragment {
+public class MovieDetailFragment extends Fragment {
 
-    private MovieDetails info;
+    private MovieData info;
 
     @Bind(R.id.movie_title) TextView movieTitle;
     @Bind(R.id.movie_release_date) TextView movieReleaseDate;
@@ -49,7 +49,7 @@ public class DetailActivityFragment extends Fragment {
 
     private Context context;
 
-    public DetailActivityFragment() {
+    public MovieDetailFragment() {
         this.context = getActivity();
     }
 

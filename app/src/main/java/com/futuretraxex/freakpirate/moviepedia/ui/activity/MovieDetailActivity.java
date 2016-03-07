@@ -3,10 +3,10 @@ package com.futuretraxex.freakpirate.moviepedia.ui.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.fragment.DetailActivityFragment;
+import com.futuretraxex.freakpirate.moviepedia.ui.fragment.MovieDetailFragment;
 import com.futuretraxex.freakpirate.moviepedia.R;
 
-public class DetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,7 +15,7 @@ public class DetailActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container_detail, new DetailActivityFragment())
+                    .add(R.id.container_detail, new MovieDetailFragment())
                     .commit();
         }
     }

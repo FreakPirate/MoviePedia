@@ -8,17 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class BrowseMoviesAdapter extends ArrayAdapter<MovieDetails> {
-    private static final String LOG_TAG = BrowseMoviesAdapter.class.getSimpleName();
+public class BrowseMoviesAdapter extends ArrayAdapter<MovieData> {
     private Context context;
 
-    public BrowseMoviesAdapter(Activity context, List<MovieDetails> details) {
+    public BrowseMoviesAdapter(Activity context, List<MovieData> details) {
         // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
         // the second argument is used when the ArrayAdapter is populating a single TextView.
         // Because this is a custom adapter, the adapter is not
@@ -41,7 +40,7 @@ public class BrowseMoviesAdapter extends ArrayAdapter<MovieDetails> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Gets the MoviePoster object from the ArrayAdapter at the appropriate position
-        MovieDetails details = getItem(position);
+        MovieData details = getItem(position);
         ImageView view = (ImageView) convertView;
 
         // Adapters recycle views to AdapterViews.

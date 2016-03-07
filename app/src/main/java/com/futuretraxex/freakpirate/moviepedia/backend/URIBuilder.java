@@ -4,13 +4,12 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
+import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 
 /**
  * Created by FreakPirate on 2/25/2016.
  */
 public class URIBuilder {
-
-    private final static String LOG_TAG = URIBuilder.class.getSimpleName();
 
     private final static String PARAM_SORT_ORDER = "sort_by";
     private final static String PARAM_API_KEY = "api_key";
@@ -26,7 +25,7 @@ public class URIBuilder {
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
 
-        Log.d(LOG_TAG, gridURI.toString());
+//        Log.d(GlobalData.LOG_TAG_URI_BUILDER, gridURI.toString());
 
         return gridURI;
     }

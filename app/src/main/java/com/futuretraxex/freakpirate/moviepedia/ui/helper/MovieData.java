@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 //Implements Parcelable to pass object amongst activities
-public class MovieDetails implements Parcelable {
+public class MovieData implements Parcelable {
     private String MOVIE_TITLE;
     private String MOVIE_ID;
     private String POSTER_PATH;
@@ -18,13 +18,13 @@ public class MovieDetails implements Parcelable {
     private String RELEASE_DATE;
 
 
-//    public MovieDetails(String POSTER_PATH){
+//    public MovieData(String POSTER_PATH){
 //        this.POSTER_PATH = POSTER_PATH;
 //    }
 
     //This will be called once the Object is instantiated on the sender's end.
-    public MovieDetails(String movieTitle, String movieID, String posterPath, String backdropPath,
-                        String plotSynopsis, String averageRatings, String releaseDate){
+    public MovieData(String movieTitle, String movieID, String posterPath, String backdropPath,
+                     String plotSynopsis, String averageRatings, String releaseDate){
         this.MOVIE_TITLE = movieTitle;
         this.MOVIE_ID = movieID;
         this.POSTER_PATH = posterPath;
@@ -47,9 +47,9 @@ public class MovieDetails implements Parcelable {
         });
     }
 
-    //This will inflate the MovieDetails object
+    //This will inflate the MovieData object
     //Once it has reached its destination activity
-    public MovieDetails(Parcel in){
+    public MovieData(Parcel in){
         String[] receivedData = new String[7];
         in.readStringArray(receivedData);
 
@@ -101,12 +101,12 @@ public class MovieDetails implements Parcelable {
     //"android.os.BadParcelableException: Parcelable protocol
     //requires a Parcelable.Creator object called  CREATOR on class"
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public MovieDetails createFromParcel(Parcel in) {
-            return new MovieDetails(in);
+        public MovieData createFromParcel(Parcel in) {
+            return new MovieData(in);
         }
 
-        public MovieDetails[] newArray(int size) {
-            return new MovieDetails[size];
+        public MovieData[] newArray(int size) {
+            return new MovieData[size];
         }
     };
 }

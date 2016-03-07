@@ -11,9 +11,9 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
-import com.futuretraxex.freakpirate.moviepedia.ui.activity.DetailActivity;
+import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDetails;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
 import org.json.JSONException;
@@ -29,9 +29,8 @@ import java.util.Arrays;
 /**
  * Created by FreakPirate on 2/25/2016.
  */
-public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
+public class FetchBrowseMovieDB extends AsyncTask <String, Void, MovieData[]> {
 
-    private final String LOG_TAG = FetchDBTask.class.getSimpleName();
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
 
     private ProgressBar progressBar;
@@ -42,7 +41,7 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     private Boolean INCLUDE_ADULT;
     private String SORT_ORDER;
 
-    public FetchDBTask(Activity context, View rootView, Boolean safeSearch){
+    public FetchBrowseMovieDB(Activity context, View rootView, Boolean safeSearch){
         this.context = context;
         this.rootView = rootView;
 
@@ -50,7 +49,7 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     }
 
     @Override
-    protected MovieDetails[] doInBackground(String... params) {
+    protected MovieData[] doInBackground(String... params) {
 
         if (params.length == 0){
             return null;
@@ -98,13 +97,13 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
             }
 
             jsonStr = buffer.toString();
-            Log.v(LOG_TAG, "JSON String: " + jsonStr);
+//            Log.v(GlobalData.LOG_TAG_FETCH_BROWSE_MOVIE_DB, "JSON String: " + jsonStr);
 
         }catch (MalformedURLException e){
-            Log.e(LOG_TAG, "ERROR", e);
+            Log.e(GlobalData.LOG_TAG_FETCH_BROWSE_MOVIE_DB, "ERROR", e);
             return null;
         }catch (IOException e){
-            Log.e(LOG_TAG, "ERROR", e);
+            Log.e(GlobalData.LOG_TAG_FETCH_BROWSE_MOVIE_DB, "ERROR", e);
             return null;
 
         }finally {
@@ -115,18 +114,18 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
                 try{
                     reader.close();
                 }catch (final IOException e){
-                     Log.e(LOG_TAG, "Error closing stream", e);
+                     Log.e(GlobalData.LOG_TAG_FETCH_BROWSE_MOVIE_DB, "Error closing stream", e);
                 }
             }
         }
 
         BrowseMoviesParser parser = new BrowseMoviesParser(jsonStr);
-        MovieDetails[] detailsList = null;
+        MovieData[] detailsList = null;
 
         try {
             detailsList = parser.parse();
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "ERROR", e);
+            Log.e(GlobalData.LOG_TAG_FETCH_BROWSE_MOVIE_DB, "ERROR", e);
             e.printStackTrace();
         }
 
@@ -134,7 +133,7 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     }
 
     @Override
-    protected void onPostExecute(MovieDetails[] result) {
+    protected void onPostExecute(MovieData[] result) {
         if (result != null){
 
             //Hiding progress bar
@@ -148,9 +147,9 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    MovieDetails details = (MovieDetails) parent.getItemAtPosition(position);
+                    MovieData details = (MovieData) parent.getItemAtPosition(position);
 
-                    Intent intent = new Intent(context, DetailActivity.class);
+                    Intent intent = new Intent(context, MovieDetailActivity.class);
                     intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);
                     context.startActivity(intent);
                 }
