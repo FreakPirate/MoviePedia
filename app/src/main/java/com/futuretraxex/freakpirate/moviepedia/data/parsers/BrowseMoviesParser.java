@@ -22,6 +22,7 @@ public class BrowseMoviesParser {
     private final String PARAM_PLOT_SYNOPSIS = "overview";
     private final String PARAM_BACKDROP_PATH = "backdrop_path";
     private final String PARAM_AVERAGE_RATING = "vote_average";
+    private final String PARAM_ADULT = "adult";
 
     private final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private final String poster_size = "w342";
@@ -53,12 +54,13 @@ public class BrowseMoviesParser {
             String plotSynopsis = detailObject.getString(PARAM_PLOT_SYNOPSIS);
             String averageRating = detailObject.getString(PARAM_AVERAGE_RATING);
             String releaseDate = detailObject.getString(PARAM_RELEASE_DATE);
+            String adult = detailObject.getString(PARAM_ADULT);
 
             posterPath = IMAGE_BASE_URL + poster_size + '/' + posterPath;
             backdropPath = IMAGE_BASE_URL + cover_size + '/' + backdropPath;
 
             MovieData temp = new MovieData(movieTitle, movieID, posterPath, backdropPath,
-                    plotSynopsis, averageRating, releaseDate);
+                    plotSynopsis, averageRating, releaseDate, adult);
 
             detailsList[i] = temp;
         }

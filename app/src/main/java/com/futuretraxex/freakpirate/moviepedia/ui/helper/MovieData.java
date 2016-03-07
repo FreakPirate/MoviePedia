@@ -16,6 +16,7 @@ public class MovieData implements Parcelable {
     private String PLOT_SYNOPSIS;
     private String AVERAGE_RATINGS;
     private String RELEASE_DATE;
+    private String ADULT;
 
 
 //    public MovieData(String POSTER_PATH){
@@ -24,7 +25,7 @@ public class MovieData implements Parcelable {
 
     //This will be called once the Object is instantiated on the sender's end.
     public MovieData(String movieTitle, String movieID, String posterPath, String backdropPath,
-                     String plotSynopsis, String averageRatings, String releaseDate){
+                     String plotSynopsis, String averageRatings, String releaseDate, String adult){
         this.MOVIE_TITLE = movieTitle;
         this.MOVIE_ID = movieID;
         this.POSTER_PATH = posterPath;
@@ -32,6 +33,12 @@ public class MovieData implements Parcelable {
         this.PLOT_SYNOPSIS = plotSynopsis;
         this.AVERAGE_RATINGS = averageRatings;
         this.RELEASE_DATE = releaseDate;
+
+        if (adult.equalsIgnoreCase("true")){
+            this.ADULT = "Yes";
+        }else {
+            this.ADULT = "No";
+        }
     }
 
     @Override
@@ -43,14 +50,17 @@ public class MovieData implements Parcelable {
                 this.BACKDROP_PATH,
                 this.PLOT_SYNOPSIS,
                 this.AVERAGE_RATINGS,
-                this.RELEASE_DATE
+                this.RELEASE_DATE,
+                this.ADULT
         });
     }
 
     //This will inflate the MovieData object
     //Once it has reached its destination activity
     public MovieData(Parcel in){
-        String[] receivedData = new String[7];
+        int arraySize = 8;
+
+        String[] receivedData = new String[arraySize];
         in.readStringArray(receivedData);
 
         this.MOVIE_TITLE = receivedData[0];
@@ -60,6 +70,7 @@ public class MovieData implements Parcelable {
         this.PLOT_SYNOPSIS = receivedData[4];
         this.AVERAGE_RATINGS = receivedData[5];
         this.RELEASE_DATE = receivedData[6];
+        this.ADULT = receivedData[7];
     }
 
     public String getMOVIE_TITLE(){
@@ -90,6 +101,9 @@ public class MovieData implements Parcelable {
         return RELEASE_DATE;
     }
 
+    public String getADULT(){
+        return ADULT;
+    }
 
     @Override
     public int describeContents() {

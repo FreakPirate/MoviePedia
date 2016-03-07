@@ -101,13 +101,12 @@
                         android:text="Rating: 8/10" />
 
                     <TextView
-                        android:id="@+id/movie_id"
+                        android:id="@+id/movie_adult"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
                         android:textSize="@dimen/text_size_medium"
-                        android:text="Adult: No"
-                        android:visibility="gone"/>
+                        android:text="Adult: No"/>
 
                 </LinearLayout>
 

@@ -37,7 +37,7 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.movie_release_date) TextView movieReleaseDate;
     @Bind(R.id.movie_average_rating) TextView movieAverageRating;
     @Bind(R.id.plot_synopsis) TextView movieSynopsis;
-    @Bind(R.id.movie_id) TextView movieID;
+    @Bind(R.id.movie_adult) TextView movieAdult;
 
     @Bind(R.id.movie_poster) ImageView moviePosterImageView;
     @Bind(R.id.movie_cover) ImageView movieCoverImageView;
@@ -96,14 +96,12 @@ public class MovieDetailFragment extends Fragment {
 
         String releaseDate = "Release Date: " + info.getRELEASE_DATE();
         String averageRating = "Average Rating: " + info.getAVERAGE_RATINGS();
-        String id = "Movie ID: " + info.getMOVIE_ID();
+        String adult = "Adult: " + info.getADULT();
 
         movieReleaseDate.setText(releaseDate);
         movieAverageRating.setText(averageRating);
         movieSynopsis.setText(info.getPLOT_SYNOPSIS());
-
-        movieID.setVisibility(View.VISIBLE);
-        movieID.setText(id);
+        movieAdult.setText(adult);
     }
 
     private void toolbarTextAppearance(){
