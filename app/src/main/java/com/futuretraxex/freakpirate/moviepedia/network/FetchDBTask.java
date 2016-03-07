@@ -43,9 +43,14 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
     private View rootView;
     private Activity context;
 
-    public FetchDBTask(Activity context, View rootView){
+    private Boolean INCLUDE_ADULT;
+    private String SORT_ORDER;
+
+    public FetchDBTask(Activity context, View rootView, Boolean safeSearch){
         this.context = context;
         this.rootView = rootView;
+
+        this.INCLUDE_ADULT = !safeSearch;
     }
 
     @Override
@@ -55,7 +60,9 @@ public class FetchDBTask extends AsyncTask <String, Void, MovieDetails[]> {
             return null;
         }
 
-        Uri gridURI = URIBuilder.buildGridUri(BASE_URL, params[0]);
+        this.SORT_ORDER = params[0];
+
+        Uri gridURI = URIBuilder.buildGridUri(BASE_URL, SORT_ORDER, INCLUDE_ADULT);
 
         HttpURLConnection urlConnection = null;
         BufferedReader  reader = null;

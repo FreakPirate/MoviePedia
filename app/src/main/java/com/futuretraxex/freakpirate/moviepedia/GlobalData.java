@@ -8,4 +8,6 @@ public class GlobalData {
 
     public final static String LOG_TAG_DETAIL_ACTIVITY_FRAGMENT = DetailActivityFragment.class.getSimpleName();
     public final static String LOG_TAG_MAIN_ACTIVITY_FRAGMENT = MainActivityFragment.class.getSimpleName();
+
+    public static Boolean preferenceChanged = false;
 }

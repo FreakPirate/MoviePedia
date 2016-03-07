@@ -2,7 +2,32 @@
     <string name="app_name">MoviePedia</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">Detail Activity</string>
+    <string name="title_activity_settings">Settings Activity</string>
 
     <string name="network_error">NETWORK FAILURE\nTry after some time\nTap to exit</string>
     <string name="placeholder_movie_plot">Based upon Marvel Comics’ most unconventional anti-hero, DEADPOOL tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.</string>
+
+    <string name="menu_sort">Sorting</string>
+    <string name="menu_sort_popularity">Most popular</string>
+    <string name="menu_sort_vote_average">Highest rated</string>
+    
+    <!-- Preference Strings SORTING-->
+    <string name="pref_sort_label">Sorting</string>
+    <string name="pref_sort_key">sorting</string>
+
+    <string name="pref_label_most_popular">Most Popular</string>
+    <string name="pref_value_most_popular">popularity.desc</string>
+
+    <string name="pref_label_most_rated">Most Rated</string>
+    <string name="pref_value_most_rated">vote_count.desc</string>
+
+    <string name="pref_label_highest_rated">Highest Rated</string>
+    <string name="pref_value_highest_rated">vote_average.desc</string>
+
+    <string name="pref_sort_default_value">@string/pref_value_most_popular</string>
+
+    <!-- Preference Strings ADULT-->
+    <string name="pref_adult_label">Safe Search</string>
+    <string name="pref_adult_key">adult</string>
+    <string name="pref_adult_description">Toggle the restriction of Adult Movies</string>
 </resources>

@@ -1,11 +1,17 @@
 package com.futuretraxex.freakpirate.moviepedia;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -21,8 +27,10 @@ import butterknife.Bind;
  */
 public class MainActivityFragment extends Fragment {
 
-    private final String SORT_ORDER_POPULARITY = "popularity.desc";
-    private final String SORT_ORDER_RATING = "vote_average.desc";
+    private String SORT_ORDER;
+    private Boolean SAFE_SEARCH;
+
+    private View rootView;
 
 //    MoviePoster [] moviePosters = {
 //            new MoviePoster(R.drawable.ic_poster),
@@ -40,15 +48,15 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView;
 
 //        GridViewAdapter moviePosterAdapter = new GridViewAdapter(getActivity(), Arrays.asList(moviePosters));
 //        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
 //        gridView.setAdapter(moviePosterAdapter);
+        setHasOptionsMenu(true);
 
         if(isNetworkAvailable()){
             rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            networkHandler(rootView);
+            updateUI();
         }else {
             rootView = inflater.inflate(R.layout.egg_error_layout, container, false);
 
@@ -67,10 +75,20 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
-    private void networkHandler(View rootView){
 
-        FetchDBTask dbTask = new FetchDBTask(getActivity(), rootView);
-        dbTask.execute(SORT_ORDER_POPULARITY);
+    @Override
+    public void onResume() {
+        if(GlobalData.preferenceChanged){
+            GlobalData.preferenceChanged = false;
+            updateUI();
+        }
+        super.onResume();
+    }
+
+    private void networkHandler(View rootView, String sortOrder, Boolean safeSearch){
+
+        FetchDBTask dbTask = new FetchDBTask(getActivity(), rootView, safeSearch);
+        dbTask.execute(sortOrder);
     }
 
     private boolean isNetworkAvailable() {
@@ -78,5 +96,21 @@ public class MainActivityFragment extends Fragment {
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void updateUI(){
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SORT_ORDER = sharedPreferences.getString(
+                getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_default_value)
+        );
+
+        SAFE_SEARCH = sharedPreferences.getBoolean(
+                getString(R.string.pref_adult_key),
+                true
+        );
+
+        networkHandler(rootView, SORT_ORDER, SAFE_SEARCH);
     }
 }
