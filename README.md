@@ -33,15 +33,19 @@ in root directory and place your key in it as:
     ```
 . And you are good to go.
 
-<!--## ScreenShots-->
+## ScreenShots
 
-<!--![screen](../master/art/phone-movies.png)-->
+![screen](../master/screenshots/browse_movie_screen.png)
 
-<!--![screen](../master/art/phone-details.png)-->
+![screen](../master/screenshots/browse_movie_screen_landscape.png)
 
-<!--![screen](../master/art/tablet-port.png)-->
+![screen](../master/screenshots/movie_detail_screen_1.png)
 
-<!--![screen](../master/art/tablet-land.png)-->
+![screen](../master/screenshots/movie_detail_screen_2.png)
+
+![screen](../master/screenshots/preference_screen.png)
+
+![screen](../master/screenshots/preference_sorting.png)
 
 ## Libraries used
 
