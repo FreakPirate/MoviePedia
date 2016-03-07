@@ -3,9 +3,11 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
 
     <dimen name="cover_min_height">190dp</dimen>
 
+    <!-- Movie Detail Layout Dimensions-->
     <item name="image_aspect_ratio" format="float" type="dimen">.675</item>
     <dimen name="movie_poster_margin_top">16dp</dimen>
     <dimen name="movie_poster_margin_left">16dp</dimen>
@@ -25,11 +27,24 @@
 
     <dimen name="line_break_height">1dp</dimen>
 
-    <dimen name="synopsis_padding">16dp</dimen>
-
+    <!-- ToolBar Spinner-->
     <dimen name="spinner_left_padding">0dp</dimen>
     <dimen name="spinner_drawable_padding">16dp</dimen>
     <dimen name="explore_spinner_width">200dp</dimen>
     <dimen name="explore_dropdown_item_height">48dp</dimen>
+
+    <!-- Egg Error-->
+    <dimen name="egg_error_layout_padding">100dp</dimen>
+    <dimen name="egg_error_text_view_padding_top">50dp</dimen>
+
+    <!-- Browse Movies-->
+    <dimen name="grid_column_width">170dp</dimen>
+    <dimen name="grid_item_spacing">3dp</dimen>
+
+    <!-- Movie Details-->
+    <dimen name="detail_min_height">200dp</dimen>
+    <dimen name="synopsis_padding">16dp</dimen>
+    <dimen name="synopsis_padding_top">0dp</dimen>
+    <dimen name="synopsis_padding_bottom">10dp</dimen>
 </resources>
 

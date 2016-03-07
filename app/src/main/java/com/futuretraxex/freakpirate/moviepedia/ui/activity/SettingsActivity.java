@@ -7,7 +7,6 @@ package com.futuretraxex.freakpirate.moviepedia.ui.activity;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 import com.futuretraxex.freakpirate.moviepedia.R;

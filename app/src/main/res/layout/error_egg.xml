@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/poster_gray"
-    android:paddingTop="50dp"
+    android:padding="@dimen/egg_error_layout_padding"
     android:clickable="true">
 
     <ImageView
@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/error_egg_text_view"
         android:gravity="center"
-        android:paddingTop="30dp"
+        android:paddingTop="@dimen/egg_error_text_view_padding_top"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

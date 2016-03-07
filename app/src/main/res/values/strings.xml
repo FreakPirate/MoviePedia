@@ -1,12 +1,15 @@
 <resources>
-    <string name="app_name">Movie-Pedia</string>
+    <!-- Global-->
+    <string name="app_name">Movie Pedia</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">Movie Details</string>
     <string name="title_activity_settings">Preference Activity</string>
 
+    <!-- Egg Error-->
     <string name="network_error">NETWORK FAILURE\nTry after some time\nTap to exit</string>
     <string name="placeholder_movie_plot">Based upon Marvel Comics’ most unconventional anti-hero, DEADPOOL tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.</string>
 
+    <!-- Toolbar Spinner-->
     <string name="menu_sort">Sorting</string>
     <string name="menu_sort_popularity">Most popular</string>
     <string name="menu_sort_vote_average">Highest rated</string>
@@ -30,4 +33,7 @@
     <string name="pref_adult_label">Safe Search</string>
     <string name="pref_adult_key">adult</string>
     <string name="pref_adult_description">Toggle the restriction of Adult Movies</string>
+
+    <!-- Movie Details-->
+    <string name="plot_synopsis">Plot Summary</string>
 </resources>

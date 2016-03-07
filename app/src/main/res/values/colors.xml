@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Material Theme-->
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorPrimaryText">#FFFFFF</color>
 
+    <!-- Text Colors-->
     <color name="body_text_1">#de000000</color>
     <color name="body_text_2">#8a000000</color>
     <color name="body_text_3">#60000000</color>
 
+    <!-- Movie Details-->
     <color name="line_break_color">#92a3a3a3</color>
-
     <color name="poster_gray">@android:color/darker_gray</color>
     <color name="poster_black">@android:color/black</color>
     <color name="poster_white">@android:color/white</color>
+    <color name="scrollview_background">#FFE5E5E5</color>
 
+    <!-- Custom Spinner-->
     <color name="color_preloader_start">#80CBC4</color>
     <color name="color_preloader_center">#009688</color>
     <color name="color_preloader_end">#004D40</color>
 
     <color name="white">@android:color/white</color>
 
+    <!-- Toolbar Spinner-->
     <color name="list_dropdown_divider_color">#92a3a3a3</color>
     <color name="list_dropdown_foreground_color">#ff333333</color>
 
+    <!-- Browse Movies-->
+    <color name="grid_background">#D2D2D2</color>
     <!-- Original Theme-->
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <!--<color name="colorPrimaryDark">#303F9F</color>-->

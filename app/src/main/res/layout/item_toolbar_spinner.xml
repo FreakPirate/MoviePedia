@@ -14,10 +14,10 @@
         android:drawableLeft="@drawable/ic_sort_white"
         android:drawablePadding="@dimen/spinner_drawable_padding"
         android:drawableStart="@drawable/ic_sort_white"
-        android:paddingEnd="0dp"
+        android:paddingEnd="@dimen/spinner_left_padding"
         android:paddingLeft="@dimen/spinner_left_padding"
-        android:paddingRight="0dp"
-        android:textColor="#ffffffff"
+        android:paddingRight="@dimen/spinner_left_padding"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_large"
         android:textStyle="normal"
         tools:text="Most Popular" />

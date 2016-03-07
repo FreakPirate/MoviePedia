@@ -9,11 +9,11 @@
         android:layout_height="match_parent"
         android:numColumns="auto_fit"
         android:id="@+id/movies_grid"
-        android:padding="3dp"
-        android:verticalSpacing="3dp"
-        android:horizontalSpacing="3dp"
-        android:background="#D2D2D2"
-        android:columnWidth="170dp"
+        android:padding="@dimen/grid_item_spacing"
+        android:verticalSpacing="@dimen/grid_item_spacing"
+        android:horizontalSpacing="@dimen/grid_item_spacing"
+        android:background="@color/grid_background"
+        android:columnWidth="@dimen/grid_column_width"
         tools:context=".ui.fragment.BrowseMoviesFragment"/>
 
     <ProgressBar
