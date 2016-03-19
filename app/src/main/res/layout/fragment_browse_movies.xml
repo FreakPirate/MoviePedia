@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_browse_movies"
@@ -10,8 +11,6 @@
         android:layout_height="match_parent"
         android:numColumns="auto_fit"
         android:padding="@dimen/grid_item_spacing"
-        android:verticalSpacing="@dimen/grid_item_spacing"
-        android:horizontalSpacing="@dimen/grid_item_spacing"
         android:background="@color/grid_background"
         android:columnWidth="@dimen/grid_column_width"
         tools:context=".ui.fragment.BrowseMoviesFragment"/>
