@@ -56,17 +56,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <com.mikhaellopez.circularimageview.CircularImageView
                     android:id="@+id/movie_poster"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
+                    android:layout_width="185dp"
+                    android:layout_height="185dp"
                     android:src="@drawable/placeholder_poster"
-                    android:layout_marginLeft="@dimen/movie_poster_margin_left"
-                    android:layout_marginBottom="@dimen/movie_poster_margin_bottom"
-                    android:layout_marginStart="@dimen/movie_poster_margin_left"
-                    android:layout_marginTop="@dimen/movie_poster_margin_top"
-                    android:visibility="visible"/>
+                    app:civ_border_color="@color/colorPrimaryDark"
+                    app:civ_border_width="5dp"
+                    app:civ_shadow="true"
+                    app:civ_shadow_radius="10"
+                    app:civ_shadow_color="@color/colorPrimary"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
