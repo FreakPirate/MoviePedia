@@ -17,6 +17,8 @@ import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.AutoFitColumnGridLayoutManager;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
@@ -33,7 +35,7 @@ import java.util.Arrays;
 /**
  * Created by FreakPirate on 2/25/2016.
  */
-public class FetchBrowseMovieDB extends AsyncTask <String, Void, MovieData[]> {
+public class FetchMovieDB extends AsyncTask <String, Void, MovieData[]> {
 
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
 
@@ -45,7 +47,7 @@ public class FetchBrowseMovieDB extends AsyncTask <String, Void, MovieData[]> {
     private Boolean INCLUDE_ADULT;
     private String SORT_ORDER;
 
-    public FetchBrowseMovieDB(Activity context, View rootView, Boolean safeSearch){
+    public FetchMovieDB(Activity context, View rootView, Boolean safeSearch){
         this.context = context;
         this.rootView = rootView;
 
@@ -140,6 +142,12 @@ public class FetchBrowseMovieDB extends AsyncTask <String, Void, MovieData[]> {
     protected void onPostExecute(MovieData[] result) {
         if (result != null){
 
+            int spanCount = 2;
+            int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.grid_item_spacing);
+            boolean includeEdge = true;
+
+            int minItemWidth = context.getResources().getDimensionPixelSize(R.dimen.min_column_width);
+
             //Hiding progress bar
             progressBar.setVisibility(View.GONE);
 
@@ -148,7 +156,9 @@ public class FetchBrowseMovieDB extends AsyncTask <String, Void, MovieData[]> {
 
             BrowseMoviesAdapter viewAdapter = new BrowseMoviesAdapter(Arrays.asList(result), context);
             rvMovieData.setAdapter(viewAdapter);
-            rvMovieData.setLayoutManager(new GridLayoutManager(context, 2));
+
+            rvMovieData.setLayoutManager(new AutoFitColumnGridLayoutManager(context, spanCount, minItemWidth));
+            rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
 
 //            rvMovieData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //

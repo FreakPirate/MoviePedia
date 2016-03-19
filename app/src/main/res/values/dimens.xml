@@ -38,7 +38,7 @@
     <dimen name="egg_error_text_view_padding_top">50dp</dimen>
 
     <!-- Browse Movies-->
-    <dimen name="grid_column_width">170dp</dimen>
+    <dimen name="min_column_width">170dp</dimen>
     <dimen name="grid_item_spacing">3dp</dimen>
 
     <!-- Movie Details-->

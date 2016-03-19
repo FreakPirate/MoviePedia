@@ -12,7 +12,7 @@
         android:numColumns="auto_fit"
         android:padding="@dimen/grid_item_spacing"
         android:background="@color/grid_background"
-        android:columnWidth="@dimen/grid_column_width"
+        android:columnWidth="@dimen/min_column_width"
         tools:context=".ui.fragment.BrowseMoviesFragment"/>
 
     <ProgressBar

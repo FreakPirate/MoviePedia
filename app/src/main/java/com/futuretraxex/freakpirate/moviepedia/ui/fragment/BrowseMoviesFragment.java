@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
-import com.futuretraxex.freakpirate.moviepedia.backend.FetchBrowseMovieDB;
+import com.futuretraxex.freakpirate.moviepedia.backend.FetchMovieDB;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 
 /**
@@ -100,7 +100,7 @@ public class BrowseMoviesFragment extends Fragment {
                 true
         );
 
-        FetchBrowseMovieDB dbTask = new FetchBrowseMovieDB(getActivity(), rootView, SAFE_SEARCH);
+        FetchMovieDB dbTask = new FetchMovieDB(getActivity(), rootView, SAFE_SEARCH);
         dbTask.execute(SORT_ORDER);
     }
 }
