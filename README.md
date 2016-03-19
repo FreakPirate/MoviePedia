@@ -1,7 +1,8 @@
-# Movie Pedia
+# Movie Pedia - P1/P2
 
 This application is a part of Android Developer Nanodegree program, which I made from scratch. Although "Movie Pedia" scritly follows P1-Rubrics, additional functionailties like CollapsingToolBarLayout scroll etc., are also included.
 "Movie Pedia" simply fetches data from "moviedb.org" API and presents it as a sophisticated layout.
+P2 is under construction.
 
 ## Features
 
@@ -10,6 +11,12 @@ With the app, you can:
 * Read a detailed plot summary
 * Turn Safe Search on/off to toggle inclusion of adult content
 * View movie posters and covers
+
+## New Features
+* Replaced Gridview with RecyclerView for optimisation/loading speed (Reduced lag).
+* Added dynamic (Bitmap dependent) coloring of Toolbar and StatusBar.
+* Added Circular ImageView for detail fragment
+* Transluscent toolbar coloring.
 
 ## TODO
 
@@ -51,6 +58,7 @@ in root directory and place your key in it as:
 
 * [Picasso](https://github.com/square/picasso)
 * [ButterKnife](https://github.com/JakeWharton/butterknife)
+* [CircularImageView](https://github.com/lopspower/CircularImageView)
 
 
 
