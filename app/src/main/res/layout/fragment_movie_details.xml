@@ -22,7 +22,6 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:background="@color/colorPrimary"
-                android:src="@drawable/placeholder_backdrop"
                 android:minHeight="@dimen/detail_min_height"
                 app:layout_collapseMode="parallax"/>
 
@@ -60,12 +59,7 @@
                     android:id="@+id/movie_poster"
                     android:layout_width="185dp"
                     android:layout_height="185dp"
-                    android:src="@drawable/placeholder_poster"
-                    app:civ_border_color="@color/colorPrimaryDark"
-                    app:civ_border_width="5dp"
-                    app:civ_shadow="true"
-                    app:civ_shadow_radius="10"
-                    app:civ_shadow_color="@color/colorPrimary"/>
+                    android:src="@drawable/placeholder_poster"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

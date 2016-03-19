@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -20,7 +23,9 @@ import android.widget.TextView;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -31,7 +36,7 @@ import butterknife.ButterKnife;
  */
 public class MovieDetailFragment extends Fragment {
 
-    private MovieData info;
+    private MovieData movieData;
 
     @Bind(R.id.movie_title) TextView movieTitle;
     @Bind(R.id.movie_release_date) TextView movieReleaseDate;
@@ -39,13 +44,16 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.plot_synopsis) TextView movieSynopsis;
     @Bind(R.id.movie_adult) TextView movieAdult;
 
-    @Bind(R.id.movie_poster) ImageView moviePosterImageView;
+    @Bind(R.id.movie_poster) CircularImageView moviePosterImageView;
     @Bind(R.id.movie_cover) ImageView movieCoverImageView;
 
     @BindColor(R.color.poster_white) int white;
     @BindColor(R.color.poster_gray) int gray;
 
-    @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsedToolbar;
+
+    int mToolbarColor;
+    int mStatusBarColor;
 
     private Context context;
 
@@ -54,24 +62,34 @@ public class MovieDetailFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
+
+        ButterKnife.bind(this, rootView);
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detail_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
-        ButterKnife.bind(this, rootView);
-
         Intent intent = getActivity().getIntent();
 
+        this.mToolbarColor = getResources().getColor(R.color.colorPrimary);
+        this.mStatusBarColor = getResources().getColor(R.color.colorPrimaryDark);
+
+
         if (intent != null && intent.hasExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING)) {
-            info = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
-            toolbarTextAppearance();
+            movieData = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
+
             inflateView();
+            dynamicToolbarColor();
+            toolbarTextAppearance();
         }else {
             Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
         }
@@ -82,52 +100,83 @@ public class MovieDetailFragment extends Fragment {
     public void inflateView(){
 
         Picasso.with(context)
-                .load(info.getPOSTER_PATH())
+                .load(movieData.getPOSTER_PATH())
 //                    .error(R.drawable.placeholder_poster)
-                .resize(300,450)
+//                .resize(300,450)
                 .into(moviePosterImageView);
 
         Picasso.with(context)
-                .load(info.getBACKDROP_PATH())
+                .load(movieData.getBACKDROP_PATH())
 //                    .error(R.drawable.placeholder_backdrop)
                 .into(movieCoverImageView);
 
-        movieTitle.setText(info.getMOVIE_TITLE());
+        movieTitle.setText(movieData.getMOVIE_TITLE());
 
-        String releaseDate = "Release Date: " + info.getRELEASE_DATE();
-        String averageRating = "Average Rating: " + info.getAVERAGE_RATINGS();
-        String adult = "Adult: " + info.getADULT();
+        String releaseDate = "Release Date: " + movieData.getRELEASE_DATE();
+        String averageRating = "Average Rating: " + movieData.getAVERAGE_RATINGS();
+        String adult = "Adult: " + movieData.getADULT();
 
         movieReleaseDate.setText(releaseDate);
         movieAverageRating.setText(averageRating);
-        movieSynopsis.setText(info.getPLOT_SYNOPSIS());
+        movieSynopsis.setText(movieData.getPLOT_SYNOPSIS());
         movieAdult.setText(adult);
     }
 
     private void toolbarTextAppearance(){
-        collapsingToolbarLayout.setTitle(info.getMOVIE_TITLE());
+        collapsedToolbar.setTitle(movieData.getMOVIE_TITLE());
 
-        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.expandedappbar);
+        collapsedToolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
+        collapsedToolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
 
 
-        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
-        collapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(R.color.colorPrimaryDark));
+        collapsedToolbar.setContentScrimColor(mToolbarColor);
+        collapsedToolbar.setStatusBarScrimColor(mStatusBarColor);
+
+        moviePosterImageView.setBorderColor(mStatusBarColor);
+        moviePosterImageView.setBorderWidth(5);
+        moviePosterImageView.setShadowRadius(11);
+        moviePosterImageView.setShadowColor(mToolbarColor);
     }
 
     private void dynamicToolbarColor() {
+        Picasso.with(getActivity())
+                .load(movieData.getBACKDROP_PATH())
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        Palette palette = Palette.from(bitmap).generate();
+                        int toolbarColor = palette.getDarkVibrantColor(mToolbarColor);
+                        int statusBarColor = palette.getDarkVibrantColor(mToolbarColor);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.placeholder_poster);
-        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                        mToolbarColor = Color.argb(220, Color.red(toolbarColor),
+                                Color.green(toolbarColor), Color.blue(toolbarColor));
 
-            @Override
-            public void onGenerated(Palette palette) {
-                collapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(
-                        getResources().getColor(R.color.colorPrimary)));
-                collapsingToolbarLayout.setStatusBarScrimColor(palette.getMutedColor(
-                        getResources().getColor(R.color.colorPrimaryDark)));
-            }
-        });
+                        mStatusBarColor = Color.argb(255, Color.red(statusBarColor),
+                                Color.green(statusBarColor), Color.blue(statusBarColor));
+
+//                        Log.v(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT,
+//                                "Toolbar: " + toolbarColor + "\tStatusBar: " + statusBarColor);
+
+                        collapsedToolbar.setContentScrimColor(mToolbarColor);
+                        collapsedToolbar.setStatusBarScrimColor(mStatusBarColor);
+
+                        moviePosterImageView.setBorderColor(mStatusBarColor);
+                        moviePosterImageView.setBorderWidth(5);
+                        moviePosterImageView.setShadowRadius(11);
+                        moviePosterImageView.setShadowColor(mToolbarColor);
+
+                        movieCoverImageView.setImageDrawable(new BitmapDrawable(bitmap));
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
     }
 }
