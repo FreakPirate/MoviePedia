@@ -2,65 +2,75 @@ package com.futuretraxex.freakpirate.moviepedia.ui.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class BrowseMoviesAdapter extends ArrayAdapter<MovieData> {
-    private Context context;
+public class BrowseMoviesAdapter extends
+        RecyclerView.Adapter<BrowseMoviesAdapter.ViewHolder> {
 
-    public BrowseMoviesAdapter(Activity context, List<MovieData> details) {
-        // Here, we initialize the ArrayAdapter's internal storage for the context and the list.
-        // the second argument is used when the ArrayAdapter is populating a single TextView.
-        // Because this is a custom adapter, the adapter is not
-        // going to use this second argument, so it can be any value. Here, we used 0.
-        super(context, 0, details);
+    private List<MovieData> mMovieData;
+    private Context mContext;
 
-        this.context = context;
+    public BrowseMoviesAdapter(List<MovieData> data, Context context){
+        this.mMovieData = data;
+        this.mContext = context;
     }
 
-    /**
-     * Provides a view for an AdapterView (ListView, GridView, etc.)
-     *
-     * @param position    The AdapterView position that is requesting a view
-     * @param convertView The recycled view to populate.
-     *                    (search online for "android view recycling" to learn more)
-     * @param parent The parent ViewGroup that is used for inflation.
-     * @return The View for the position in the AdapterView.
-     */
 
+    // Inflating layout from xml and returning the view holder
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // Gets the MoviePoster object from the ArrayAdapter at the appropriate position
-        MovieData details = getItem(position);
-        ImageView view = (ImageView) convertView;
+    public BrowseMoviesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
 
-        // Adapters recycle views to AdapterViews.
-        // If this is a new View object we're getting, then inflate the layout.
-        // If not, this view already has the layout inflated from a previous call to getView,
-        // and we modify the View widgets as usual.
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.item_browse_movies, parent, false);
-        }
-        if (view == null) {
-            view = (ImageView) convertView.findViewById(R.id.poster_image);
-        }
+        // Inflate the custom layout
+        View browseView = inflater.inflate(R.layout.item_browse_movies, parent, false);
 
-        Picasso.with(context)
-                .load(details.getPOSTER_PATH())
-//                .placeholder(R.drawable.placeholder_poster)
-                .into(view);
-
-        return view;
+        // Return a new holder instance
+        ViewHolder viewHolder = new ViewHolder(browseView);
+        return viewHolder;
     }
 
+    // Involves populating data into the item through holder
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        // get data model based on position
+        MovieData data = mMovieData.get(position);
+
+        // set item views based on data model
+        ImageView moviePosterView = holder.moviePosterView;
+
+        Picasso.with(mContext)
+                .load(data.getPOSTER_PATH())
+//                .placeholder(R.drawable.placeholder_poster)
+                .into(moviePosterView);
+    }
+
+    //Return the total number of items
+    @Override
+    public int getItemCount() {
+        return mMovieData.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+        public ImageView moviePosterView;
+        public TextView movieTitle;
+
+        public ViewHolder(View itemView){
+            super(itemView);
+
+            moviePosterView = (ImageView) itemView.findViewById(R.id.poster_image_item);
+        }
+    }
 }

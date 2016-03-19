@@ -80,12 +80,6 @@ public class BrowseMoviesFragment extends Fragment {
         super.onResume();
     }
 
-    private void networkHandler(View rootView, String sortOrder, Boolean safeSearch){
-
-        FetchBrowseMovieDB dbTask = new FetchBrowseMovieDB(getActivity(), rootView, safeSearch);
-        dbTask.execute(sortOrder);
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -106,6 +100,7 @@ public class BrowseMoviesFragment extends Fragment {
                 true
         );
 
-        networkHandler(rootView, SORT_ORDER, SAFE_SEARCH);
+        FetchBrowseMovieDB dbTask = new FetchBrowseMovieDB(getActivity(), rootView, SAFE_SEARCH);
+        dbTask.execute(SORT_ORDER);
     }
 }

@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
-        android:src="@drawable/placeholder_poster"
-        android:id="@+id/poster_image"/>
+        android:background="@color/colorPrimary"
+        android:id="@+id/poster_image_item"/>
 
 </RelativeLayout>

@@ -1,9 +1,12 @@
 package com.futuretraxex.freakpirate.moviepedia.backend;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +16,7 @@ import android.widget.ProgressBar;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
+import com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
@@ -139,22 +143,25 @@ public class FetchBrowseMovieDB extends AsyncTask <String, Void, MovieData[]> {
             //Hiding progress bar
             progressBar.setVisibility(View.GONE);
 
-            BrowseMoviesAdapter viewAdapter = new BrowseMoviesAdapter(context, Arrays.asList(result));
-            GridView gridView = (GridView) context.findViewById(R.id.movies_grid);
-            gridView.setAdapter(viewAdapter);
+            // Look up the recycler view
+            RecyclerView rvMovieData = (RecyclerView) rootView.findViewById(R.id.recycler_view_browse_movies);
 
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            BrowseMoviesAdapter viewAdapter = new BrowseMoviesAdapter(Arrays.asList(result), context);
+            rvMovieData.setAdapter(viewAdapter);
+            rvMovieData.setLayoutManager(new GridLayoutManager(context, 2));
 
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    MovieData details = (MovieData) parent.getItemAtPosition(position);
-
-                    Intent intent = new Intent(context, MovieDetailActivity.class);
-                    intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);
-                    context.startActivity(intent);
-                }
-
-            });
+//            rvMovieData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    MovieData details = (MovieData) parent.getItemAtPosition(position);
+//
+//                    Intent intent = new Intent(context, MovieDetailActivity.class);
+//                    intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);
+//                    context.startActivity(intent);
+//                }
+//
+//            });
         }
     }
 
