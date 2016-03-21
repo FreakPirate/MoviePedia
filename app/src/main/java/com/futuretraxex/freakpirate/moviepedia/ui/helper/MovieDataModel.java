@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 //Implements Parcelable to pass object amongst activities
-public class MovieData implements Parcelable {
+public class MovieDataModel implements Parcelable {
     private String MOVIE_TITLE;
     private String MOVIE_ID;
     private String POSTER_PATH;
@@ -19,13 +19,13 @@ public class MovieData implements Parcelable {
     private String ADULT;
 
 
-//    public MovieData(String POSTER_PATH){
+//    public MovieDataModel(String POSTER_PATH){
 //        this.POSTER_PATH = POSTER_PATH;
 //    }
 
     //This will be called once the Object is instantiated on the sender's end.
-    public MovieData(String movieTitle, String movieID, String posterPath, String backdropPath,
-                     String plotSynopsis, String averageRatings, String releaseDate, String adult){
+    public MovieDataModel(String movieTitle, String movieID, String posterPath, String backdropPath,
+                          String plotSynopsis, String averageRatings, String releaseDate, String adult){
         this.MOVIE_TITLE = movieTitle;
         this.MOVIE_ID = movieID;
         this.POSTER_PATH = posterPath;
@@ -55,9 +55,9 @@ public class MovieData implements Parcelable {
         });
     }
 
-    //This will inflate the MovieData object
+    //This will inflate the MovieDataModel object
     //Once it has reached its destination activity
-    public MovieData(Parcel in){
+    public MovieDataModel(Parcel in){
         int arraySize = 8;
 
         String[] receivedData = new String[arraySize];
@@ -115,12 +115,12 @@ public class MovieData implements Parcelable {
     //"android.os.BadParcelableException: Parcelable protocol
     //requires a Parcelable.Creator object called  CREATOR on class"
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public MovieData createFromParcel(Parcel in) {
-            return new MovieData(in);
+        public MovieDataModel createFromParcel(Parcel in) {
+            return new MovieDataModel(in);
         }
 
-        public MovieData[] newArray(int size) {
-            return new MovieData[size];
+        public MovieDataModel[] newArray(int size) {
+            return new MovieDataModel[size];
         }
     };
 }

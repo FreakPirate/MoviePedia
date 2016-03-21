@@ -1,9 +1,6 @@
 package com.futuretraxex.freakpirate.moviepedia.data.parsers;
 
-import android.util.Log;
-
-import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,12 +33,12 @@ public class BrowseMoviesParser {
         this.jsonStr = jsonStr;
     }
 
-    public MovieData[] parse() throws JSONException{
+    public MovieDataModel[] parse() throws JSONException{
 
         JSONObject gridJsonObj = new JSONObject(jsonStr);
         JSONArray gridArray = gridJsonObj.getJSONArray(PARAM_RESULTS);
 
-        MovieData[] detailsList = new MovieData[index];
+        MovieDataModel[] detailsList = new MovieDataModel[index];
 
         for (int i=0; i<gridArray.length(); i++){
 
@@ -59,7 +56,7 @@ public class BrowseMoviesParser {
             posterPath = IMAGE_BASE_URL + poster_size + '/' + posterPath;
             backdropPath = IMAGE_BASE_URL + cover_size + '/' + backdropPath;
 
-            MovieData temp = new MovieData(movieTitle, movieID, posterPath, backdropPath,
+            MovieDataModel temp = new MovieDataModel(movieTitle, movieID, posterPath, backdropPath,
                     plotSynopsis, averageRating, releaseDate, adult);
 
             detailsList[i] = temp;

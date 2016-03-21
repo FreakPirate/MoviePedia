@@ -2,24 +2,21 @@ package com.futuretraxex.freakpirate.moviepedia.backend;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
-import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.AutoFitColumnGridLayoutManager;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
 import org.json.JSONException;
@@ -35,7 +32,7 @@ import java.util.Arrays;
 /**
  * Created by FreakPirate on 2/25/2016.
  */
-public class FetchMovieDB extends AsyncTask <String, Void, MovieData[]> {
+public class FetchMovieDB extends AsyncTask <String, Void, MovieDataModel[]> {
 
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
 
@@ -55,7 +52,7 @@ public class FetchMovieDB extends AsyncTask <String, Void, MovieData[]> {
     }
 
     @Override
-    protected MovieData[] doInBackground(String... params) {
+    protected MovieDataModel[] doInBackground(String... params) {
 
         if (params.length == 0){
             return null;
@@ -126,7 +123,7 @@ public class FetchMovieDB extends AsyncTask <String, Void, MovieData[]> {
         }
 
         BrowseMoviesParser parser = new BrowseMoviesParser(jsonStr);
-        MovieData[] detailsList = null;
+        MovieDataModel[] detailsList = null;
 
         try {
             detailsList = parser.parse();
@@ -139,14 +136,16 @@ public class FetchMovieDB extends AsyncTask <String, Void, MovieData[]> {
     }
 
     @Override
-    protected void onPostExecute(MovieData[] result) {
+    protected void onPostExecute(MovieDataModel[] result) {
         if (result != null){
 
-            int spanCount = 2;
             int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.grid_item_spacing);
             boolean includeEdge = true;
 
             int minItemWidth = context.getResources().getDimensionPixelSize(R.dimen.min_column_width);
+
+            DynamicSpanCountCalculator dscc = new DynamicSpanCountCalculator(context, minItemWidth);
+            int spanCount = dscc.getSpanCount();
 
             //Hiding progress bar
             progressBar.setVisibility(View.GONE);
@@ -157,14 +156,16 @@ public class FetchMovieDB extends AsyncTask <String, Void, MovieData[]> {
             BrowseMoviesAdapter viewAdapter = new BrowseMoviesAdapter(Arrays.asList(result), context);
             rvMovieData.setAdapter(viewAdapter);
 
-            rvMovieData.setLayoutManager(new AutoFitColumnGridLayoutManager(context, spanCount, minItemWidth));
+            GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
+            rvMovieData.setLayoutManager(layoutManager);
+
             rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
 
 //            rvMovieData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //
 //                @Override
 //                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    MovieData details = (MovieData) parent.getItemAtPosition(position);
+//                    MovieDataModel details = (MovieDataModel) parent.getItemAtPosition(position);
 //
 //                    Intent intent = new Intent(context, MovieDetailActivity.class);
 //                    intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);

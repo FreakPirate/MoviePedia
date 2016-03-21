@@ -1,6 +1,5 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -21,11 +20,11 @@ import java.util.List;
 public class BrowseMoviesAdapter extends
         RecyclerView.Adapter<BrowseMoviesAdapter.ViewHolder> {
 
-    private List<MovieData> mMovieData;
+    private List<MovieDataModel> mMovieDataModel;
     private Context mContext;
 
-    public BrowseMoviesAdapter(List<MovieData> data, Context context){
-        this.mMovieData = data;
+    public BrowseMoviesAdapter(List<MovieDataModel> data, Context context){
+        this.mMovieDataModel = data;
         this.mContext = context;
     }
 
@@ -40,7 +39,7 @@ public class BrowseMoviesAdapter extends
         View browseView = inflater.inflate(R.layout.item_browse_movies, parent, false);
 
         // Return a new holder instance
-         return new ViewHolder(context, mMovieData, browseView);
+         return new ViewHolder(context, mMovieDataModel, browseView);
     }
 
     // Involves populating data into the item through holder
@@ -48,7 +47,7 @@ public class BrowseMoviesAdapter extends
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         // get data model based on position
-        MovieData data = mMovieData.get(position);
+        MovieDataModel data = mMovieDataModel.get(position);
 
         // set item views based on data model
         ImageView moviePosterView = holder.moviePosterView;
@@ -62,18 +61,18 @@ public class BrowseMoviesAdapter extends
     //Return the total number of items
     @Override
     public int getItemCount() {
-        return mMovieData.size();
+        return mMovieDataModel.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView moviePosterView;
         public TextView movieTitle;
-        private List<MovieData> movieDataList;
+        private List<MovieDataModel> movieDataModelList;
         private Context context;
 
-        public ViewHolder(Context context, List<MovieData> list, View itemView){
+        public ViewHolder(Context context, List<MovieDataModel> list, View itemView){
             super(itemView);
-            this.movieDataList = list;
+            this.movieDataModelList = list;
             this.context = context;
             this.moviePosterView = (ImageView) itemView.findViewById(R.id.poster_image_item);
 
@@ -84,7 +83,7 @@ public class BrowseMoviesAdapter extends
         public void onClick(View v) {
 
             int position = getLayoutPosition();
-            MovieData details = movieDataList.get(position);
+            MovieDataModel details = movieDataModelList.get(position);
 
             Intent intent = new Intent(context, MovieDetailActivity.class);
             intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);

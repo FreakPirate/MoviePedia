@@ -3,7 +3,6 @@ package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieData;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -36,7 +35,7 @@ import butterknife.ButterKnife;
  */
 public class MovieDetailFragment extends Fragment {
 
-    private MovieData movieData;
+    private MovieDataModel movieDataModel;
 
     @Bind(R.id.movie_title) TextView movieTitle;
     @Bind(R.id.movie_release_date) TextView movieReleaseDate;
@@ -85,7 +84,7 @@ public class MovieDetailFragment extends Fragment {
 
 
         if (intent != null && intent.hasExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING)) {
-            movieData = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
+            movieDataModel = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
 
             inflateView();
             dynamicToolbarColor();
@@ -100,30 +99,30 @@ public class MovieDetailFragment extends Fragment {
     public void inflateView(){
 
         Picasso.with(context)
-                .load(movieData.getPOSTER_PATH())
+                .load(movieDataModel.getPOSTER_PATH())
 //                    .error(R.drawable.placeholder_poster)
 //                .resize(300,450)
                 .into(moviePosterImageView);
 
         Picasso.with(context)
-                .load(movieData.getBACKDROP_PATH())
+                .load(movieDataModel.getBACKDROP_PATH())
 //                    .error(R.drawable.placeholder_backdrop)
                 .into(movieCoverImageView);
 
-        movieTitle.setText(movieData.getMOVIE_TITLE());
+        movieTitle.setText(movieDataModel.getMOVIE_TITLE());
 
-        String releaseDate = "Release Date: " + movieData.getRELEASE_DATE();
-        String averageRating = "Average Rating: " + movieData.getAVERAGE_RATINGS();
-        String adult = "Adult: " + movieData.getADULT();
+        String releaseDate = "Release Date: " + movieDataModel.getRELEASE_DATE();
+        String averageRating = "Average Rating: " + movieDataModel.getAVERAGE_RATINGS();
+        String adult = "Adult: " + movieDataModel.getADULT();
 
         movieReleaseDate.setText(releaseDate);
         movieAverageRating.setText(averageRating);
-        movieSynopsis.setText(movieData.getPLOT_SYNOPSIS());
+        movieSynopsis.setText(movieDataModel.getPLOT_SYNOPSIS());
         movieAdult.setText(adult);
     }
 
     private void toolbarTextAppearance(){
-        collapsedToolbar.setTitle(movieData.getMOVIE_TITLE());
+        collapsedToolbar.setTitle(movieDataModel.getMOVIE_TITLE());
 
         collapsedToolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
         collapsedToolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
@@ -140,7 +139,7 @@ public class MovieDetailFragment extends Fragment {
 
     private void dynamicToolbarColor() {
         Picasso.with(getActivity())
-                .load(movieData.getBACKDROP_PATH())
+                .load(movieDataModel.getBACKDROP_PATH())
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
