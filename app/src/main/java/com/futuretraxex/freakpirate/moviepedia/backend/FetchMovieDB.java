@@ -32,35 +32,35 @@ import java.util.Arrays;
 /**
  * Created by FreakPirate on 2/25/2016.
  */
-public class FetchMovieDB extends AsyncTask <String, Void, MovieDataModel[]> {
+public class FetchMovieDB extends AsyncTask <Void, Void, MovieDataModel[]> {
 
     private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
 
-    private ProgressBar progressBar;
-
-    private View rootView;
-    private Activity context;
+//    private ProgressBar progressBar;
 
     private Boolean INCLUDE_ADULT;
     private String SORT_ORDER;
+    private int PAGE_NUM;
 
-    public FetchMovieDB(Activity context, View rootView, Boolean safeSearch){
-        this.context = context;
-        this.rootView = rootView;
-
-        this.INCLUDE_ADULT = !safeSearch;
+    public interface AsyncResponse{
+        void onProcessFinish(MovieDataModel[] output);
     }
 
+    public AsyncResponse delegate = null;
+
+    public FetchMovieDB(String sortOrder, Boolean safeSearch, int pageNum, AsyncResponse delegate){
+//        this.progressBar = progressBar;
+        this.SORT_ORDER = sortOrder;
+        this.INCLUDE_ADULT = !safeSearch;
+        this.PAGE_NUM = pageNum;
+        this.delegate = delegate;
+    }
+
+
     @Override
-    protected MovieDataModel[] doInBackground(String... params) {
+    protected MovieDataModel[] doInBackground(Void... params) {
 
-        if (params.length == 0){
-            return null;
-        }
-
-        this.SORT_ORDER = params[0];
-
-        Uri gridURI = URIBuilder.buildGridUri(BASE_URL, SORT_ORDER, INCLUDE_ADULT);
+        Uri gridURI = URIBuilder.buildGridUri(BASE_URL, SORT_ORDER, INCLUDE_ADULT, PAGE_NUM);
 
         HttpURLConnection urlConnection = null;
         BufferedReader  reader = null;
@@ -138,41 +138,10 @@ public class FetchMovieDB extends AsyncTask <String, Void, MovieDataModel[]> {
     @Override
     protected void onPostExecute(MovieDataModel[] result) {
         if (result != null){
-
-            int spacingInPixels = context.getResources().getDimensionPixelSize(R.dimen.grid_item_spacing);
-            boolean includeEdge = true;
-
-            int minItemWidth = context.getResources().getDimensionPixelSize(R.dimen.min_column_width);
-
-            DynamicSpanCountCalculator dscc = new DynamicSpanCountCalculator(context, minItemWidth);
-            int spanCount = dscc.getSpanCount();
-
-            //Hiding progress bar
-            progressBar.setVisibility(View.GONE);
-
-            // Look up the recycler view
-            RecyclerView rvMovieData = (RecyclerView) rootView.findViewById(R.id.recycler_view_browse_movies);
-
-            BrowseMoviesAdapter viewAdapter = new BrowseMoviesAdapter(Arrays.asList(result), context);
-            rvMovieData.setAdapter(viewAdapter);
-
-            GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
-            rvMovieData.setLayoutManager(layoutManager);
-
-            rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
-
-//            rvMovieData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    MovieDataModel details = (MovieDataModel) parent.getItemAtPosition(position);
-//
-//                    Intent intent = new Intent(context, MovieDetailActivity.class);
-//                    intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);
-//                    context.startActivity(intent);
-//                }
-//
-//            });
+            delegate.onProcessFinish(result);
+        }
+        else {
+            Log.v(GlobalData.LOG_TAG_FETCH_BROWSE_MOVIE_DB, "Empty Response: " + result.toString());
         }
     }
 
@@ -180,8 +149,7 @@ public class FetchMovieDB extends AsyncTask <String, Void, MovieDataModel[]> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        //Setting progress bar until posters get visible
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);
+        // Display progress bar until posters are loaded
+//        progressBar.setVisibility(View.VISIBLE);
     }
 }

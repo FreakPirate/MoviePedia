@@ -14,18 +14,20 @@ public class URIBuilder {
     private final static String PARAM_SORT_ORDER = "sort_by";
     private final static String PARAM_API_KEY = "api_key";
     private final static String PARAM_INCLUDE_ADULT = "include_adult";
+    private final static String PARAM_PAGE = "page";
 
     private final static String API_KEY = BuildConfig.API_KEY;
 
-    public static Uri buildGridUri(String baseURL, String sortOrder, Boolean includeAdult){
+    public static Uri buildGridUri(String baseURL, String sortOrder, Boolean includeAdult, int pageNum){
         Uri gridURI = Uri.parse(baseURL)
                 .buildUpon()
                 .appendQueryParameter(PARAM_SORT_ORDER, sortOrder)
                 .appendQueryParameter(PARAM_INCLUDE_ADULT, includeAdult.toString())
+                .appendQueryParameter(PARAM_PAGE, Integer.toString(pageNum))
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
 
-//        Log.d(GlobalData.LOG_TAG_URI_BUILDER, gridURI.toString());
+        Log.d(GlobalData.LOG_TAG_URI_BUILDER, gridURI.toString());
 
         return gridURI;
     }

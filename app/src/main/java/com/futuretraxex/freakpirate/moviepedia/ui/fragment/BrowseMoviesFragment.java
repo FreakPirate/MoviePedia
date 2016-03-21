@@ -7,35 +7,45 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.backend.FetchMovieDB;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
+import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.EndlessRecyclerViewScrollListener;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
+
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class BrowseMoviesFragment extends Fragment {
 
-    private String SORT_ORDER;
-    private Boolean SAFE_SEARCH;
+    @Bind(R.id.progressBar) ProgressBar progressBar;
+    @Bind(R.id.recycler_view_browse_movies) RecyclerView rvMovieData;
 
-    private View rootView;
+    ArrayList<MovieDataModel> movieDataModelArrayList;
+    BrowseMoviesAdapter adapter;
 
-//    MoviePoster [] moviePosters = {
-//            new MoviePoster(R.drawable.ic_poster),
-//            new MoviePoster(R.drawable.ic_poster),
-//            new MoviePoster(R.drawable.ic_poster),
-//            new MoviePoster(R.drawable.ic_poster),
-//            new MoviePoster(R.drawable.ic_poster),
-//            new MoviePoster(R.drawable.ic_poster),
-//            new MoviePoster(R.drawable.ic_poster)
-//    };
+    String sortOrder;
+    Boolean safeSearch;
 
     public BrowseMoviesFragment() {
     }
@@ -44,14 +54,13 @@ public class BrowseMoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        BrowseMoviesAdapter moviePosterAdapter = new BrowseMoviesAdapter(getActivity(), Arrays.asList(moviePosters));
-//        GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
-//        gridView.setAdapter(moviePosterAdapter);
         setHasOptionsMenu(true);
+        View rootView;
 
         if(isNetworkAvailable()){
             rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
-            updateUI();
+            ButterKnife.bind(this, rootView);
+            initUI();
         }else {
             rootView = inflater.inflate(R.layout.error_egg, container, false);
 
@@ -75,7 +84,7 @@ public class BrowseMoviesFragment extends Fragment {
     public void onResume() {
         if(GlobalData.preferenceChanged){
             GlobalData.preferenceChanged = false;
-            updateUI();
+            initUI();
         }
         super.onResume();
     }
@@ -87,20 +96,88 @@ public class BrowseMoviesFragment extends Fragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private void updateUI(){
+    private void initUI(){
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SORT_ORDER = sharedPreferences.getString(
+
+        sortOrder = sharedPreferences.getString(
                 getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_default_value)
         );
 
-        SAFE_SEARCH = sharedPreferences.getBoolean(
+        safeSearch = sharedPreferences.getBoolean(
                 getString(R.string.pref_adult_key),
                 true
         );
 
-        FetchMovieDB dbTask = new FetchMovieDB(getActivity(), rootView, SAFE_SEARCH);
-        dbTask.execute(SORT_ORDER);
+        progressBar.setVisibility(View.VISIBLE);
+
+        FetchMovieDB task = new FetchMovieDB(sortOrder,
+                safeSearch,
+                1,
+                new FetchMovieDB.AsyncResponse() {
+                    @Override
+                    public void onProcessFinish(MovieDataModel[] output) {
+                       setAdapter(output);
+                    }
+                });
+        task.execute();
+
+    }
+
+    private void setAdapter(MovieDataModel[] result){
+        Context context = getActivity();
+
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_item_spacing);
+        boolean includeEdge = true;
+        int minItemWidth = getResources().getDimensionPixelSize(R.dimen.min_column_width);
+        int spanCount;
+
+        movieDataModelArrayList = new ArrayList<MovieDataModel>(Arrays.asList(result));
+        adapter = new BrowseMoviesAdapter(movieDataModelArrayList, getActivity());
+        rvMovieData.setAdapter(adapter);
+
+        DynamicSpanCountCalculator dscc = new DynamicSpanCountCalculator(context, minItemWidth);
+        spanCount = dscc.getSpanCount();
+
+        //Hiding progress bar
+        progressBar.setVisibility(View.GONE);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
+        rvMovieData.setLayoutManager(layoutManager);
+        rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
+
+
+        rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                loadMoreDataFromApi(page);
+            }
+        });
+    }
+
+    private void loadMoreDataFromApi(int offset){
+
+        FetchMovieDB task = new FetchMovieDB(sortOrder,
+                safeSearch,
+                offset,
+                new FetchMovieDB.AsyncResponse() {
+                    @Override
+                    public void onProcessFinish(MovieDataModel[] output) {
+                        func(output);
+                    }
+                });
+
+        task.execute();
+    }
+
+    private void func(MovieDataModel[] output){
+        int curSize = adapter.getItemCount();
+        ArrayList<MovieDataModel> resultAsArray = new ArrayList<MovieDataModel>(Arrays.asList(output));
+        // updating existing list
+        movieDataModelArrayList.addAll(resultAsArray);
+        // curSize should represent the first element that got added
+        // resultAsArray.size() represents the itemCount
+        adapter.notifyItemRangeInserted(curSize, resultAsArray.size()-1);
     }
 }
