@@ -10,7 +10,7 @@ import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.ToolbarSpinnerAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment;
 import com.futuretraxex.freakpirate.moviepedia.ui.fragment.MovieDetailFragment;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
 
 /**
  * Created by FreakPirate on 3/1/2016.
@@ -31,4 +31,12 @@ public class GlobalData {
     public final static String LOG_TAG_MOVIE_DATA = MovieDataModel.class.getSimpleName();
 
     public static Boolean preferenceChanged = false;
+
+
+    public static final String size_w92 = "w92";
+    public static final String size_w154 = "w154";
+    public static final String size_w185 = "w185";
+    public static final String size_w342 = "w342";
+    public static final String size_w500 = "w500";
+    public static final String size_w780 = "w780";
 }

@@ -1,23 +1,11 @@
 package com.futuretraxex.freakpirate.moviepedia.backend;
 
-import android.app.Activity;
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
-import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
 import org.json.JSONException;
 import java.io.BufferedReader;
@@ -27,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
 /**
  * Created by FreakPirate on 2/25/2016.

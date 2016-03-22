@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -42,13 +42,10 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.movie_average_rating) TextView movieAverageRating;
     @Bind(R.id.plot_synopsis) TextView movieSynopsis;
     @Bind(R.id.movie_adult) TextView movieAdult;
-
     @Bind(R.id.movie_poster) CircularImageView moviePosterImageView;
     @Bind(R.id.movie_cover) ImageView movieCoverImageView;
-
     @BindColor(R.color.poster_white) int white;
     @BindColor(R.color.poster_gray) int gray;
-
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsedToolbar;
 
     int mToolbarColor;
@@ -79,15 +76,12 @@ public class MovieDetailFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
-        this.mToolbarColor = getResources().getColor(R.color.colorPrimary);
-        this.mStatusBarColor = getResources().getColor(R.color.colorPrimaryDark);
-
 
         if (intent != null && intent.hasExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING)) {
             movieDataModel = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
 
             inflateView();
-            dynamicToolbarColor();
+//            dynamicToolbarColor();
             toolbarTextAppearance();
         }else {
             Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
@@ -99,13 +93,14 @@ public class MovieDetailFragment extends Fragment {
     public void inflateView(){
 
         Picasso.with(context)
-                .load(movieDataModel.getPOSTER_PATH())
-//                    .error(R.drawable.placeholder_poster)
+                .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
+//                .error(R.drawable.placeholder_poster)
 //                .resize(300,450)
+//                .centerInside()
                 .into(moviePosterImageView);
 
         Picasso.with(context)
-                .load(movieDataModel.getBACKDROP_PATH())
+                .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w500))
 //                    .error(R.drawable.placeholder_backdrop)
                 .into(movieCoverImageView);
 
@@ -127,6 +122,9 @@ public class MovieDetailFragment extends Fragment {
         collapsedToolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
         collapsedToolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
 
+        mToolbarColor = movieDataModel.getTOOLBAR_COLOR();
+        mStatusBarColor = movieDataModel.getSTATUS_BAR_COLOR();
+
 
         collapsedToolbar.setContentScrimColor(mToolbarColor);
         collapsedToolbar.setStatusBarScrimColor(mStatusBarColor);
@@ -139,7 +137,7 @@ public class MovieDetailFragment extends Fragment {
 
     private void dynamicToolbarColor() {
         Picasso.with(getActivity())
-                .load(movieDataModel.getBACKDROP_PATH())
+                .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w92))
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

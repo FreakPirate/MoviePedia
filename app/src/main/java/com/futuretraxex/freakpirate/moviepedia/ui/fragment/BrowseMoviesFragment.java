@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,14 +22,11 @@ import com.futuretraxex.freakpirate.moviepedia.backend.FetchMovieDB;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.EndlessRecyclerViewScrollListener;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,10 +36,14 @@ import butterknife.ButterKnife;
  */
 public class BrowseMoviesFragment extends Fragment {
 
-    @Bind(R.id.progressBar) ProgressBar progressBar;
-    @Bind(R.id.recycler_view_browse_movies) RecyclerView rvMovieData;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
+    @Bind(R.id.recycler_view_browse_movies)
+    RecyclerView rvMovieData;
+    @Bind(R.id.swipe_container)
+    SwipeRefreshLayout swipeContainer;
 
-    ArrayList<MovieDataModel> movieDataModelArrayList;
+
     BrowseMoviesAdapter adapter;
 
     String sortOrder;
@@ -123,6 +125,42 @@ public class BrowseMoviesFragment extends Fragment {
                 });
         task.execute();
 
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+
+                refreshDataSet();
+            }
+        });
+
+    }
+
+    private void refreshDataSet(){
+        FetchMovieDB task = new FetchMovieDB(sortOrder,
+                safeSearch,
+                1,
+                new FetchMovieDB.AsyncResponse() {
+                    @Override
+                    public void onProcessFinish(MovieDataModel[] output) {
+                        // Remember to CLEAR OUT old items before appending in the new ones
+                        adapter.clear();
+                        // ...the data has come back, add new items to your adapter...
+                        adapter.addAll(new ArrayList<MovieDataModel>(Arrays.asList(output)));
+                        // Now we call setRefreshing(false) to signal refresh has finished
+                        swipeContainer.setRefreshing(false);
+                    }
+                });
+
+        task.execute();
     }
 
     private void setAdapter(MovieDataModel[] result){
@@ -133,8 +171,7 @@ public class BrowseMoviesFragment extends Fragment {
         int minItemWidth = getResources().getDimensionPixelSize(R.dimen.min_column_width);
         int spanCount;
 
-        movieDataModelArrayList = new ArrayList<MovieDataModel>(Arrays.asList(result));
-        adapter = new BrowseMoviesAdapter(movieDataModelArrayList, getActivity());
+        adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(result)), getActivity());
         rvMovieData.setAdapter(adapter);
 
         DynamicSpanCountCalculator dscc = new DynamicSpanCountCalculator(context, minItemWidth);
@@ -148,12 +185,12 @@ public class BrowseMoviesFragment extends Fragment {
         rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
 
 
-        rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                loadMoreDataFromApi(page);
-            }
-        });
+//        rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//                loadMoreDataFromApi(page);
+//            }
+//        });
     }
 
     private void loadMoreDataFromApi(int offset){
@@ -164,20 +201,17 @@ public class BrowseMoviesFragment extends Fragment {
                 new FetchMovieDB.AsyncResponse() {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {
-                        func(output);
+                        int curSize = adapter.getItemCount();
+                        ArrayList<MovieDataModel> resultArray = new ArrayList<MovieDataModel>(Arrays.asList(output));
+                        // updating existing list
+                        adapter.addAll(resultArray);
+                        // curSize should represent the first element that got added
+                        // resultAsArray.size() represents the itemCount
+                        adapter.notifyItemRangeInserted(curSize, resultArray.size()-1);
                     }
                 });
 
         task.execute();
     }
 
-    private void func(MovieDataModel[] output){
-        int curSize = adapter.getItemCount();
-        ArrayList<MovieDataModel> resultAsArray = new ArrayList<MovieDataModel>(Arrays.asList(output));
-        // updating existing list
-        movieDataModelArrayList.addAll(resultAsArray);
-        // curSize should represent the first element that got added
-        // resultAsArray.size() represents the itemCount
-        adapter.notifyItemRangeInserted(curSize, resultAsArray.size()-1);
-    }
 }

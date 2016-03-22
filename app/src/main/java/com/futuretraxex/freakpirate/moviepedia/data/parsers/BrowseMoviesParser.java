@@ -1,6 +1,6 @@
 package com.futuretraxex.freakpirate.moviepedia.data.parsers;
 
-import com.futuretraxex.freakpirate.moviepedia.ui.helper.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,10 +20,6 @@ public class BrowseMoviesParser {
     private final String PARAM_BACKDROP_PATH = "backdrop_path";
     private final String PARAM_AVERAGE_RATING = "vote_average";
     private final String PARAM_ADULT = "adult";
-
-    private final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
-    private final String poster_size = "w342";
-    private final String cover_size = "w500";
 
     private String jsonStr;
 
@@ -52,9 +48,6 @@ public class BrowseMoviesParser {
             String averageRating = detailObject.getString(PARAM_AVERAGE_RATING);
             String releaseDate = detailObject.getString(PARAM_RELEASE_DATE);
             String adult = detailObject.getString(PARAM_ADULT);
-
-            posterPath = IMAGE_BASE_URL + poster_size + '/' + posterPath;
-            backdropPath = IMAGE_BASE_URL + cover_size + '/' + backdropPath;
 
             MovieDataModel temp = new MovieDataModel(movieTitle, movieID, posterPath, backdropPath,
                     plotSynopsis, averageRating, releaseDate, adult);

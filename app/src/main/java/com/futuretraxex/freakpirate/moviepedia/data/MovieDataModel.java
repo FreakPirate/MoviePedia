@@ -1,4 +1,4 @@
-package com.futuretraxex.freakpirate.moviepedia.ui.helper;
+package com.futuretraxex.freakpirate.moviepedia.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,7 +17,10 @@ public class MovieDataModel implements Parcelable {
     private String AVERAGE_RATINGS;
     private String RELEASE_DATE;
     private String ADULT;
+    private int TOOLBAR_COLOR;
+    private int STATUS_BAR_COLOR;
 
+    private String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
 
 //    public MovieDataModel(String POSTER_PATH){
 //        this.POSTER_PATH = POSTER_PATH;
@@ -41,6 +44,11 @@ public class MovieDataModel implements Parcelable {
         }
     }
 
+    public void addColors(int toolbarColor, int statusBarColor){
+        this.TOOLBAR_COLOR = toolbarColor;
+        this.STATUS_BAR_COLOR = statusBarColor;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[]{
@@ -51,14 +59,17 @@ public class MovieDataModel implements Parcelable {
                 this.PLOT_SYNOPSIS,
                 this.AVERAGE_RATINGS,
                 this.RELEASE_DATE,
-                this.ADULT
+                this.ADULT,
+                Integer.toString(this.TOOLBAR_COLOR),
+                Integer.toString(this.STATUS_BAR_COLOR)
         });
     }
+
 
     //This will inflate the MovieDataModel object
     //Once it has reached its destination activity
     public MovieDataModel(Parcel in){
-        int arraySize = 8;
+        int arraySize = 10;
 
         String[] receivedData = new String[arraySize];
         in.readStringArray(receivedData);
@@ -71,6 +82,8 @@ public class MovieDataModel implements Parcelable {
         this.AVERAGE_RATINGS = receivedData[5];
         this.RELEASE_DATE = receivedData[6];
         this.ADULT = receivedData[7];
+        this.TOOLBAR_COLOR = Integer.parseInt(receivedData[8]);
+        this.STATUS_BAR_COLOR = Integer.parseInt(receivedData[9]);
     }
 
     public String getMOVIE_TITLE(){
@@ -81,12 +94,12 @@ public class MovieDataModel implements Parcelable {
         return MOVIE_ID;
     }
 
-    public String getPOSTER_PATH(){
-        return POSTER_PATH;
+    public String getPOSTER_PATH(String size){
+        return IMAGE_BASE_URL + size + '/' + POSTER_PATH;
     }
 
-    public String getBACKDROP_PATH(){
-        return BACKDROP_PATH;
+    public String getBACKDROP_PATH(String size){
+        return IMAGE_BASE_URL + size + '/' + BACKDROP_PATH;
     }
 
     public String getPLOT_SYNOPSIS(){
@@ -103,6 +116,14 @@ public class MovieDataModel implements Parcelable {
 
     public String getADULT(){
         return ADULT;
+    }
+
+    public int getTOOLBAR_COLOR(){
+        return TOOLBAR_COLOR;
+    }
+
+    public int getSTATUS_BAR_COLOR(){
+        return STATUS_BAR_COLOR;
     }
 
     @Override

@@ -3,13 +3,47 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ImageView
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:background="@color/colorPrimary"
-        android:id="@+id/poster_image_item"/>
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:src="@drawable/placeholder_poster"
+                android:background="@color/colorPrimaryDark"
+                android:id="@+id/poster_image_item"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/card_padding"
+                android:background="@color/colorPrimary"
+                android:id="@+id/card_text_container">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="abcd"
+                    android:id="@+id/card_title"
+                    android:textSize="@dimen/text_size_large"
+                    android:textColor="@color/white"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_favorite_border_black_24dp"
+                    android:id="@+id/card_fav_icon"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/fav_icon_margin"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
