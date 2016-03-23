@@ -33,13 +33,16 @@
                     android:text="abcd"
                     android:id="@+id/card_title"
                     android:textSize="@dimen/text_size_large"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_favorite_border_black_24dp"
                     android:id="@+id/card_fav_icon"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_margin="@dimen/fav_icon_margin"/>
 
             </RelativeLayout>

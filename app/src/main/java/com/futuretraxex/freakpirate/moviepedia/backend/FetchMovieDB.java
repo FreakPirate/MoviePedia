@@ -1,11 +1,13 @@
 package com.futuretraxex.freakpirate.moviepedia.backend;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
 import org.json.JSONException;
 import java.io.BufferedReader;
@@ -28,6 +30,7 @@ public class FetchMovieDB extends AsyncTask <Void, Void, MovieDataModel[]> {
     private Boolean INCLUDE_ADULT;
     private String SORT_ORDER;
     private int PAGE_NUM;
+    private Context context;
 
     public interface AsyncResponse{
         void onProcessFinish(MovieDataModel[] output);
@@ -35,11 +38,12 @@ public class FetchMovieDB extends AsyncTask <Void, Void, MovieDataModel[]> {
 
     public AsyncResponse delegate = null;
 
-    public FetchMovieDB(String sortOrder, Boolean safeSearch, int pageNum, AsyncResponse delegate){
+    public FetchMovieDB(String sortOrder, Boolean safeSearch, int pageNum, Context context, AsyncResponse delegate){
 //        this.progressBar = progressBar;
         this.SORT_ORDER = sortOrder;
         this.INCLUDE_ADULT = !safeSearch;
         this.PAGE_NUM = pageNum;
+        this.context = context;
         this.delegate = delegate;
     }
 
@@ -109,7 +113,7 @@ public class FetchMovieDB extends AsyncTask <Void, Void, MovieDataModel[]> {
             }
         }
 
-        BrowseMoviesParser parser = new BrowseMoviesParser(jsonStr);
+        BrowseMoviesParser parser = new BrowseMoviesParser(jsonStr, context);
         MovieDataModel[] detailsList = null;
 
         try {

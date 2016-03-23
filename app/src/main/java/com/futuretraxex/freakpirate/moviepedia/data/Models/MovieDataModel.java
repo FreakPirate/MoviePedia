@@ -1,4 +1,4 @@
-package com.futuretraxex.freakpirate.moviepedia.data;
+package com.futuretraxex.freakpirate.moviepedia.data.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -28,7 +28,8 @@ public class MovieDataModel implements Parcelable {
 
     //This will be called once the Object is instantiated on the sender's end.
     public MovieDataModel(String movieTitle, String movieID, String posterPath, String backdropPath,
-                          String plotSynopsis, String averageRatings, String releaseDate, String adult){
+                          String plotSynopsis, String averageRatings, String releaseDate, String adult,
+                          int toolbarColor, int statusBarColor){
         this.MOVIE_TITLE = movieTitle;
         this.MOVIE_ID = movieID;
         this.POSTER_PATH = posterPath;
@@ -42,6 +43,9 @@ public class MovieDataModel implements Parcelable {
         }else {
             this.ADULT = "No";
         }
+
+        this.TOOLBAR_COLOR = toolbarColor;
+        this.STATUS_BAR_COLOR = statusBarColor;
     }
 
     public void addColors(int toolbarColor, int statusBarColor){

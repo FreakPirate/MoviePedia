@@ -23,7 +23,7 @@ import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
-import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,6 +117,7 @@ public class BrowseMoviesFragment extends Fragment {
         FetchMovieDB task = new FetchMovieDB(sortOrder,
                 safeSearch,
                 1,
+                getActivity(),
                 new FetchMovieDB.AsyncResponse() {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {
@@ -148,6 +149,7 @@ public class BrowseMoviesFragment extends Fragment {
         FetchMovieDB task = new FetchMovieDB(sortOrder,
                 safeSearch,
                 1,
+                getActivity(),
                 new FetchMovieDB.AsyncResponse() {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {
@@ -198,6 +200,7 @@ public class BrowseMoviesFragment extends Fragment {
         FetchMovieDB task = new FetchMovieDB(sortOrder,
                 safeSearch,
                 offset,
+                getActivity(),
                 new FetchMovieDB.AsyncResponse() {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {

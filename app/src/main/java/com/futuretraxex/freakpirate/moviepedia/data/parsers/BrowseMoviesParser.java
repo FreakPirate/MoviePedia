@@ -1,10 +1,15 @@
 package com.futuretraxex.freakpirate.moviepedia.data.parsers;
 
-import com.futuretraxex.freakpirate.moviepedia.data.MovieDataModel;
+import android.content.Context;
+
+import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import retrofit2.Call;
 
 /**
  * Created by FreakPirate on 2/25/2016.
@@ -24,9 +29,11 @@ public class BrowseMoviesParser {
     private String jsonStr;
 
     private int index = 20;
+    private Context context;
 
-    public BrowseMoviesParser(String jsonStr){
+    public BrowseMoviesParser(String jsonStr, Context context){
         this.jsonStr = jsonStr;
+        this.context = context;
     }
 
     public MovieDataModel[] parse() throws JSONException{
@@ -49,8 +56,11 @@ public class BrowseMoviesParser {
             String releaseDate = detailObject.getString(PARAM_RELEASE_DATE);
             String adult = detailObject.getString(PARAM_ADULT);
 
+            int toolbarColor = context.getResources().getColor(R.color.colorPrimary);
+            int statusBarColor = context.getResources().getColor(R.color.colorPrimaryDark);
+
             MovieDataModel temp = new MovieDataModel(movieTitle, movieID, posterPath, backdropPath,
-                    plotSynopsis, averageRating, releaseDate, adult);
+                    plotSynopsis, averageRating, releaseDate, adult, toolbarColor, statusBarColor);
 
             detailsList[i] = temp;
         }
