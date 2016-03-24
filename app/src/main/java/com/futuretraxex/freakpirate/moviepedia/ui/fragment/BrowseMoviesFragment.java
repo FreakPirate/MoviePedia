@@ -22,6 +22,7 @@ import com.futuretraxex.freakpirate.moviepedia.backend.FetchMovieDB;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.EndlessRecyclerViewScrollListener;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
 
@@ -188,12 +189,12 @@ public class BrowseMoviesFragment extends Fragment {
         rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
 
 
-//        rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
-//            @Override
-//            public void onLoadMore(int page, int totalItemsCount) {
-//                loadMoreDataFromApi(page);
-//            }
-//        });
+        rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                loadMoreDataFromApi(page);
+            }
+        });
     }
 
     private void loadMoreDataFromApi(int offset){
