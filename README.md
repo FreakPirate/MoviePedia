@@ -4,7 +4,7 @@ This application is a part of Android Developer Nanodegree program, which I made
 "Movie Pedia" simply fetches data from "moviedb.org" API and presents it as a sophisticated layout.
 P2 is under construction.
 
-## Features
+## Features (P1)
 
 With the app, you can:
 * Discover the most popular, the most rated or the highest rated movies
@@ -12,11 +12,13 @@ With the app, you can:
 * Turn Safe Search on/off to toggle inclusion of adult content
 * View movie posters and covers
 
-## New Features
+## New Features (P2)
 * Replaced Gridview with RecyclerView for optimisation/loading speed (Reduced lag).
 * Added dynamic (Bitmap dependent) coloring of Toolbar and StatusBar.
 * Added Circular ImageView for detail fragment
 * Transluscent toolbar coloring.
+* Added reviews for each movie.
+* Added trailers on backdrop and separate list.
 
 ## TODO
 
@@ -24,8 +26,6 @@ Feature yet to implement:
 * Adaptive UI for both phone and tablets
 * Native content provider to store movies locally to view them offline
 * Migrate sorting functionality from Preference to Spinner on ActionBar/Toolbar
-* Trailers in DetailActivity
-* Detailed reviews for each movie
 
 ## Contribute
 
