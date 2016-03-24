@@ -44,7 +44,7 @@
     <!-- Movie Details-->
     <dimen name="detail_min_height">200dp</dimen>
     <dimen name="synopsis_padding">10dp</dimen>
-    <dimen name="synopsis_padding_top">0dp</dimen>
+    <dimen name="synopsis_padding_top">10dp</dimen>
     <dimen name="synopsis_padding_bottom">10dp</dimen>
 
     <!-- Browse Movie Item details-->

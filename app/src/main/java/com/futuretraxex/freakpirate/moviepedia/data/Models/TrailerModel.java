@@ -1,3 +1,4 @@
+
 package com.futuretraxex.freakpirate.moviepedia.data.Models;
 
 import java.util.ArrayList;
@@ -10,26 +11,12 @@ public class TrailerModel {
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("results")
+    @SerializedName("quicktime")
     @Expose
-    private List<TrailerResult> results = new ArrayList<TrailerResult>();
-
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public TrailerModel() {
-    }
-
-    /**
-     * 
-     * @param id
-     * @param results
-     */
-    public TrailerModel(int id, List<TrailerResult> results) {
-        this.id = id;
-        this.results = results;
-    }
+    private List<Object> quicktime = new ArrayList<Object>();
+    @SerializedName("youtube")
+    @Expose
+    private List<TrailerResult> youtube = new ArrayList<TrailerResult>();
 
     /**
      * 
@@ -49,22 +36,55 @@ public class TrailerModel {
         this.id = id;
     }
 
-    /**
-     * 
-     * @return
-     *     The results
-     */
-    public List<TrailerResult> getResults() {
-        return results;
+    public TrailerModel withId(int id) {
+        this.id = id;
+        return this;
     }
 
     /**
      * 
-     * @param results
-     *     The results
+     * @return
+     *     The quicktime
      */
-    public void setResults(List<TrailerResult> results) {
-        this.results = results;
+    public List<Object> getQuicktime() {
+        return quicktime;
+    }
+
+    /**
+     * 
+     * @param quicktime
+     *     The quicktime
+     */
+    public void setQuicktime(List<Object> quicktime) {
+        this.quicktime = quicktime;
+    }
+
+    public TrailerModel withQuicktime(List<Object> quicktime) {
+        this.quicktime = quicktime;
+        return this;
+    }
+
+    /**
+     * 
+     * @return
+     *     The youtube
+     */
+    public List<TrailerResult> getYoutube() {
+        return youtube;
+    }
+
+    /**
+     * 
+     * @param youtube
+     *     The youtube
+     */
+    public void setYoutube(List<TrailerResult> youtube) {
+        this.youtube = youtube;
+    }
+
+    public TrailerModel withYoutube(List<TrailerResult> youtube) {
+        this.youtube = youtube;
+        return this;
     }
 
 }

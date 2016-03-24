@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trailer_view_ll"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/trailer_play_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_circle_outline_black_24dp"
+        android:padding="@dimen/synopsis_padding"
+        android:tint="@color/colorPrimary"/>
+    <TextView
+        android:id="@+id/trailer_title_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Youtbe: Trailer"
+        android:padding="@dimen/synopsis_padding"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@color/body_text_2"/>
+</LinearLayout>

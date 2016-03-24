@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -24,12 +25,15 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
 import com.futuretraxex.freakpirate.moviepedia.backend.GeneralizedAPI;
+import com.futuretraxex.freakpirate.moviepedia.backend.URIBuilder;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.ReviewModel;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.ReviewResult;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerModel;
+import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerResult;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
+import com.futuretraxex.freakpirate.moviepedia.ui.listener.CustomOnClickListener;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -62,6 +66,7 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.movie_cover) ImageView movieCoverImageView;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsedToolbar;
     @Bind(R.id.movie_details_ll) LinearLayout reviewTrailerLL;
+    @Bind(R.id.play_icon_backdrop) ImageView playIconBackdrop;
 
     int mToolbarColor;
     int mStatusBarColor;
@@ -148,16 +153,7 @@ public class MovieDetailFragment extends Fragment {
         moviePosterImageView.setShadowRadius(11);
         moviePosterImageView.setShadowColor(mToolbarColor);
 
-        fetchMovieReviews();
-    }
-
-    public void fetchMovieReviews(){
         int movieId = Integer.parseInt(movieDataModel.getMOVIE_ID());
-
-        final View lineBreakView = new View(getActivity());
-        lineBreakView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                getResources().getDimensionPixelSize(R.dimen.line_break_height)));
-        lineBreakView.setBackgroundColor(getResources().getColor(R.color.line_break_color));
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -172,49 +168,23 @@ public class MovieDetailFragment extends Fragment {
         GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
 
         Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
+        final Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
+
         callReview.enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                ReviewModel reviewContent = response.body();
-                int reviewCount = reviewContent.getTotalResults();
+                loadReviews(response.body());
+                callTrailer.enqueue(new Callback<TrailerModel>() {
+                    @Override
+                    public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                        loadTrailer(response.body());
+                    }
 
-                reviewTrailerLL.addView(lineBreakView);
+                    @Override
+                    public void onFailure(Call<TrailerModel> call, Throwable t) {
 
-                LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                TextView titleView = new TextView(getActivity());
-                titleView.setLayoutParams(layoutParams);
-                titleView.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
-                titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                        getResources().getDimension(R.dimen.text_size_xxlarge));
-                titleView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
-                titleView.setText("Reviews");
-                reviewTrailerLL.addView(titleView);
-
-                for (int i=0; i<reviewCount; i++){
-                    ReviewResult result = reviewContent.getResults().get(i);
-                    String author = result.getAuthor();
-                    String content = result.getContent();
-
-                    TextView authorView = new TextView(getActivity());
-                    authorView.setLayoutParams(layoutParams);
-                    authorView.setTextColor(getResources().getColor(R.color.body_text_1));
-                    authorView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                            getResources().getDimension(R.dimen.text_size_large));
-                    authorView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
-                    authorView.setText(author);
-
-                    TextView contentView = new TextView(getActivity());
-                    contentView.setLayoutParams(layoutParams);
-                    contentView.setTextColor(getResources().getColor(R.color.body_text_2));
-                    contentView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                            getResources().getDimension(R.dimen.text_size_medium));
-                    contentView.setText(content);
-
-                    reviewTrailerLL.addView(authorView);
-                    reviewTrailerLL.addView(contentView);
-                }
+                    }
+                });
             }
 
             @Override
@@ -222,19 +192,106 @@ public class MovieDetailFragment extends Fragment {
 
             }
         });
+    }
 
-//        Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
-//        callTrailer.enqueue(new Callback<TrailerModel>() {
-//            @Override
-//            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<TrailerModel> call, Throwable t) {
-//
-//            }
-//        });
+
+    private void loadReviews(ReviewModel reviewContent){
+
+        int reviewCount = reviewContent.getTotalResults();
+
+        View lineBreakView = new View(getActivity());
+        lineBreakView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                getResources().getDimensionPixelSize(R.dimen.line_break_height)));
+        lineBreakView.setBackgroundColor(getResources().getColor(R.color.line_break_color));
+
+        reviewTrailerLL.addView(lineBreakView);
+
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView titleView = new TextView(getActivity());
+        titleView.setLayoutParams(layoutParams);
+        titleView.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.text_size_xxlarge));
+        titleView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
+        titleView.setText("Reviews");
+        reviewTrailerLL.addView(titleView);
+
+        for (int i=0; i<reviewCount; i++){
+            ReviewResult result = reviewContent.getResults().get(i);
+            String author = result.getAuthor();
+            String content = result.getContent();
+
+            TextView authorView = new TextView(getActivity());
+            authorView.setLayoutParams(layoutParams);
+            authorView.setTextColor(getResources().getColor(R.color.body_text_1));
+            authorView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.text_size_large));
+            authorView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
+            authorView.setText(author);
+
+            TextView contentView = new TextView(getActivity());
+            contentView.setLayoutParams(layoutParams);
+            contentView.setTextColor(getResources().getColor(R.color.body_text_2));
+            contentView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.text_size_medium));
+            contentView.setText(content);
+
+            if (i == reviewCount-1){
+                contentView.setPadding(0,0,0,getResources().getDimensionPixelSize(R.dimen.synopsis_padding));
+            }
+
+            reviewTrailerLL.addView(authorView);
+            reviewTrailerLL.addView(contentView);
+        }
+    }
+
+    private void loadTrailer(final TrailerModel result){
+
+        playIconBackdrop.setVisibility(View.VISIBLE);
+        movieCoverImageView.setOnClickListener(new CustomOnClickListener(getActivity(), result, 0));
+
+        View lineBreakView = new View(getActivity());
+        lineBreakView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                getResources().getDimensionPixelSize(R.dimen.line_break_height)));
+        lineBreakView.setBackgroundColor(getResources().getColor(R.color.line_break_color));
+
+        reviewTrailerLL.addView(lineBreakView);
+
+        TextView titleView = new TextView(getActivity());
+        titleView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        titleView.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(R.dimen.text_size_xxlarge));
+        titleView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
+        titleView.setText("Trailers");
+        reviewTrailerLL.addView(titleView);
+
+        LayoutInflater inflater = (LayoutInflater) getActivity()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        int trailerCount = result.getYoutube().size();
+
+        for (int i=0; i<trailerCount; i++){
+            final TrailerResult tr = result.getYoutube().get(i);
+            Log.v(MovieDetailFragment.class.getSimpleName(), "Trailer " + i + ": " + result.getYoutube().toString());
+
+            View view = inflater.inflate(R.layout.item_trailer, null);
+
+            TextView trailerTitle = (TextView) view.findViewById(R.id.trailer_title_textView);
+            String title = "Youtube: " + tr.getName();
+            trailerTitle.setText(title);
+
+            ImageView playView = (ImageView) view.findViewById(R.id.trailer_play_view);
+            playView.setColorFilter(movieDataModel.getSTATUS_BAR_COLOR());
+
+            view.setOnClickListener(new CustomOnClickListener(getActivity(), result, i));
+
+            reviewTrailerLL.addView(view);
+        }
+
 
     }
 

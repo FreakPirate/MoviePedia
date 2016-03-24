@@ -122,6 +122,7 @@ public class BrowseMoviesFragment extends Fragment {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {
                        setAdapter(output);
+                        progressBar.setVisibility(View.GONE);
                     }
                 });
         task.execute();
@@ -180,7 +181,7 @@ public class BrowseMoviesFragment extends Fragment {
         spanCount = dscc.getSpanCount();
 
         //Hiding progress bar
-        progressBar.setVisibility(View.GONE);
+//        progressBar.setVisibility(View.GONE);
 
         GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
         rvMovieData.setLayoutManager(layoutManager);

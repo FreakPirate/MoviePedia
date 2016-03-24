@@ -21,9 +21,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:background="@color/white"
+                android:background="@color/colorPrimary"
                 android:minHeight="@dimen/detail_min_height"
                 app:layout_collapseMode="parallax"/>
+
+            <ImageView
+                android:id="@+id/play_icon_backdrop"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_play_circle_filled_black_48dp"
+                android:layout_gravity="center"
+                android:visibility="visible"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
