@@ -103,12 +103,20 @@ public class MovieDetailFragment extends Fragment {
         if (intent != null && intent.hasExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING)) {
             movieDataModel = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
 
-            inflateView();
+            checkParcelableColors();
         }else {
             Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
         }
 
         return rootView;
+    }
+
+    public void checkParcelableColors(){
+        if (movieDataModel.getTOOLBAR_COLOR() == getResources().getColor(R.color.colorPrimary)){
+            getToolbarColor();
+        }else {
+            inflateView();
+        }
     }
 
     public void inflateView(){
@@ -173,11 +181,17 @@ public class MovieDetailFragment extends Fragment {
         callReview.enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                loadReviews(response.body());
+
+                if (response.body().getTotalResults() != 0){
+                    loadReviews(response.body());
+                }
+
                 callTrailer.enqueue(new Callback<TrailerModel>() {
                     @Override
                     public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                        loadTrailer(response.body());
+                        if (response.body().getYoutube().size() != 0){
+                            loadTrailer(response.body());
+                        }
                     }
 
                     @Override
@@ -295,34 +309,27 @@ public class MovieDetailFragment extends Fragment {
 
     }
 
-    private void dynamicToolbarColor() {
+    private void getToolbarColor() {
         Picasso.with(getActivity())
-                .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w92))
+                .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w92))
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         Palette palette = Palette.from(bitmap).generate();
-                        int toolbarColor = palette.getDarkVibrantColor(mToolbarColor);
-                        int statusBarColor = palette.getDarkVibrantColor(mToolbarColor);
+                        int toolbarColor = palette.getVibrantColor(mToolbarColor);
+                        int statusBarColor = palette.getVibrantColor(mStatusBarColor);
 
-                        mToolbarColor = Color.argb(220, Color.red(toolbarColor),
+                        mToolbarColor = Color.argb(120, Color.red(toolbarColor),
                                 Color.green(toolbarColor), Color.blue(toolbarColor));
 
-                        mStatusBarColor = Color.argb(255, Color.red(statusBarColor),
+                        mStatusBarColor = Color.argb(250, Color.red(statusBarColor),
                                 Color.green(statusBarColor), Color.blue(statusBarColor));
 
 //                        Log.v(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT,
 //                                "Toolbar: " + toolbarColor + "\tStatusBar: " + statusBarColor);
 
-                        collapsedToolbar.setContentScrimColor(mToolbarColor);
-                        collapsedToolbar.setStatusBarScrimColor(mStatusBarColor);
-
-                        moviePosterImageView.setBorderColor(mStatusBarColor);
-                        moviePosterImageView.setBorderWidth(5);
-                        moviePosterImageView.setShadowRadius(11);
-                        moviePosterImageView.setShadowColor(mToolbarColor);
-
-                        movieCoverImageView.setImageDrawable(new BitmapDrawable(bitmap));
+                        movieDataModel.addColors(mToolbarColor, mStatusBarColor);
+                        inflateView();
                     }
 
                     @Override
