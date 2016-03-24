@@ -59,6 +59,9 @@ in root directory and place your key in it as:
 * [Picasso](https://github.com/square/picasso)
 * [ButterKnife](https://github.com/JakeWharton/butterknife)
 * [CircularImageView](https://github.com/lopspower/CircularImageView)
+* [Retrofit](https://github.com/square/retrofit)
+* [OkHttp](https://github.com/square/okhttp)
+* [Gson](https://github.com/google/gson)
 
 
 
