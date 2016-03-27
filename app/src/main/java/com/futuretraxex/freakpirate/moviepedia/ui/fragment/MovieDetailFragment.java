@@ -1,13 +1,10 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -17,6 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
 import com.futuretraxex.freakpirate.moviepedia.backend.GeneralizedAPI;
-import com.futuretraxex.freakpirate.moviepedia.backend.URIBuilder;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.ReviewModel;
@@ -40,7 +39,6 @@ import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -84,6 +82,22 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getActivity();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_movie_details, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home){
+            getActivity().finish();
+            return true;
+        }
+
+        return true;
     }
 
     @Override
@@ -96,6 +110,10 @@ public class MovieDetailFragment extends Fragment {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detail_toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         android.support.v7.app.ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+
+        setHasOptionsMenu(true);
+
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getActivity().getIntent();
@@ -147,7 +165,7 @@ public class MovieDetailFragment extends Fragment {
         movieTitle.setText(movieDataModel.getMOVIE_TITLE());
 
         String releaseDate = "Release Date: " + movieDataModel.getRELEASE_DATE();
-        String averageRating = "Average Rating: " + movieDataModel.getAVERAGE_RATINGS();
+        String averageRating = "TMDB: " + movieDataModel.getAVERAGE_RATINGS();
         String adult = "Adult: " + movieDataModel.getADULT();
 
         movieSynopsisTitle.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
@@ -169,6 +187,11 @@ public class MovieDetailFragment extends Fragment {
 //        moviePosterImageView.setBorderWidth(5);
 //        moviePosterImageView.setShadowRadius(11);
 //        moviePosterImageView.setShadowColor(mToolbarColor);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
 
         int movieId = Integer.parseInt(movieDataModel.getMOVIE_ID());
 
@@ -193,21 +216,21 @@ public class MovieDetailFragment extends Fragment {
 
                 if (response.body().getTotalResults() != 0){
                     loadReviews(response.body());
-                }
 
-                callTrailer.enqueue(new Callback<TrailerModel>() {
-                    @Override
-                    public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                        if (response.body().getYoutube().size() != 0){
-                            loadTrailer(response.body());
+                    callTrailer.enqueue(new Callback<TrailerModel>() {
+                        @Override
+                        public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                            if (response.body().getYoutube().size() != 0) {
+                                loadTrailer(response.body());
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<TrailerModel> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<TrailerModel> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
 
             @Override
@@ -215,8 +238,9 @@ public class MovieDetailFragment extends Fragment {
 
             }
         });
-    }
 
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     private void loadReviews(ReviewModel reviewContent){
 

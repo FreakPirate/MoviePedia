@@ -95,24 +95,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_medium"
+                        android:textSize="@dimen/text_size_large"
                         android:text="February 2016" />
-
-                    <TextView
-                        android:id="@+id/movie_average_rating"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_medium"
-                        android:text="Rating: 8/10" />
 
                     <TextView
                         android:id="@+id/movie_adult"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_medium"
+                        android:textSize="@dimen/text_size_large"
                         android:text="Adult: No"/>
+
+                    <TextView
+                        android:id="@+id/movie_average_rating"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/body_text_2"
+                        android:textSize="@dimen/text_size_large"
+                        android:text="TMDB: 8/10" />
 
                 </LinearLayout>
 
