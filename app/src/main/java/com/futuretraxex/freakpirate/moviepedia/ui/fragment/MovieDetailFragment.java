@@ -34,9 +34,10 @@ import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerModel;
 import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerResult;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.listener.CustomOnClickListener;
-import com.mikhaellopez.circularimageview.CircularImageView;
+import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -62,7 +63,7 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.plot_synopsis) TextView movieSynopsis;
     @Bind(R.id.plot_synopsis_title) TextView movieSynopsisTitle;
     @Bind(R.id.movie_adult) TextView movieAdult;
-    @Bind(R.id.movie_poster) CircularImageView moviePosterImageView;
+    @Bind(R.id.movie_poster) ImageView moviePosterImageView;
     @Bind(R.id.movie_cover) ImageView movieCoverImageView;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsedToolbar;
     @Bind(R.id.movie_details_ll) LinearLayout reviewTrailerLL;
@@ -123,16 +124,24 @@ public class MovieDetailFragment extends Fragment {
 
         movieCoverImageView.setBackgroundColor(movieDataModel.getTOOLBAR_COLOR());
 
+        Transformation transformation = new RoundedTransformationBuilder()
+                .borderColor(movieDataModel.getTOOLBAR_COLOR())
+                .borderWidthDp(4)
+                .cornerRadiusDp(30)
+                .oval(false)
+                .build();
+
         Picasso.with(context)
                 .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
-//                .error(R.drawable.placeholder_poster)
-//                .resize(300,450)
+                .error(R.drawable.image_load_error)
+                .resize(300,450)
 //                .centerInside()
+                .transform(transformation)
                 .into(moviePosterImageView);
 
         Picasso.with(context)
                 .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w500))
-//                    .error(R.drawable.placeholder_backdrop)
+                    .error(R.drawable.image_load_error)
                 .into(movieCoverImageView);
 
         movieTitle.setText(movieDataModel.getMOVIE_TITLE());
@@ -156,10 +165,10 @@ public class MovieDetailFragment extends Fragment {
         collapsedToolbar.setContentScrimColor(mToolbarColor);
         collapsedToolbar.setStatusBarScrimColor(mStatusBarColor);
 
-        moviePosterImageView.setBorderColor(mStatusBarColor);
-        moviePosterImageView.setBorderWidth(5);
-        moviePosterImageView.setShadowRadius(11);
-        moviePosterImageView.setShadowColor(mToolbarColor);
+//        moviePosterImageView.setBorderColor(mStatusBarColor);
+//        moviePosterImageView.setBorderWidth(5);
+//        moviePosterImageView.setShadowRadius(11);
+//        moviePosterImageView.setShadowColor(mToolbarColor);
 
         int movieId = Integer.parseInt(movieDataModel.getMOVIE_ID());
 

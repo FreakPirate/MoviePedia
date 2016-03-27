@@ -32,7 +32,6 @@ public class GlobalData {
 
     public static Boolean preferenceChanged = false;
 
-
     public static final String size_w92 = "w92";
     public static final String size_w154 = "w154";
     public static final String size_w185 = "w185";

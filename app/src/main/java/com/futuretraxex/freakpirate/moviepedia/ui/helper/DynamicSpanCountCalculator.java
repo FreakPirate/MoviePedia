@@ -31,7 +31,7 @@ public class DynamicSpanCountCalculator {
 //        Log.v(FetchMovieDB.class.getSimpleName(), "WindowManager: " + screenWidth);
 
         if (spanCount < 1){
-            spanCount = 1;
+            spanCount = 2;
         }
 
         Log.v(DynamicSpanCountCalculator.class.getSimpleName(), "SpanCount: " + spanCount);

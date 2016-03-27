@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,7 @@ public class BrowseMoviesFragment extends Fragment {
         if(isNetworkAvailable()){
             rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
             ButterKnife.bind(this, rootView);
+            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
             initUI();
         }else {
             rootView = inflater.inflate(R.layout.error_egg, container, false);
@@ -92,15 +94,9 @@ public class BrowseMoviesFragment extends Fragment {
         super.onResume();
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     private void initUI(){
 
+        Log.v(BrowseMoviesFragment.class.getSimpleName(), "Called: initUI()");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         sortOrder = sharedPreferences.getString(
@@ -175,6 +171,10 @@ public class BrowseMoviesFragment extends Fragment {
         int minItemWidth = getResources().getDimensionPixelSize(R.dimen.min_column_width);
         int spanCount;
 
+        if (adapter != null){
+            adapter.clear();
+        }
+
         adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(result)), getActivity());
         rvMovieData.setAdapter(adapter);
 
@@ -186,6 +186,7 @@ public class BrowseMoviesFragment extends Fragment {
 
         GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
         rvMovieData.setLayoutManager(layoutManager);
+        rvMovieData.removeItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
         rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
 
 
@@ -219,4 +220,10 @@ public class BrowseMoviesFragment extends Fragment {
         task.execute();
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }
