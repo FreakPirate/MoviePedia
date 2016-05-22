@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="pref_sort_list_entries">
+        <item>@string/pref_label_favourite</item>
         <item>@string/pref_label_most_popular</item>
         <item>@string/pref_label_highest_rated</item>
         <item>@string/pref_label_most_rated</item>
     </array>
     
     <array name="pref_sort_list_values">
+        <item>@string/pref_value_favourite</item>
         <item>@string/pref_value_most_popular</item>
         <item>@string/pref_value_highest_rated</item>
         <item>@string/pref_value_most_rated</item>

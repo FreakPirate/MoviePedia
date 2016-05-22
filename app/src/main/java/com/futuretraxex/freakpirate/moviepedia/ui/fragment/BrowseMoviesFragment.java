@@ -45,11 +45,12 @@ public class BrowseMoviesFragment extends Fragment {
     @Bind(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
 
-
     BrowseMoviesAdapter adapter;
 
     String sortOrder;
     Boolean safeSearch;
+
+    private final String LOG_TAG = BrowseMoviesFragment.class.getSimpleName();
 
     public BrowseMoviesFragment() {
     }
@@ -64,7 +65,8 @@ public class BrowseMoviesFragment extends Fragment {
         if(isNetworkAvailable()){
             rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
             ButterKnife.bind(this, rootView);
-            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+//            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            addGridViewDecoration();
             initUI();
         }else {
             rootView = inflater.inflate(R.layout.error_egg, container, false);
@@ -109,37 +111,49 @@ public class BrowseMoviesFragment extends Fragment {
                 true
         );
 
-        progressBar.setVisibility(View.VISIBLE);
+        if (sortOrder.equalsIgnoreCase(getString(R.string.pref_value_favourite))){
+            Log.v(LOG_TAG, "In Favourites");
+            swipeContainer.setEnabled(false);
+            rvMovieData.setAdapter(null);
+        }else {
+            progressBar.setVisibility(View.VISIBLE);
+            swipeContainer.setEnabled(true);
 
-        FetchMovieDB task = new FetchMovieDB(sortOrder,
-                safeSearch,
-                1,
-                getActivity(),
-                new FetchMovieDB.AsyncResponse() {
-                    @Override
-                    public void onProcessFinish(MovieDataModel[] output) {
-                       setAdapter(output);
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
-        task.execute();
+            FetchMovieDB task = new FetchMovieDB(sortOrder,
+                    safeSearch,
+                    1,
+                    getActivity(),
+                    new FetchMovieDB.AsyncResponse() {
+                        @Override
+                        public void onProcessFinish(MovieDataModel[] output) {
+                            if (adapter != null){
+                                adapter.clear();
+                            }
 
-        // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
+                            adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(output)), getActivity());
+                            rvMovieData.setAdapter(adapter);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+            task.execute();
 
-                refreshDataSet();
-            }
-        });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+            // Setup refresh listener which triggers new data loading
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    // Your code to refresh the list here.
+                    // Make sure you call swipeContainer.setRefreshing(false)
+                    // once the network request has completed successfully.
+
+                    refreshDataSet();
+                }
+            });
+        }
 
     }
 
@@ -163,20 +177,22 @@ public class BrowseMoviesFragment extends Fragment {
         task.execute();
     }
 
-    private void setAdapter(MovieDataModel[] result){
+//    private void setAdapter(MovieDataModel[] result){
+//        if (adapter != null){
+//            adapter.clear();
+//        }
+//
+//        adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(result)), getActivity());
+//        rvMovieData.setAdapter(adapter);
+//    }
+
+    private void addGridViewDecoration(){
         Context context = getActivity();
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_item_spacing);
         boolean includeEdge = true;
         int minItemWidth = getResources().getDimensionPixelSize(R.dimen.min_column_width);
         int spanCount;
-
-        if (adapter != null){
-            adapter.clear();
-        }
-
-        adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(result)), getActivity());
-        rvMovieData.setAdapter(adapter);
 
         DynamicSpanCountCalculator dscc = new DynamicSpanCountCalculator(context, minItemWidth);
         spanCount = dscc.getSpanCount();
@@ -186,9 +202,10 @@ public class BrowseMoviesFragment extends Fragment {
 
         GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
         rvMovieData.setLayoutManager(layoutManager);
-        rvMovieData.removeItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
-        rvMovieData.addItemDecoration(new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge));
 
+        GridSpacingItemDecoration decoration = new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge);
+        rvMovieData.removeItemDecoration(decoration);
+        rvMovieData.addItemDecoration(decoration);
 
         rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
