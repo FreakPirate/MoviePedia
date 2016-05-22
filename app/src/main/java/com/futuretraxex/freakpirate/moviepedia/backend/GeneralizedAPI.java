@@ -1,10 +1,9 @@
 package com.futuretraxex.freakpirate.moviepedia.backend;
 
-import com.futuretraxex.freakpirate.moviepedia.data.Models.ReviewModel;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.ReviewModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;

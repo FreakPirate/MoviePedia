@@ -1,13 +1,12 @@
 package com.futuretraxex.freakpirate.moviepedia.backend;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.data.parsers.BrowseMoviesParser;
 import org.json.JSONException;
 import java.io.BufferedReader;

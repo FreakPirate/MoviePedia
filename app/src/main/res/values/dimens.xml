@@ -35,7 +35,7 @@
 
     <!-- Egg Error-->
     <dimen name="egg_error_layout_padding">100dp</dimen>
-    <dimen name="egg_error_text_view_padding_top">50dp</dimen>
+    <dimen name="egg_error_text_view_padding_top">30dp</dimen>
 
     <!-- Browse Movies-->
     <dimen name="min_column_width">170dp</dimen>

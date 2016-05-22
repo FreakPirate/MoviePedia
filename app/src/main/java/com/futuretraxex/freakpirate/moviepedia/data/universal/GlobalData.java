@@ -10,7 +10,7 @@ import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.ToolbarSpinnerAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment;
 import com.futuretraxex.freakpirate.moviepedia.ui.fragment.MovieDetailFragment;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 
 /**
  * Created by FreakPirate on 3/1/2016.

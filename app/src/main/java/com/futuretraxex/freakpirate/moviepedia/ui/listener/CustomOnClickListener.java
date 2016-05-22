@@ -1,16 +1,13 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.listener;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
 import com.futuretraxex.freakpirate.moviepedia.backend.URIBuilder;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerModel;
-import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
-import com.futuretraxex.freakpirate.moviepedia.ui.fragment.MovieDetailFragment;
+import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
 
 /**
  * Created by FreakPirate on 3/24/2016.

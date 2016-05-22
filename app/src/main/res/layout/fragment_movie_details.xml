@@ -31,7 +31,7 @@
                 android:layout_height="60dp"
                 android:src="@drawable/ic_play_circle_filled_black_48dp"
                 android:layout_gravity="center"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
@@ -96,15 +96,8 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
                         android:textSize="@dimen/text_size_large"
-                        android:text="February 2016" />
-
-                    <TextView
-                        android:id="@+id/movie_adult"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_large"
-                        android:text="Adult: No"/>
+                        android:text="February 2016"
+                        android:paddingBottom="10dp"/>
 
                     <TextView
                         android:id="@+id/movie_average_rating"
@@ -114,6 +107,24 @@
                         android:textSize="@dimen/text_size_large"
                         android:text="TMDB: 8/10" />
 
+                    <RatingBar
+                        android:id="@+id/detail_rating_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="0.01"
+                        android:rating="3.50"
+                        android:isIndicator="true"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:paddingBottom="10dp"/>
+
+                    <TextView
+                        android:id="@+id/movie_adult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/body_text_2"
+                        android:textSize="@dimen/text_size_large"
+                        android:text="Adult: No"/>
                 </LinearLayout>
 
             </RelativeLayout>

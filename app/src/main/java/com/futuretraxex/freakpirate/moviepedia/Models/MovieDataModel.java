@@ -1,4 +1,4 @@
-package com.futuretraxex.freakpirate.moviepedia.data.Models;
+package com.futuretraxex.freakpirate.moviepedia.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

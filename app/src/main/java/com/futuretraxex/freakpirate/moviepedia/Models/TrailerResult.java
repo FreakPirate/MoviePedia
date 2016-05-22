@@ -1,4 +1,4 @@
-package com.futuretraxex.freakpirate.moviepedia.data.Models;
+package com.futuretraxex.freakpirate.moviepedia.Models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

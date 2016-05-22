@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 

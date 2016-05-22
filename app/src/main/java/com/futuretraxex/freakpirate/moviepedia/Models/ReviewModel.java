@@ -1,5 +1,5 @@
 
-package com.futuretraxex.freakpirate.moviepedia.data.Models;
+package com.futuretraxex.freakpirate.moviepedia.Models;
 
 import java.util.ArrayList;
 import java.util.List;

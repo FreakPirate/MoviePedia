@@ -25,7 +25,7 @@ import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.EndlessRecyclerViewScrollListener;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;

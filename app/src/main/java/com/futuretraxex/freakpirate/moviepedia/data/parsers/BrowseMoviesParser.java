@@ -3,13 +3,11 @@ package com.futuretraxex.freakpirate.moviepedia.data.parsers;
 import android.content.Context;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import retrofit2.Call;
 
 /**
  * Created by FreakPirate on 2/25/2016.

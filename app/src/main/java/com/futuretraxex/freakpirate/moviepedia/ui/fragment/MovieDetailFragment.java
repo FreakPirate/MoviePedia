@@ -21,22 +21,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
 import com.futuretraxex.freakpirate.moviepedia.backend.GeneralizedAPI;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.ReviewModel;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.ReviewResult;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerModel;
-import com.futuretraxex.freakpirate.moviepedia.data.Models.TrailerResult;
+import com.futuretraxex.freakpirate.moviepedia.Models.ReviewModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.ReviewResult;
+import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.TrailerResult;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.listener.CustomOnClickListener;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,6 +71,7 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsedToolbar;
     @Bind(R.id.movie_details_ll) LinearLayout reviewTrailerLL;
     @Bind(R.id.play_icon_backdrop) ImageView playIconBackdrop;
+    @Bind(R.id.detail_rating_bar) RatingBar ratingBar;
 
     int mToolbarColor;
     int mStatusBarColor;
@@ -152,7 +158,7 @@ public class MovieDetailFragment extends Fragment {
         Picasso.with(context)
                 .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
                 .error(R.drawable.image_load_error)
-                .resize(300,450)
+                .resize(300, 450)
 //                .centerInside()
                 .transform(transformation)
                 .into(moviePosterImageView);
@@ -164,13 +170,17 @@ public class MovieDetailFragment extends Fragment {
 
         movieTitle.setText(movieDataModel.getMOVIE_TITLE());
 
-        String releaseDate = "Release Date: " + movieDataModel.getRELEASE_DATE();
+//        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
+//        String releaseDate = formatter.format(Date.parse(movieDataModel.getRELEASE_DATE()));
+
+        String releaseDate = dateFormatter(movieDataModel.getRELEASE_DATE());
         String averageRating = "TMDB: " + movieDataModel.getAVERAGE_RATINGS();
         String adult = "Adult: " + movieDataModel.getADULT();
 
         movieSynopsisTitle.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
         movieReleaseDate.setText(releaseDate);
         movieAverageRating.setText(averageRating);
+        ratingBar.setRating(Float.parseFloat(movieDataModel.getAVERAGE_RATINGS()) / 2);
         movieSynopsis.setText(movieDataModel.getPLOT_SYNOPSIS());
         movieAdult.setText(adult);
 
@@ -188,6 +198,24 @@ public class MovieDetailFragment extends Fragment {
 //        moviePosterImageView.setShadowRadius(11);
 //        moviePosterImageView.setShadowColor(mToolbarColor);
 
+    }
+
+    public String dateFormatter(String initialDate) {
+        String inputPattern = "yyyy-MM-dd";
+        String outputPattern = "MMM dd, yyyy";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(initialDate);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 
     @Override
@@ -214,13 +242,13 @@ public class MovieDetailFragment extends Fragment {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
-                if (response.body().getTotalResults() != 0){
+                if (response.body().getTotalResults() != 0 && getActivity() != null){
                     loadReviews(response.body());
 
                     callTrailer.enqueue(new Callback<TrailerModel>() {
                         @Override
                         public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                            if (response.body().getYoutube().size() != 0) {
+                            if (response.body().getYoutube().size() != 0 && getActivity() != null) {
                                 loadTrailer(response.body());
                             }
                         }
@@ -296,7 +324,6 @@ public class MovieDetailFragment extends Fragment {
 
     private void loadTrailer(final TrailerModel result){
 
-        playIconBackdrop.setVisibility(View.VISIBLE);
         movieCoverImageView.setOnClickListener(new CustomOnClickListener(getActivity(), result, 0));
 
         View lineBreakView = new View(getActivity());
@@ -320,6 +347,8 @@ public class MovieDetailFragment extends Fragment {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         int trailerCount = result.getYoutube().size();
+
+        playIconBackdrop.setVisibility(View.VISIBLE);
 
         for (int i=0; i<trailerCount; i++){
             final TrailerResult tr = result.getYoutube().get(i);
