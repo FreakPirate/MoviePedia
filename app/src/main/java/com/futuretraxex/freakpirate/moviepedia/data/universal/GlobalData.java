@@ -16,7 +16,8 @@ import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
  * Created by FreakPirate on 3/1/2016.
  */
 public class GlobalData {
-    public final static String DETAIL_ACTIVITY_INTENT_STRING = "Movie Detail";
+    public final static String INTENT_KEY_MOVIE_MODEL = "movie_model";
+    public final static String INTENT_KEY_URI = "uri_model";
 
     public final static String LOG_TAG_FETCH_BROWSE_MOVIE_DB = FetchMovieDB.class.getSimpleName();
     public final static String LOG_TAG_URI_BUILDER = URIBuilder.class.getSimpleName();

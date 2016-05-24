@@ -14,7 +14,8 @@ public class MovieDataModel implements Parcelable {
     private String POSTER_PATH;
     private String BACKDROP_PATH;
     private String PLOT_SYNOPSIS;
-    private String AVERAGE_RATINGS;
+    private float AVERAGE_RATINGS;
+    private float POPULARITY;
     private String RELEASE_DATE;
     private String ADULT;
     private int TOOLBAR_COLOR;
@@ -28,7 +29,7 @@ public class MovieDataModel implements Parcelable {
 
     //This will be called once the Object is instantiated on the sender's end.
     public MovieDataModel(String movieTitle, String movieID, String posterPath, String backdropPath,
-                          String plotSynopsis, String averageRatings, String releaseDate, String adult,
+                          String plotSynopsis, float averageRatings, float popularity, String releaseDate, String adult,
                           int toolbarColor, int statusBarColor){
         this.MOVIE_TITLE = movieTitle;
         this.MOVIE_ID = movieID;
@@ -37,6 +38,7 @@ public class MovieDataModel implements Parcelable {
         this.PLOT_SYNOPSIS = plotSynopsis;
         this.AVERAGE_RATINGS = averageRatings;
         this.RELEASE_DATE = releaseDate;
+        this.POPULARITY = popularity;
 
         if (adult.equalsIgnoreCase("true")){
             this.ADULT = "Yes";
@@ -61,7 +63,8 @@ public class MovieDataModel implements Parcelable {
                 this.POSTER_PATH,
                 this.BACKDROP_PATH,
                 this.PLOT_SYNOPSIS,
-                this.AVERAGE_RATINGS,
+                String.valueOf(this.AVERAGE_RATINGS),
+                String.valueOf(this.POPULARITY),
                 this.RELEASE_DATE,
                 this.ADULT,
                 Integer.toString(this.TOOLBAR_COLOR),
@@ -73,7 +76,7 @@ public class MovieDataModel implements Parcelable {
     //This will inflate the MovieDataModel object
     //Once it has reached its destination activity
     public MovieDataModel(Parcel in){
-        int arraySize = 10;
+        int arraySize = 11;
 
         String[] receivedData = new String[arraySize];
         in.readStringArray(receivedData);
@@ -83,11 +86,12 @@ public class MovieDataModel implements Parcelable {
         this.POSTER_PATH = receivedData[2];
         this.BACKDROP_PATH = receivedData[3];
         this.PLOT_SYNOPSIS = receivedData[4];
-        this.AVERAGE_RATINGS = receivedData[5];
-        this.RELEASE_DATE = receivedData[6];
-        this.ADULT = receivedData[7];
-        this.TOOLBAR_COLOR = Integer.parseInt(receivedData[8]);
-        this.STATUS_BAR_COLOR = Integer.parseInt(receivedData[9]);
+        this.AVERAGE_RATINGS = Float.parseFloat(receivedData[5]);
+        this.POPULARITY = Float.parseFloat(receivedData[6]);
+        this.RELEASE_DATE = receivedData[7];
+        this.ADULT = receivedData[8];
+        this.TOOLBAR_COLOR = Integer.parseInt(receivedData[9]);
+        this.STATUS_BAR_COLOR = Integer.parseInt(receivedData[10]);
     }
 
     public String getMOVIE_TITLE(){
@@ -110,8 +114,12 @@ public class MovieDataModel implements Parcelable {
         return PLOT_SYNOPSIS;
     }
 
-    public String getAVERAGE_RATINGS(){
+    public float getAVERAGE_RATINGS(){
         return AVERAGE_RATINGS;
+    }
+
+    public float getPOPULARITY(){
+        return POPULARITY;
     }
 
     public String getRELEASE_DATE(){

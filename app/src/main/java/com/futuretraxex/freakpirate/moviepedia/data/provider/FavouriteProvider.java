@@ -69,7 +69,7 @@ public class FavouriteProvider extends ContentProvider {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         FavouriteContract.FavouriteEntry.TABLE_FAVOURITE,
                         projection,
-                        FavouriteContract.FavouriteEntry._ID + " = ?",
+                        FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,
@@ -159,7 +159,7 @@ public class FavouriteProvider extends ContentProvider {
             case FAVOURITE_WITH_MOVIE_ID:{
                 rowsDeleted = db.delete(
                         FavouriteContract.FavouriteEntry.TABLE_FAVOURITE,
-                        FavouriteContract.FavouriteEntry._ID + " = ?",
+                        FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))}
                 );
 

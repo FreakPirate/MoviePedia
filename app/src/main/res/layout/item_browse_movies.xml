@@ -40,11 +40,11 @@
                     android:singleLine="true"
                     android:ellipsize="end"/>
                 <ImageView
+                    android:id="@+id/card_fav_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:contentDescription=""
                     android:src="@drawable/ic_favorite_border_white_24dp"
-                    android:id="@+id/card_fav_icon"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:layout_margin="@dimen/fav_icon_margin"

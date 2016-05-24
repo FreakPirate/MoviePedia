@@ -30,7 +30,8 @@
     <color name="list_dropdown_foreground_color">#ff333333</color>
 
     <!-- Browse Movies-->
-    <color name="grid_background">#D2D2D2</color>
+    <color name="grid_background">#E4E4E4</color>
+    <color name="color_egg">#9F9F9F</color>
     <!-- Original Theme-->
     <!--<color name="colorPrimary">#3F51B5</color>-->
     <!--<color name="colorPrimaryDark">#303F9F</color>-->

@@ -2,6 +2,7 @@ package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -16,12 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.backend.FetchMovieDB;
+import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.adapter.BrowseMoviesAdapter;
+import com.futuretraxex.freakpirate.moviepedia.ui.adapter.FavouriteAdapter;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.DynamicSpanCountCalculator;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.EndlessRecyclerViewScrollListener;
 import com.futuretraxex.freakpirate.moviepedia.ui.helper.GridSpacingItemDecoration;
@@ -36,7 +43,8 @@ import butterknife.ButterKnife;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class BrowseMoviesFragment extends Fragment {
+
+public class BrowseMoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
@@ -44,11 +52,16 @@ public class BrowseMoviesFragment extends Fragment {
     RecyclerView rvMovieData;
     @Bind(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
+    @Bind(R.id.error_db_empty)
+    RelativeLayout errorLayout;
 
-    BrowseMoviesAdapter adapter;
+    private BrowseMoviesAdapter mBrowseMoviesAdapter;
+    private FavouriteAdapter mFavouriteAdapter;
 
-    String sortOrder;
-    Boolean safeSearch;
+    private static final int FAVOURITE_LOADER_ID = 1;
+
+    private String sortOrder;
+    private Boolean safeSearch;
 
     private final String LOG_TAG = BrowseMoviesFragment.class.getSimpleName();
 
@@ -62,26 +75,32 @@ public class BrowseMoviesFragment extends Fragment {
         setHasOptionsMenu(true);
         View rootView;
 
-        if(isNetworkAvailable()){
-            rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
-            ButterKnife.bind(this, rootView);
+        rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
+        ButterKnife.bind(this, rootView);
 //            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            addGridViewDecoration();
-            initUI();
-        }else {
-            rootView = inflater.inflate(R.layout.error_egg, container, false);
+        addGridViewDecoration();
+        initUI();
 
-            TextView textView = (TextView) rootView.findViewById(R.id.error_egg_text_view);
-            textView.setText(getActivity().getResources().getString(R.string.network_error));
-
-            LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.error_egg_container);
-            linearLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getActivity().finish();
-                }
-            });
-        }
+//        if(isNetworkAvailable()){
+//            rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
+//            ButterKnife.bind(this, rootView);
+////            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+//            addGridViewDecoration();
+//            initUI();
+//        }else {
+//            rootView = inflater.inflate(R.layout.error_egg, container, false);
+//
+//            TextView textView = (TextView) rootView.findViewById(R.id.error_egg_text_view);
+//            textView.setText(getActivity().getResources().getString(R.string.network_error));
+//
+//            LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.error_egg_container);
+//            linearLayout.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    getActivity().finish();
+//                }
+//            });
+//        }
 
         return rootView;
     }
@@ -115,7 +134,13 @@ public class BrowseMoviesFragment extends Fragment {
             Log.v(LOG_TAG, "In Favourites");
             swipeContainer.setEnabled(false);
             rvMovieData.setAdapter(null);
+
+            mFavouriteAdapter = new FavouriteAdapter(getContext(), null, 0, FAVOURITE_LOADER_ID);
+            rvMovieData.setAdapter(mFavouriteAdapter);
+            getLoaderManager().initLoader(FAVOURITE_LOADER_ID, null, this);
         }else {
+            addGridOnScrollListener();
+            errorLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             swipeContainer.setEnabled(true);
 
@@ -126,12 +151,12 @@ public class BrowseMoviesFragment extends Fragment {
                     new FetchMovieDB.AsyncResponse() {
                         @Override
                         public void onProcessFinish(MovieDataModel[] output) {
-                            if (adapter != null){
-                                adapter.clear();
+                            if (mBrowseMoviesAdapter != null){
+                                mBrowseMoviesAdapter.clear();
                             }
 
-                            adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(output)), getActivity());
-                            rvMovieData.setAdapter(adapter);
+                            mBrowseMoviesAdapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(output)), getActivity());
+                            rvMovieData.setAdapter(mBrowseMoviesAdapter);
                             progressBar.setVisibility(View.GONE);
                         }
                     });
@@ -166,9 +191,9 @@ public class BrowseMoviesFragment extends Fragment {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {
                         // Remember to CLEAR OUT old items before appending in the new ones
-                        adapter.clear();
-                        // ...the data has come back, add new items to your adapter...
-                        adapter.addAll(new ArrayList<MovieDataModel>(Arrays.asList(output)));
+                        mBrowseMoviesAdapter.clear();
+                        // ...the data has come back, add new items to your mBrowseMoviesAdapter...
+                        mBrowseMoviesAdapter.addAll(new ArrayList<MovieDataModel>(Arrays.asList(output)));
                         // Now we call setRefreshing(false) to signal refresh has finished
                         swipeContainer.setRefreshing(false);
                     }
@@ -178,12 +203,12 @@ public class BrowseMoviesFragment extends Fragment {
     }
 
 //    private void setAdapter(MovieDataModel[] result){
-//        if (adapter != null){
-//            adapter.clear();
+//        if (mBrowseMoviesAdapter != null){
+//            mBrowseMoviesAdapter.clear();
 //        }
 //
-//        adapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(result)), getActivity());
-//        rvMovieData.setAdapter(adapter);
+//        mBrowseMoviesAdapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(result)), getActivity());
+//        rvMovieData.setAdapter(mBrowseMoviesAdapter);
 //    }
 
     private void addGridViewDecoration(){
@@ -206,6 +231,23 @@ public class BrowseMoviesFragment extends Fragment {
         GridSpacingItemDecoration decoration = new GridSpacingItemDecoration(spanCount, spacingInPixels, includeEdge);
         rvMovieData.removeItemDecoration(decoration);
         rvMovieData.addItemDecoration(decoration);
+    }
+
+    private void addGridOnScrollListener(){
+        Context context = getActivity();
+
+        int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.grid_item_spacing);
+        boolean includeEdge = true;
+        int minItemWidth = getResources().getDimensionPixelSize(R.dimen.min_column_width);
+        int spanCount;
+
+        DynamicSpanCountCalculator dscc = new DynamicSpanCountCalculator(context, minItemWidth);
+        spanCount = dscc.getSpanCount();
+
+        //Hiding progress bar
+//        progressBar.setVisibility(View.GONE);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
 
         rvMovieData.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
@@ -214,7 +256,6 @@ public class BrowseMoviesFragment extends Fragment {
             }
         });
     }
-
     private void loadMoreDataFromApi(int offset){
 
         FetchMovieDB task = new FetchMovieDB(sortOrder,
@@ -224,13 +265,13 @@ public class BrowseMoviesFragment extends Fragment {
                 new FetchMovieDB.AsyncResponse() {
                     @Override
                     public void onProcessFinish(MovieDataModel[] output) {
-                        int curSize = adapter.getItemCount();
+                        int curSize = mBrowseMoviesAdapter.getItemCount();
                         ArrayList<MovieDataModel> resultArray = new ArrayList<MovieDataModel>(Arrays.asList(output));
                         // updating existing list
-                        adapter.addAll(resultArray);
+                        mBrowseMoviesAdapter.addAll(resultArray);
                         // curSize should represent the first element that got added
                         // resultAsArray.size() represents the itemCount
-                        adapter.notifyItemRangeInserted(curSize, resultArray.size()-1);
+                        mBrowseMoviesAdapter.notifyItemRangeInserted(curSize, resultArray.size() - 1);
                     }
                 });
 
@@ -242,5 +283,32 @@ public class BrowseMoviesFragment extends Fragment {
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(
+                getActivity(),
+                FavouriteContract.FavouriteEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.getCount() == 0){
+            errorLayout.setVisibility(View.VISIBLE);
+        }else {
+            errorLayout.setVisibility(View.GONE);
+            mFavouriteAdapter.swapCursor(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mFavouriteAdapter.swapCursor(null);
     }
 }

@@ -35,6 +35,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activity.BrowseMoviesActivity" />
         </activity>
+
+        <provider
+            android:authorities="com.futuretraxex.freakpirate.moviepedia.provider"
+            android:name=".data.provider.FavouriteProvider"/>
     </application>
 
 </manifest>

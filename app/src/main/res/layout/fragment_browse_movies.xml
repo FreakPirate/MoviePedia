@@ -31,4 +31,27 @@
         android:indeterminateTintMode="add"
         android:visibility="gone"/>
 
+    <RelativeLayout
+        android:id="@+id/error_db_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/error_db_empty_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:background="@drawable/egg_empty"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/error_db_empty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_large"
+            android:textColor="@color/body_text_1"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/error_db_empty_image_view"
+            android:text="@string/database_empty_error"/>
+    </RelativeLayout>
+
 </RelativeLayout>

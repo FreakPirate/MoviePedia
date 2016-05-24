@@ -1,20 +1,27 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
+import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
@@ -26,6 +33,8 @@ import java.util.List;
 
 public class BrowseMoviesAdapter extends
         RecyclerView.Adapter<BrowseMoviesAdapter.ViewHolder> {
+
+    private final String LOG_TAG = BrowseMoviesAdapter.class.getSimpleName();
 
     private ArrayList<MovieDataModel> mMovieDataModel;
     private Context mContext;
@@ -95,11 +104,102 @@ public class BrowseMoviesAdapter extends
                     }
                 });
 
-        ImageView moviePosterView = holder.moviePosterView;
+        final ImageView moviePosterView = holder.moviePosterView;
         Picasso.with(mContext)
                 .load(data.getPOSTER_PATH(GlobalData.size_w342))
                 .placeholder(R.color.colorPrimaryDark)
                 .into(moviePosterView);
+
+        holder.favIconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MovieDataModel movieData = mMovieDataModel.get(position);
+                long movieId = Long.parseLong(movieData.getMOVIE_ID());
+                String movieTitle = movieData.getMOVIE_TITLE();
+
+                Uri uri = FavouriteContract.FavouriteEntry.buildByMovieIdUri(movieId);
+
+                Cursor cursor = mContext.getContentResolver().query(
+                        uri,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                if (cursor != null){
+                    if (cursor.getCount() != 0){
+//                        Data already present and needs to be deleted first
+                        int rowsDeleted = mContext.getContentResolver().delete(
+                                uri,
+                                null,
+                                null
+                        );
+
+                        if (rowsDeleted != 0){
+                            Toast.makeText(mContext, movieTitle + " removed from favourites successfully!", Toast.LENGTH_SHORT).show();
+                            holder.favIconImageView.setBackgroundResource(R.drawable.ic_favorite_border_white_24dp);
+                        }else {
+                            Log.e(LOG_TAG, movieTitle + " is not deleted!");
+                        }
+                    }else {
+//                        Data is not present in database and needs to be inserted
+                        Log.v(LOG_TAG, "Empty Cursor");
+                        int adult;
+                        if (movieData.getADULT().equalsIgnoreCase("yes")){
+                            adult = 1;
+                        }else {
+                            adult = 0;
+                        }
+
+                        ContentValues favouriteValues = new ContentValues();
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID, movieId);
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE, movieTitle);
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW, movieData.getPLOT_SYNOPSIS());
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH, movieData.getBACKDROP_PATH(GlobalData.size_w500));
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH, movieData.getPOSTER_PATH(GlobalData.size_w342));
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE, movieData.getRELEASE_DATE());
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE, movieData.getAVERAGE_RATINGS());
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY, movieData.getPOPULARITY());
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_ADULT, adult);
+                        favouriteValues.put(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE, 1);
+
+                        Uri newUri = mContext.getContentResolver().insert(
+                                FavouriteContract.FavouriteEntry.CONTENT_URI,
+                                favouriteValues
+                        );
+                        Cursor cursorCheck;
+
+                        Log.v(LOG_TAG, "Returned URI: " + newUri);
+
+                        if (newUri != null){
+                            cursorCheck = mContext.getContentResolver().query(
+                                    newUri,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                            );
+
+                            if (cursorCheck != null){
+                                if (cursorCheck.getCount() != 0){
+                                    Toast.makeText(mContext, movieTitle + " inserted Successfully!", Toast.LENGTH_SHORT).show();
+                                    holder.favIconImageView.setBackgroundResource(R.drawable.ic_favorite_white_24dp);
+                                }else {
+                                    Log.e(LOG_TAG, "Insertion into favourites unsuccessfull!");
+                                }
+                            }else {
+                                Log.e(LOG_TAG, "Insert cursor is returned to be null!");
+                            }
+                        }else {
+                            Log.e(LOG_TAG, "Returned Uri is null!");
+                        }
+                    }
+                }else {
+                    Log.e(LOG_TAG, "Cursor is null");
+                }
+            }
+        });
 
     }
 
@@ -127,6 +227,7 @@ public class BrowseMoviesAdapter extends
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView moviePosterView;
+        public ImageView favIconImageView;
         public TextView movieTitle;
         public RelativeLayout cardContainer;
         private List<MovieDataModel> movieDataModelList;
@@ -139,6 +240,7 @@ public class BrowseMoviesAdapter extends
             this.moviePosterView = (ImageView) itemView.findViewById(R.id.poster_image_item);
             this.movieTitle = (TextView) itemView.findViewById(R.id.card_title);
             this.cardContainer = (RelativeLayout) itemView.findViewById(R.id.card_text_container);
+            this.favIconImageView = (ImageView) itemView.findViewById(R.id.card_fav_icon);
             itemView.setOnClickListener(this);
         }
 
@@ -149,7 +251,7 @@ public class BrowseMoviesAdapter extends
             MovieDataModel details = movieDataModelList.get(position);
 
             Intent intent = new Intent(context, MovieDetailActivity.class);
-            intent.putExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING, details);
+            intent.putExtra(GlobalData.INTENT_KEY_MOVIE_MODEL, details);
             context.startActivity(intent);
 
         }

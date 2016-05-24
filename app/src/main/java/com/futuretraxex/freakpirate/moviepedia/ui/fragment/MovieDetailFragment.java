@@ -1,10 +1,12 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -57,6 +59,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A placeholder fragment containing a simple view.
  */
 public class MovieDetailFragment extends Fragment {
+
+    private final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private MovieDataModel movieDataModel;
 
@@ -125,10 +129,13 @@ public class MovieDetailFragment extends Fragment {
         Intent intent = getActivity().getIntent();
 
 
-        if (intent != null && intent.hasExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING)) {
-            movieDataModel = intent.getParcelableExtra(GlobalData.DETAIL_ACTIVITY_INTENT_STRING);
+        if (intent != null && intent.hasExtra(GlobalData.INTENT_KEY_MOVIE_MODEL)) {
+            movieDataModel = intent.getParcelableExtra(GlobalData.INTENT_KEY_MOVIE_MODEL);
 
             checkParcelableColors();
+        }else if (intent != null && intent.hasExtra(GlobalData.INTENT_KEY_URI)){
+            Uri uri = Uri.parse(intent.getStringExtra(GlobalData.INTENT_KEY_URI));
+            Log.v(LOG_TAG, "Received URI: " + uri.toString());
         }else {
             Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
         }
@@ -180,7 +187,7 @@ public class MovieDetailFragment extends Fragment {
         movieSynopsisTitle.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
         movieReleaseDate.setText(releaseDate);
         movieAverageRating.setText(averageRating);
-        ratingBar.setRating(Float.parseFloat(movieDataModel.getAVERAGE_RATINGS()) / 2);
+        ratingBar.setRating(movieDataModel.getAVERAGE_RATINGS() / 2);
         movieSynopsis.setText(movieDataModel.getPLOT_SYNOPSIS());
         movieAdult.setText(adult);
 
