@@ -47,20 +47,20 @@ public class BrowseMoviesParser {
             JSONObject detailObject = gridArray.getJSONObject(i);
 
             String movieTitle = detailObject.getString(PARAM_TITLE);
-            String movieID = detailObject.getString(PARAM_ID);
+            long movieID = detailObject.getLong(PARAM_ID);
             String posterPath = detailObject.getString(PARAM_POSTER_PATH);
             String backdropPath = detailObject.getString(PARAM_BACKDROP_PATH);
             String plotSynopsis = detailObject.getString(PARAM_PLOT_SYNOPSIS);
             float averageRating = Float.parseFloat(detailObject.getString(PARAM_AVERAGE_RATING));
             String releaseDate = detailObject.getString(PARAM_RELEASE_DATE);
-            String adult = detailObject.getString(PARAM_ADULT);
+            boolean adult = detailObject.getBoolean(PARAM_ADULT);
             float popularity = Float.parseFloat(detailObject.getString(PARAM_POPULARITY));
 
             int toolbarColor = context.getResources().getColor(R.color.colorPrimary);
             int statusBarColor = context.getResources().getColor(R.color.colorPrimaryDark);
 
             MovieDataModel temp = new MovieDataModel(movieTitle, movieID, posterPath, backdropPath,
-                    plotSynopsis, averageRating, popularity, releaseDate, adult, toolbarColor, statusBarColor);
+                    plotSynopsis, averageRating, popularity, releaseDate, adult, toolbarColor, statusBarColor, context);
 
             detailsList[i] = temp;
         }

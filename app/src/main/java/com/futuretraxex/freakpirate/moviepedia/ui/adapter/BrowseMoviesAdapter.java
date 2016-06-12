@@ -65,6 +65,29 @@ public class BrowseMoviesAdapter extends
         // get data model based on position
         MovieDataModel data = mMovieDataModel.get(position);
 
+        holder.favIconImageView.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+
+        Uri movieIdUri = FavouriteContract.FavouriteEntry.buildByMovieIdUri(data.getMOVIE_ID());
+        Cursor cursorIsFav = mContext.getContentResolver().query(
+                movieIdUri,
+                new String[]{FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE},
+                null,
+                null,
+                null
+        );
+
+        if (cursorIsFav != null){
+            if (cursorIsFav.getCount() != 0){
+                holder.favIconImageView.setImageResource(R.drawable.ic_favorite_white_24dp);
+            }else {
+                holder.favIconImageView.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+            }
+            cursorIsFav.close();
+        }else {
+            Log.v(LOG_TAG, mMovieDataModel.get(position).getMOVIE_TITLE() + ": Cursor is null");
+            holder.favIconImageView.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+        }
+
         TextView movieTitle = holder.movieTitle;
         movieTitle.setText(data.getMOVIE_TITLE());
 
@@ -114,21 +137,21 @@ public class BrowseMoviesAdapter extends
             @Override
             public void onClick(View v) {
                 MovieDataModel movieData = mMovieDataModel.get(position);
-                long movieId = Long.parseLong(movieData.getMOVIE_ID());
+                long movieId = movieData.getMOVIE_ID();
                 String movieTitle = movieData.getMOVIE_TITLE();
 
                 Uri uri = FavouriteContract.FavouriteEntry.buildByMovieIdUri(movieId);
 
                 Cursor cursor = mContext.getContentResolver().query(
                         uri,
-                        null,
+                        new String[]{FavouriteContract.FavouriteEntry._ID},
                         null,
                         null,
                         null
                 );
 
-                if (cursor != null){
-                    if (cursor.getCount() != 0){
+                if (cursor != null) {
+                    if (cursor.getCount() != 0) {
 //                        Data already present and needs to be deleted first
                         int rowsDeleted = mContext.getContentResolver().delete(
                                 uri,
@@ -136,19 +159,19 @@ public class BrowseMoviesAdapter extends
                                 null
                         );
 
-                        if (rowsDeleted != 0){
+                        if (rowsDeleted != 0) {
                             Toast.makeText(mContext, movieTitle + " removed from favourites successfully!", Toast.LENGTH_SHORT).show();
-                            holder.favIconImageView.setBackgroundResource(R.drawable.ic_favorite_border_white_24dp);
-                        }else {
+                            holder.favIconImageView.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+                        } else {
                             Log.e(LOG_TAG, movieTitle + " is not deleted!");
                         }
-                    }else {
+                    } else {
 //                        Data is not present in database and needs to be inserted
                         Log.v(LOG_TAG, "Empty Cursor");
                         int adult;
-                        if (movieData.getADULT().equalsIgnoreCase("yes")){
+                        if (movieData.getADULT()) {
                             adult = 1;
-                        }else {
+                        } else {
                             adult = 0;
                         }
 
@@ -168,34 +191,37 @@ public class BrowseMoviesAdapter extends
                                 FavouriteContract.FavouriteEntry.CONTENT_URI,
                                 favouriteValues
                         );
-                        Cursor cursorCheck;
 
                         Log.v(LOG_TAG, "Returned URI: " + newUri);
 
-                        if (newUri != null){
+                        if (newUri != null) {
+                            Cursor cursorCheck;
                             cursorCheck = mContext.getContentResolver().query(
                                     newUri,
-                                    null,
+                                    new String[]{FavouriteContract.FavouriteEntry._ID},
                                     null,
                                     null,
                                     null
                             );
 
-                            if (cursorCheck != null){
-                                if (cursorCheck.getCount() != 0){
+                            if (cursorCheck != null) {
+                                if (cursorCheck.getCount() != 0) {
                                     Toast.makeText(mContext, movieTitle + " inserted Successfully!", Toast.LENGTH_SHORT).show();
-                                    holder.favIconImageView.setBackgroundResource(R.drawable.ic_favorite_white_24dp);
-                                }else {
+                                    holder.favIconImageView.setImageResource(R.drawable.ic_favorite_white_24dp);
+                                } else {
                                     Log.e(LOG_TAG, "Insertion into favourites unsuccessfull!");
                                 }
-                            }else {
+                                cursorCheck.close();
+                            } else {
                                 Log.e(LOG_TAG, "Insert cursor is returned to be null!");
                             }
-                        }else {
+                        } else {
                             Log.e(LOG_TAG, "Returned Uri is null!");
                         }
+
                     }
-                }else {
+                    cursor.close();
+                } else {
                     Log.e(LOG_TAG, "Cursor is null");
                 }
             }

@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 /**
  * Created by FreakPirate on 5/21/2016.
@@ -16,6 +17,7 @@ public class FavouriteContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final class FavouriteEntry implements BaseColumns{
+        private static final String LOG_TAG = FavouriteEntry.class.getSimpleName();
         // Table name
         public static final String TABLE_FAVOURITE = "favourite";
 
@@ -48,6 +50,14 @@ public class FavouriteContract {
         // for building Uri's on query
         public static Uri buildByMovieIdUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildUriById(long id){
+            Uri tempUri = Uri.withAppendedPath(CONTENT_URI, "id");
+            tempUri = ContentUris.withAppendedId(tempUri, id);
+            Log.w(LOG_TAG, "In buildUriById & URI: " + tempUri);
+
+            return tempUri;
         }
     }
 }

@@ -3,11 +3,13 @@ package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,9 +36,11 @@ import com.futuretraxex.freakpirate.moviepedia.Models.ReviewModel;
 import com.futuretraxex.freakpirate.moviepedia.Models.ReviewResult;
 import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
 import com.futuretraxex.freakpirate.moviepedia.Models.TrailerResult;
+import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.listener.CustomOnClickListener;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -76,6 +80,7 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.movie_details_ll) LinearLayout reviewTrailerLL;
     @Bind(R.id.play_icon_backdrop) ImageView playIconBackdrop;
     @Bind(R.id.detail_rating_bar) RatingBar ratingBar;
+    @Bind(R.id.fab_icon) FloatingActionButton fabIcon;
 
     int mToolbarColor;
     int mStatusBarColor;
@@ -93,6 +98,8 @@ public class MovieDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getActivity();
+        mToolbarColor = context.getResources().getColor(R.color.colorPrimary);
+        mStatusBarColor = context.getResources().getColor(R.color.colorPrimaryDark);
     }
 
     @Override
@@ -128,52 +135,131 @@ public class MovieDetailFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
 
-
         if (intent != null && intent.hasExtra(GlobalData.INTENT_KEY_MOVIE_MODEL)) {
             movieDataModel = intent.getParcelableExtra(GlobalData.INTENT_KEY_MOVIE_MODEL);
-
-            checkParcelableColors();
         }else if (intent != null && intent.hasExtra(GlobalData.INTENT_KEY_URI)){
             Uri uri = Uri.parse(intent.getStringExtra(GlobalData.INTENT_KEY_URI));
             Log.v(LOG_TAG, "Received URI: " + uri.toString());
+            movieDataModel = fetchUriData(uri);
         }else {
             Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
         }
+
+        checkParcelableColors();
 
         return rootView;
     }
 
     public void checkParcelableColors(){
+        inflateView();
         if (movieDataModel.getTOOLBAR_COLOR() == getResources().getColor(R.color.colorPrimary)){
+            Log.v(LOG_TAG, "In CheckParcelableColors! toolbarColor == colorPrimary");
             getToolbarColor();
-        }else {
-            inflateView();
         }
+    }
+
+    private MovieDataModel fetchUriData(Uri uri){
+        MovieDataModel fetchModel;
+
+        Cursor cursor = context.getContentResolver().query(
+                uri,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.getCount() != 0){
+            Log.v(LOG_TAG, "Cursor is not empty! CursorCount: " + cursor.getCount());
+            cursor.moveToFirst();
+
+            int indexMovieId = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID);
+            long movieId = cursor.getInt(indexMovieId);
+
+            int indexMovieTitle = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE);
+            String movieTitle = cursor.getString(indexMovieTitle);
+
+            int indexOverview = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW);
+            String overview = cursor.getString(indexOverview);
+
+            int indexBackdropPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH);
+            String backdropPath = cursor.getString(indexBackdropPath);
+
+            int indexPosterPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH);
+            String posterPath = cursor.getString(indexPosterPath);
+
+            int indexReleaseDate = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE);
+            String releaseDate = cursor.getString(indexReleaseDate);
+
+            int indexPopularity = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY);
+            float popularity = cursor.getFloat(indexPopularity);
+
+            int indexVoteAverage = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE);
+            float voteAverage = cursor.getFloat(indexVoteAverage);
+
+            int indexAdult = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ADULT);
+            int adultTemp = cursor.getInt(indexAdult);
+            boolean adult = adultTemp == 1;
+
+            int indexIsFavourite = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE);
+            int isFavouriteTemp = cursor.getInt(indexIsFavourite);
+            boolean isFavourite = isFavouriteTemp == 1;
+
+            fetchModel = new MovieDataModel(movieTitle, movieId, posterPath, backdropPath, overview,
+                    voteAverage, popularity, releaseDate, adult, isFavourite, mToolbarColor, mStatusBarColor, context);
+        }
+        else {
+            Log.e(LOG_TAG, "Intent Cursor is either empty or cannot be opened!");
+            return null;
+        }
+
+        return fetchModel;
     }
 
     public void inflateView(){
 
         movieCoverImageView.setBackgroundColor(movieDataModel.getTOOLBAR_COLOR());
 
-        Transformation transformation = new RoundedTransformationBuilder()
-                .borderColor(movieDataModel.getTOOLBAR_COLOR())
-                .borderWidthDp(4)
-                .cornerRadiusDp(30)
-                .oval(false)
-                .build();
+        Log.v(LOG_TAG, "In inflateView! PosterPath: " + movieDataModel.getPOSTER_PATH(GlobalData.size_w342));
 
         Picasso.with(context)
                 .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
-                .error(R.drawable.image_load_error)
+                .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(300, 450)
 //                .centerInside()
-                .transform(transformation)
-                .into(moviePosterImageView);
+                .into(moviePosterImageView, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context)
+                                .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
+                                .error(R.drawable.image_load_error)
+                                .resize(300,450)
+                                .into(movieCoverImageView);
+                    }
+                });
 
         Picasso.with(context)
                 .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w500))
-                    .error(R.drawable.image_load_error)
-                .into(movieCoverImageView);
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(movieCoverImageView, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError() {
+                        Picasso.with(context)
+                                .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w500))
+                                .error(R.drawable.image_load_error)
+                                .into(movieCoverImageView);
+                    }
+                });
 
         movieTitle.setText(movieDataModel.getMOVIE_TITLE());
 
@@ -198,7 +284,7 @@ public class MovieDetailFragment extends Fragment {
         mToolbarColor = movieDataModel.getTOOLBAR_COLOR();
         mStatusBarColor = movieDataModel.getSTATUS_BAR_COLOR();
         collapsedToolbar.setContentScrimColor(mToolbarColor);
-        collapsedToolbar.setStatusBarScrimColor(mStatusBarColor);
+        collapsedToolbar.setStatusBarScrimColor(mToolbarColor);
 
 //        moviePosterImageView.setBorderColor(mStatusBarColor);
 //        moviePosterImageView.setBorderWidth(5);
@@ -228,53 +314,75 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        int movieId = Integer.parseInt(movieDataModel.getMOVIE_ID());
+        long movieIdLong = movieDataModel.getMOVIE_ID();
+        final int movieId = (int) movieIdLong;
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        if (movieDataModel.getIS_FAVOURITE()){
+            fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
+        }else {
+            fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+        }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL_REVIEW_TRAILER)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
-
-        Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
-        final Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
-
-        callReview.enqueue(new Callback<ReviewModel>() {
+        fabIcon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-
-                if (response.body().getTotalResults() != 0 && getActivity() != null){
-                    loadReviews(response.body());
-
-                    callTrailer.enqueue(new Callback<TrailerModel>() {
-                        @Override
-                        public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                            if (response.body().getYoutube().size() != 0 && getActivity() != null) {
-                                loadTrailer(response.body());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<TrailerModel> call, Throwable t) {
-
-                        }
-                    });
+            public void onClick(View v) {
+                if (movieDataModel.getIS_FAVOURITE()){
+                    movieDataModel.setIS_FAVOURITE(false);
+                    fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+                }else {
+                    movieDataModel.setIS_FAVOURITE(true);
+                    fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ReviewModel> call, Throwable t) {
-
             }
         });
 
-        super.onViewCreated(view, savedInstanceState);
+        if (! movieDataModel.getIS_FAVOURITE()){
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL_REVIEW_TRAILER)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+
+            GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
+
+            Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
+            final Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
+
+            callReview.enqueue(new Callback<ReviewModel>() {
+                @Override
+                public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
+
+                    if (response.body().getTotalResults() != 0 && getActivity() != null){
+                        loadReviews(response.body());
+
+                        callTrailer.enqueue(new Callback<TrailerModel>() {
+                            @Override
+                            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                                if (response.body().getYoutube().size() != 0 && getActivity() != null) {
+                                    loadTrailer(response.body());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<TrailerModel> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReviewModel> call, Throwable t) {
+
+                }
+            });
+
+            super.onViewCreated(view, savedInstanceState);
+        }
     }
 
     private void loadReviews(ReviewModel reviewContent){

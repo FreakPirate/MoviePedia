@@ -22,6 +22,7 @@ public class FavouriteProvider extends ContentProvider {
 
     private static final int FAVOURITE = 100;
     private static final int FAVOURITE_WITH_MOVIE_ID = 200;
+    private static final int FAVOURITE_WITH_ID = 300;
 
     private static UriMatcher buildUriMatcher(){
         // Build a UriMatcher by adding a specific code to return based on a match
@@ -32,6 +33,7 @@ public class FavouriteProvider extends ContentProvider {
         // add a code for each type of URI you want
         matcher.addURI(authority, FavouriteContract.FavouriteEntry.TABLE_FAVOURITE, FAVOURITE);
         matcher.addURI(authority, FavouriteContract.FavouriteEntry.TABLE_FAVOURITE + "/#", FAVOURITE_WITH_MOVIE_ID);
+        matcher.addURI(authority, FavouriteContract.FavouriteEntry.TABLE_FAVOURITE + "/id/#", FAVOURITE_WITH_ID);
 
         return matcher;
     }
@@ -79,6 +81,20 @@ public class FavouriteProvider extends ContentProvider {
                 break;
             }
 
+            case FAVOURITE_WITH_ID:{
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        FavouriteContract.FavouriteEntry.TABLE_FAVOURITE,
+                        projection,
+                        FavouriteContract.FavouriteEntry._ID + " = ?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder
+                );
+
+                break;
+            }
+
             default:{
                 // By default, we assume a bad URI
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -101,6 +117,9 @@ public class FavouriteProvider extends ContentProvider {
             case FAVOURITE_WITH_MOVIE_ID:
                 return FavouriteContract.FavouriteEntry.CONTENT_ITEM_TYPE;
 
+            case FAVOURITE_WITH_ID:
+                return FavouriteContract.FavouriteEntry.CONTENT_ITEM_TYPE;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -119,7 +138,7 @@ public class FavouriteProvider extends ContentProvider {
 
                 // insert unless it is already contained in the database
                 if (_id > 0)
-                    returnUri = FavouriteContract.FavouriteEntry.buildByMovieIdUri(_id);
+                    returnUri = FavouriteContract.FavouriteEntry.buildUriById(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into: " + uri);
 
@@ -169,6 +188,19 @@ public class FavouriteProvider extends ContentProvider {
                 break;
             }
 
+            case FAVOURITE_WITH_ID:{
+                rowsDeleted = db.delete(
+                        FavouriteContract.FavouriteEntry.TABLE_FAVOURITE,
+                        FavouriteContract.FavouriteEntry._ID + " = ?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))}
+                );
+
+                // reset _ID
+                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
+                        FavouriteContract.FavouriteEntry.TABLE_FAVOURITE + "'");
+                break;
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -201,6 +233,15 @@ public class FavouriteProvider extends ContentProvider {
                 break;
 
             case FAVOURITE_WITH_MOVIE_ID:
+                rowsUpdated = db.update(
+                        FavouriteContract.FavouriteEntry.TABLE_FAVOURITE,
+                        values,
+                        FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID + " = ?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))}
+                );
+                break;
+
+            case FAVOURITE_WITH_ID:
                 rowsUpdated = db.update(
                         FavouriteContract.FavouriteEntry.TABLE_FAVOURITE,
                         values,

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
@@ -90,7 +91,7 @@ public class FavouriteAdapter extends CursorRecyclerViewAdapter<FavouriteAdapter
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
+    public void onBindViewHolder(final ViewHolder viewHolder, Cursor cursor) {
 
         Log.d(LOG_TAG, "In Bind View");
 
@@ -107,8 +108,8 @@ public class FavouriteAdapter extends CursorRecyclerViewAdapter<FavouriteAdapter
                 .into(viewHolder.moviePosterView);
 
         int titleIndex = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE);
-        String movieTitle = cursor.getString(titleIndex);
-        viewHolder.movieTitle.setText(movieTitle);
+        viewHolder.movieTitle = cursor.getString(titleIndex);
+        viewHolder.movieTitleTextView.setText(viewHolder.movieTitle);
 
         int isFavIndex = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE);
         int isFavourite = cursor.getInt(isFavIndex);
@@ -122,21 +123,41 @@ public class FavouriteAdapter extends CursorRecyclerViewAdapter<FavouriteAdapter
                     .load(R.drawable.ic_favorite_border_white_24dp)
                     .into(viewHolder.favIconImageView);
         }
+
+        viewHolder.favIconImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri deleteUri = FavouriteContract.FavouriteEntry.buildByMovieIdUri(viewHolder.movieId);
+
+                int rowsDeleted = mContext.getContentResolver().delete(
+                        deleteUri,
+                        null,
+                        null
+                );
+
+                if (rowsDeleted != 0){
+                    Toast.makeText(mContext, "Movie: " + viewHolder.movieTitle + " deleted successfully!", Toast.LENGTH_SHORT).show();
+                }else {
+                    Log.v(LOG_TAG, "Rows deleted: " + rowsDeleted);
+                }
+            }
+        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView moviePosterView;
-        public TextView movieTitle;
+        public TextView movieTitleTextView;
         public RelativeLayout cardContainer;
         public ImageView favIconImageView;
         public Context mContext;
         public long movieId;
+        public String movieTitle;
 
         public ViewHolder(View itemView, Context context){
             super(itemView);
             this.favIconImageView = (ImageView) itemView.findViewById(R.id.card_fav_icon);
             this.moviePosterView = (ImageView) itemView.findViewById(R.id.poster_image_item);
-            this.movieTitle = (TextView) itemView.findViewById(R.id.card_title);
+            this.movieTitleTextView = (TextView) itemView.findViewById(R.id.card_title);
             this.cardContainer = (RelativeLayout) itemView.findViewById(R.id.card_text_container);
             this.mContext = context;
             itemView.setOnClickListener(this);
