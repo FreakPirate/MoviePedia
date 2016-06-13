@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.futuretraxex.freakpirate.moviepedia.Models.VideosModel;
 import com.futuretraxex.freakpirate.moviepedia.backend.URIBuilder;
-import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
 
 /**
  * Created by FreakPirate on 3/24/2016.

@@ -39,7 +39,6 @@ import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.Models.ReviewModel;
 import com.futuretraxex.freakpirate.moviepedia.Models.ReviewResult;
 import com.futuretraxex.freakpirate.moviepedia.Models.VideosModel;
-import com.futuretraxex.freakpirate.moviepedia.Models.TrailerResult;
 import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.listener.CustomOnClickListener;
@@ -536,7 +535,7 @@ public class MovieDetailFragment extends Fragment {
             View view = inflater.inflate(R.layout.item_trailer, null);
 
             TextView trailerTitle = (TextView) view.findViewById(R.id.trailer_title_textView);
-            String title = vid.getSite() + ": " + vid.getName();
+            String title = vid.getType() + " (" + vid.getSite() + "): " + vid.getName() + " " + vid.getSize() + "p";
             trailerTitle.setText(title);
 
             ImageView playView = (ImageView) view.findViewById(R.id.trailer_play_view);
