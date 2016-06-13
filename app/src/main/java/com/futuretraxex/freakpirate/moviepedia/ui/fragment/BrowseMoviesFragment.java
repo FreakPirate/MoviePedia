@@ -110,6 +110,8 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
                 getString(R.string.pref_sort_default_value)
         );
 
+        Log.v(LOG_TAG, "Sort order fetched from shared prefs: " + sortOrder);
+
         safeSearch = sharedPreferences.getBoolean(
                 getString(R.string.pref_adult_key),
                 true

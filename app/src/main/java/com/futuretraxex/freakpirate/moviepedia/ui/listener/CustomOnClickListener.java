@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
+import com.futuretraxex.freakpirate.moviepedia.Models.VideosModel;
 import com.futuretraxex.freakpirate.moviepedia.backend.URIBuilder;
 import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
 
@@ -15,10 +16,10 @@ import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
 public class CustomOnClickListener implements View.OnClickListener {
 
     Activity context;
-    TrailerModel trailerModel;
+    VideosModel trailerModel;
     int viewId;
 
-    public CustomOnClickListener(Activity context, TrailerModel model, int viewId){
+    public CustomOnClickListener(Activity context, VideosModel model, int viewId){
         this.context = context;
         this.trailerModel = model;
         this.viewId = viewId;
@@ -30,7 +31,7 @@ public class CustomOnClickListener implements View.OnClickListener {
         String baseTrailerUrl = "http://www.youtube.com/watch";
         Log.v(CustomOnClickListener.class.getSimpleName(),
                 "ViewID:" + v.getId());
-        String trailerId = trailerModel.getYoutube().get(viewId).getSource();
+        String trailerId = trailerModel.getResults().get(viewId).getKey();
 
         Uri trailerUri = URIBuilder.buildTrailerUri(baseTrailerUrl, trailerId);
 

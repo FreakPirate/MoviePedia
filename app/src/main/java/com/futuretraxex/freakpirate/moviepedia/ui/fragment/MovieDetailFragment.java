@@ -1,16 +1,13 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -33,24 +30,22 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.Toast;
 
 import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
+import com.futuretraxex.freakpirate.moviepedia.Models.VideosResult;
 import com.futuretraxex.freakpirate.moviepedia.backend.GeneralizedAPI;
 import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
 import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.Models.ReviewModel;
 import com.futuretraxex.freakpirate.moviepedia.Models.ReviewResult;
-import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.VideosModel;
 import com.futuretraxex.freakpirate.moviepedia.Models.TrailerResult;
 import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.listener.CustomOnClickListener;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -420,7 +415,7 @@ public class MovieDetailFragment extends Fragment {
         GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
 
         Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
-        final Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
+        final Call<VideosModel> callVideos = generalizedAPI.getMovieVideos(movieId, API_KEY);
 
         callReview.enqueue(new Callback<ReviewModel>() {
             @Override
@@ -429,16 +424,16 @@ public class MovieDetailFragment extends Fragment {
                 if (response.body().getTotalResults() != 0 && getActivity() != null){
                     loadReviews(response.body());
 
-                    callTrailer.enqueue(new Callback<TrailerModel>() {
+                    callVideos.enqueue(new Callback<VideosModel>() {
                         @Override
-                        public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                            if (response.body().getYoutube().size() != 0 && getActivity() != null) {
-                                loadTrailer(response.body());
+                        public void onResponse(Call<VideosModel> call, Response<VideosModel> response) {
+                            if (response.body().getResults().size() != 0 && getActivity() != null) {
+                                loadVideos(response.body());
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<TrailerModel> call, Throwable t) {
+                        public void onFailure(Call<VideosModel> call, Throwable t) {
 
                         }
                     });
@@ -506,7 +501,7 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
-    private void loadTrailer(final TrailerModel result){
+    private void loadVideos(final VideosModel result){
 
         movieCoverImageView.setOnClickListener(new CustomOnClickListener(getActivity(), result, 0));
 
@@ -530,18 +525,18 @@ public class MovieDetailFragment extends Fragment {
         LayoutInflater inflater = (LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        int trailerCount = result.getYoutube().size();
+        int trailerCount = result.getResults().size();
 
         playIconBackdrop.setVisibility(View.VISIBLE);
 
         for (int i=0; i<trailerCount; i++){
-            final TrailerResult tr = result.getYoutube().get(i);
-            Log.v(MovieDetailFragment.class.getSimpleName(), "Trailer " + i + ": " + result.getYoutube().toString());
+            final VideosResult vid = result.getResults().get(i);
+            Log.v(MovieDetailFragment.class.getSimpleName(), "Trailer " + i + ": " + result.getResults().toString());
 
             View view = inflater.inflate(R.layout.item_trailer, null);
 
             TextView trailerTitle = (TextView) view.findViewById(R.id.trailer_title_textView);
-            String title = "Youtube: " + tr.getName();
+            String title = vid.getSite() + ": " + vid.getName();
             trailerTitle.setText(title);
 
             ImageView playView = (ImageView) view.findViewById(R.id.trailer_play_view);

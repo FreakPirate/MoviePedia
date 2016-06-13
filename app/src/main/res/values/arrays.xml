@@ -6,7 +6,6 @@
         <item>@string/pref_label_top_rated</item>
         <item>@string/pref_label_upcoming</item>
         <item>@string/pref_label_now_playing</item>
-        <item>@string/pref_label_latest</item>
     </array>
     
     <array name="pref_sort_list_values">
@@ -15,6 +14,5 @@
         <item>@string/pref_value_top_rated</item>
         <item>@string/pref_value_upcoming</item>
         <item>@string/pref_value_now_playing</item>
-        <item>@string/pref_value_latest</item>
     </array>
 </resources>

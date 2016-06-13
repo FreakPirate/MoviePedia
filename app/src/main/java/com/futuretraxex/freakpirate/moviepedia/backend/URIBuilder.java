@@ -13,7 +13,6 @@ import java.net.URL;
  */
 public class URIBuilder {
 
-    private final static String PARAM_SORT_ORDER = "sort_by";
     private final static String PARAM_API_KEY = "api_key";
     private final static String PARAM_INCLUDE_ADULT = "include_adult";
     private final static String PARAM_PAGE = "page";

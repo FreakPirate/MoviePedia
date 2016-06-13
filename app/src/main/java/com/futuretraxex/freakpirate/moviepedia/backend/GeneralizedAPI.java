@@ -1,7 +1,7 @@
 package com.futuretraxex.freakpirate.moviepedia.backend;
 
 import com.futuretraxex.freakpirate.moviepedia.Models.ReviewModel;
-import com.futuretraxex.freakpirate.moviepedia.Models.TrailerModel;
+import com.futuretraxex.freakpirate.moviepedia.Models.VideosModel;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -17,5 +17,5 @@ public interface GeneralizedAPI {
     Call<ReviewModel> getMovieReviews(@Path("id") int movieId, @Query("api_key") String apiKey);
 
     @GET("/3/movie/{id}/videos")
-    Call<TrailerModel> getMovieTrailer(@Path("id") int movieId, @Query("api_key") String apiKey);
+    Call<VideosModel> getMovieVideos(@Path("id") int movieId, @Query("api_key") String apiKey);
 }
