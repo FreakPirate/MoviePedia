@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Material Theme-->
-    <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimary">#34495E</color>
+    <color name="colorPrimaryDark">#2C3E50</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorPrimaryText">#FFFFFF</color>
 

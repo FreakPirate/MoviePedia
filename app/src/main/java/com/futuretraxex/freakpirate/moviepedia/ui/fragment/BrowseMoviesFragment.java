@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -52,8 +54,10 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
     RecyclerView rvMovieData;
     @Bind(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
-    @Bind(R.id.error_db_empty)
-    RelativeLayout errorLayout;
+    @Bind(R.id.error_db_empty_image_view)
+    ImageView errorLayout;
+    @Bind(R.id.relativeLayoutMain)
+    RelativeLayout parentLayout;
 
     private BrowseMoviesAdapter mBrowseMoviesAdapter;
     private FavouriteAdapter mFavouriteAdapter;
@@ -69,7 +73,7 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
@@ -78,30 +82,12 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
         rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
         ButterKnife.bind(this, rootView);
 //            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        addGridViewDecoration();
+
+        if (isNetworkAvailable()) {
+            addGridViewDecoration();
+        }
+
         initUI();
-
-//        if(isNetworkAvailable()){
-//            rootView = inflater.inflate(R.layout.fragment_browse_movies, container, false);
-//            ButterKnife.bind(this, rootView);
-////            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-//            addGridViewDecoration();
-//            initUI();
-//        }else {
-//            rootView = inflater.inflate(R.layout.error_egg, container, false);
-//
-//            TextView textView = (TextView) rootView.findViewById(R.id.error_egg_text_view);
-//            textView.setText(getActivity().getResources().getString(R.string.network_error));
-//
-//            LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.error_egg_container);
-//            linearLayout.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    getActivity().finish();
-//                }
-//            });
-//        }
-
         return rootView;
     }
 
@@ -117,7 +103,6 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
 
     private void initUI(){
 
-        Log.v(BrowseMoviesFragment.class.getSimpleName(), "Called: initUI()");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         sortOrder = sharedPreferences.getString(
@@ -139,47 +124,58 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
             rvMovieData.setAdapter(mFavouriteAdapter);
             getLoaderManager().initLoader(FAVOURITE_LOADER_ID, null, this);
         }else {
-            addGridOnScrollListener();
-            errorLayout.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-            swipeContainer.setEnabled(true);
+            if (isNetworkAvailable()){
+                addGridOnScrollListener();
+                errorLayout.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                swipeContainer.setEnabled(true);
 
-            FetchMovieDB task = new FetchMovieDB(sortOrder,
-                    safeSearch,
-                    1,
-                    getActivity(),
-                    new FetchMovieDB.AsyncResponse() {
-                        @Override
-                        public void onProcessFinish(MovieDataModel[] output) {
-                            if (mBrowseMoviesAdapter != null){
-                                mBrowseMoviesAdapter.clear();
+                FetchMovieDB task = new FetchMovieDB(sortOrder,
+                        safeSearch,
+                        1,
+                        getActivity(),
+                        new FetchMovieDB.AsyncResponse() {
+                            @Override
+                            public void onProcessFinish(MovieDataModel[] output) {
+                                if (mBrowseMoviesAdapter != null){
+                                    mBrowseMoviesAdapter.clear();
+                                }
+
+                                mBrowseMoviesAdapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(output)), getActivity());
+                                rvMovieData.setAdapter(mBrowseMoviesAdapter);
+                                progressBar.setVisibility(View.GONE);
                             }
+                        });
+                task.execute();
 
-                            mBrowseMoviesAdapter = new BrowseMoviesAdapter(new ArrayList<MovieDataModel>(Arrays.asList(output)), getActivity());
-                            rvMovieData.setAdapter(mBrowseMoviesAdapter);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
-            task.execute();
+                // Configure the refreshing colors
+                swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                        android.R.color.holo_green_light,
+                        android.R.color.holo_orange_light,
+                        android.R.color.holo_red_light);
+                // Setup refresh listener which triggers new data loading
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        // Your code to refresh the list here.
+                        // Make sure you call swipeContainer.setRefreshing(false)
+                        // once the network request has completed successfully.
 
-            // Configure the refreshing colors
-            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                    android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light,
-                    android.R.color.holo_red_light);
-            // Setup refresh listener which triggers new data loading
-            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    // Your code to refresh the list here.
-                    // Make sure you call swipeContainer.setRefreshing(false)
-                    // once the network request has completed successfully.
-
-                    refreshDataSet();
-                }
-            });
+                        refreshDataSet();
+                    }
+                });
+            }else {
+                Snackbar snackbar = Snackbar.make(parentLayout, "No network connection detected!", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Exit", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getActivity().finish();
+                            }
+                        });
+                snackbar.show();
+                errorLayout.setVisibility(View.VISIBLE);
+            }
         }
-
     }
 
     private void refreshDataSet(){
@@ -301,6 +297,8 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 0){
             errorLayout.setVisibility(View.VISIBLE);
+            Snackbar snackbar = Snackbar.make(parentLayout, "Database is empty!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }else {
             errorLayout.setVisibility(View.GONE);
             mFavouriteAdapter.swapCursor(data);

@@ -1,6 +1,7 @@
 package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,7 +10,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +31,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
+
 import com.futuretraxex.freakpirate.moviepedia.BuildConfig;
 import com.futuretraxex.freakpirate.moviepedia.backend.GeneralizedAPI;
 import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
@@ -81,6 +86,7 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.play_icon_backdrop) ImageView playIconBackdrop;
     @Bind(R.id.detail_rating_bar) RatingBar ratingBar;
     @Bind(R.id.fab_icon) FloatingActionButton fabIcon;
+    @Bind(R.id.coordinatorLayoutDetail) CoordinatorLayout coordinatorLayout;
 
     int mToolbarColor;
     int mStatusBarColor;
@@ -329,9 +335,72 @@ public class MovieDetailFragment extends Fragment {
                 if (movieDataModel.getIS_FAVOURITE()){
                     movieDataModel.setIS_FAVOURITE(false);
                     fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+
+                    int deletedRows = context.getContentResolver().delete(
+                            FavouriteContract.FavouriteEntry.buildByMovieIdUri(movieDataModel.getMOVIE_ID()),
+                            null,
+                            null
+                    );
+
+                    if (deletedRows != 0){
+                        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                                movieDataModel.getMOVIE_TITLE() + " deleted successfully from database",
+                                Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                    Log.v(LOG_TAG, "Row deleted successfully!");
                 }else {
                     movieDataModel.setIS_FAVOURITE(true);
                     fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
+                    
+                    int adult;
+                    if (movieDataModel.getADULT())
+                        adult = 1;
+                    else 
+                        adult = 0;
+
+                    ContentValues values = new ContentValues();
+
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID, movieDataModel.getMOVIE_ID());
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE, movieDataModel.getMOVIE_TITLE());
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW, movieDataModel.getPLOT_SYNOPSIS());
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH, movieDataModel.getBACKDROP_PATH(GlobalData.size_w500));
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH, movieDataModel.getPOSTER_PATH(GlobalData.size_w342));
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE, movieDataModel.getRELEASE_DATE());
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE, movieDataModel.getAVERAGE_RATINGS());
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY, movieDataModel.getPOPULARITY());
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_ADULT, adult);
+                    values.put(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE, 1);
+
+                    Uri newUri = context.getContentResolver().insert(
+                            FavouriteContract.FavouriteEntry.CONTENT_URI,
+                            values
+                    );
+
+                    Log.v(LOG_TAG, "Returned URI: " + newUri);
+
+                    if (newUri != null) {
+                        Cursor cursorCheck;
+                        cursorCheck = context.getContentResolver().query(
+                                newUri,
+                                new String[]{FavouriteContract.FavouriteEntry._ID},
+                                null,
+                                null,
+                                null
+                        );
+
+                        if (cursorCheck != null && cursorCheck.getCount() != 0) {
+                            Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                                    movieDataModel.getMOVIE_TITLE() + " inserted successfully into database",
+                                    Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                            cursorCheck.close();
+                        } else {
+                            Log.e(LOG_TAG, "Insert cursor is returned to be null!");
+                        }
+                    } else {
+                        Log.e(LOG_TAG, "Returned Uri is null!");
+                    }
                 }
             }
         });
