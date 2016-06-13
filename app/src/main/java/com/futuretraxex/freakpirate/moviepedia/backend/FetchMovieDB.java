@@ -22,7 +22,7 @@ import java.net.URL;
  */
 public class FetchMovieDB extends AsyncTask <Void, Void, MovieDataModel[]> {
 
-    private final String BASE_URL = "http://api.themoviedb.org/3/discover/movie";
+    private final String BASE_URL = "http://api.themoviedb.org/3/movie";
 
 //    private ProgressBar progressBar;
 

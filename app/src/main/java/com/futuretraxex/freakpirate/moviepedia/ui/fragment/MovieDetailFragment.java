@@ -4,11 +4,13 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -245,7 +247,7 @@ public class MovieDetailFragment extends Fragment {
                                 .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
                                 .error(R.drawable.image_load_error)
                                 .resize(300,450)
-                                .into(movieCoverImageView);
+                                .into(moviePosterImageView);
                     }
                 });
 
@@ -405,53 +407,51 @@ public class MovieDetailFragment extends Fragment {
             }
         });
 
-        if (! movieDataModel.getIS_FAVOURITE()){
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL_REVIEW_TRAILER)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
-                    .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL_REVIEW_TRAILER)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
 
-            GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
+        GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
 
-            Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
-            final Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
+        Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
+        final Call<TrailerModel> callTrailer = generalizedAPI.getMovieTrailer(movieId, API_KEY);
 
-            callReview.enqueue(new Callback<ReviewModel>() {
-                @Override
-                public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
+        callReview.enqueue(new Callback<ReviewModel>() {
+            @Override
+            public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
-                    if (response.body().getTotalResults() != 0 && getActivity() != null){
-                        loadReviews(response.body());
+                if (response.body().getTotalResults() != 0 && getActivity() != null){
+                    loadReviews(response.body());
 
-                        callTrailer.enqueue(new Callback<TrailerModel>() {
-                            @Override
-                            public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
-                                if (response.body().getYoutube().size() != 0 && getActivity() != null) {
-                                    loadTrailer(response.body());
-                                }
+                    callTrailer.enqueue(new Callback<TrailerModel>() {
+                        @Override
+                        public void onResponse(Call<TrailerModel> call, Response<TrailerModel> response) {
+                            if (response.body().getYoutube().size() != 0 && getActivity() != null) {
+                                loadTrailer(response.body());
                             }
+                        }
 
-                            @Override
-                            public void onFailure(Call<TrailerModel> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<TrailerModel> call, Throwable t) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onFailure(Call<ReviewModel> call, Throwable t) {
+            @Override
+            public void onFailure(Call<ReviewModel> call, Throwable t) {
 
-                }
-            });
+            }
+        });
 
-            super.onViewCreated(view, savedInstanceState);
-        }
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void loadReviews(ReviewModel reviewContent){

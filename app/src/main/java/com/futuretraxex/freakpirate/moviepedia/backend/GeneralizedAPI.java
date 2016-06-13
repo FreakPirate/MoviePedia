@@ -16,6 +16,6 @@ public interface GeneralizedAPI {
     @GET("/3/movie/{id}/reviews")
     Call<ReviewModel> getMovieReviews(@Path("id") int movieId, @Query("api_key") String apiKey);
 
-    @GET("/3/movie/{id}/trailers")
+    @GET("/3/movie/{id}/videos")
     Call<TrailerModel> getMovieTrailer(@Path("id") int movieId, @Query("api_key") String apiKey);
 }

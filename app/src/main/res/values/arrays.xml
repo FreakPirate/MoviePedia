@@ -2,15 +2,19 @@
 <resources>
     <array name="pref_sort_list_entries">
         <item>@string/pref_label_favourite</item>
-        <item>@string/pref_label_most_popular</item>
-        <item>@string/pref_label_highest_rated</item>
-        <item>@string/pref_label_most_rated</item>
+        <item>@string/pref_label_popular</item>
+        <item>@string/pref_label_top_rated</item>
+        <item>@string/pref_label_upcoming</item>
+        <item>@string/pref_label_now_playing</item>
+        <item>@string/pref_label_latest</item>
     </array>
     
     <array name="pref_sort_list_values">
         <item>@string/pref_value_favourite</item>
-        <item>@string/pref_value_most_popular</item>
-        <item>@string/pref_value_highest_rated</item>
-        <item>@string/pref_value_most_rated</item>
+        <item>@string/pref_value_popular</item>
+        <item>@string/pref_value_top_rated</item>
+        <item>@string/pref_value_upcoming</item>
+        <item>@string/pref_value_now_playing</item>
+        <item>@string/pref_value_latest</item>
     </array>
 </resources>

@@ -25,7 +25,7 @@ public class URIBuilder {
     public static Uri buildGridUri(String baseURL, String sortOrder, Boolean includeAdult, int pageNum){
         Uri gridURI = Uri.parse(baseURL)
                 .buildUpon()
-                .appendQueryParameter(PARAM_SORT_ORDER, sortOrder)
+                .appendEncodedPath(sortOrder)
                 .appendQueryParameter(PARAM_INCLUDE_ADULT, includeAdult.toString())
                 .appendQueryParameter(PARAM_PAGE, Integer.toString(pageNum))
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)

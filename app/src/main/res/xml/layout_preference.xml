@@ -13,7 +13,7 @@
         android:dialogTitle="@string/pref_sort_label"
         android:dialogIcon="@drawable/ic_sort_black"
         android:key="@string/pref_sort_key"
-        android:defaultValue="@string/pref_value_most_popular"
+        android:defaultValue="@string/pref_sort_default_value"
         android:entries="@array/pref_sort_list_entries"
         android:entryValues="@array/pref_sort_list_values"/>
 

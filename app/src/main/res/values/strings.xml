@@ -19,19 +19,25 @@
     <string name="pref_sort_label">Sorting</string>
     <string name="pref_sort_key">sorting</string>
 
-    <string name="pref_label_most_popular">Most Popular</string>
-    <string name="pref_value_most_popular">popularity.desc</string>
+    <string name="pref_label_popular">Popular</string>
+    <string name="pref_value_popular">popular</string>
 
-    <string name="pref_label_most_rated">Most Rated</string>
-    <string name="pref_value_most_rated">vote_count.desc</string>
+    <string name="pref_label_top_rated">Top Rated</string>
+    <string name="pref_value_top_rated">top_rated</string>
 
-    <string name="pref_label_highest_rated">Highest Rated</string>
-    <string name="pref_value_highest_rated">vote_average.desc</string>
+    <string name="pref_label_upcoming">Upcoming</string>
+    <string name="pref_value_upcoming">upcoming</string>
+
+    <string name="pref_label_now_playing">Now Playing</string>
+    <string name="pref_value_now_playing">now_playing</string>
+
+    <string name="pref_label_latest">Latest</string>
+    <string name="pref_value_latest">latest</string>
 
     <string name="pref_label_favourite">Favourites</string>
     <string name="pref_value_favourite">favourites</string>
 
-    <string name="pref_sort_default_value">@string/pref_value_most_popular</string>
+    <string name="pref_sort_default_value">@string/pref_value_popular</string>
 
     <!-- Preference Strings ADULT-->
     <string name="pref_adult_label">Safe Search</string>
