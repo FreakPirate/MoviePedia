@@ -60,7 +60,8 @@ public class BrowseMoviesParser {
             int statusBarColor = context.getResources().getColor(R.color.colorPrimaryDark);
 
             MovieDataModel temp = new MovieDataModel(movieTitle, movieID, posterPath, backdropPath,
-                    plotSynopsis, averageRating, popularity, releaseDate, adult, toolbarColor, statusBarColor, context);
+                    plotSynopsis, averageRating, popularity, releaseDate,
+                    adult, toolbarColor, statusBarColor, context);
 
             detailsList[i] = temp;
         }

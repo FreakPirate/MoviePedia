@@ -83,7 +83,6 @@
                     android:paddingTop="@dimen/synopsis_padding"
                     android:paddingBottom="@dimen/synopsis_padding"
                     android:paddingLeft="@dimen/synopsis_padding"
-                    android:src="@drawable/placeholder_poster"
                     android:scaleType="fitCenter"/>
 
                 <LinearLayout
@@ -101,8 +100,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_size_xxlarge"
                         android:textStyle="bold"
-                        android:textColor="@color/body_text_1"
-                        android:text="Deadpool"/>
+                        android:textColor="@color/body_text_1"/>
 
                     <TextView
                         android:id="@+id/movie_release_date"
@@ -110,7 +108,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
                         android:textSize="@dimen/text_size_large"
-                        android:text="February 2016"
                         android:paddingBottom="10dp"/>
 
                     <TextView
@@ -118,8 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_large"
-                        android:text="TMDB: 8/10" />
+                        android:textSize="@dimen/text_size_large"/>
 
                     <RatingBar
                         android:id="@+id/detail_rating_bar"
@@ -137,8 +133,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_large"
-                        android:text="Adult: No"/>
+                        android:textSize="@dimen/text_size_large"/>
                 </LinearLayout>
 
             </RelativeLayout>
@@ -162,7 +157,6 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_xxlarge"
                     android:textColor="@color/body_text_1"
-                    android:text="@string/plot_synopsis"
                     android:paddingBottom="5dp"
                     android:paddingTop="@dimen/synopsis_padding"/>
 
@@ -173,8 +167,7 @@
                     android:textColor="@color/body_text_2"
                     android:textSize="@dimen/text_size_medium"
                     android:paddingTop="@dimen/synopsis_padding_top"
-                    android:paddingBottom="@dimen/synopsis_padding_bottom"
-                    android:text="@string/placeholder_movie_plot"/>
+                    android:paddingBottom="@dimen/synopsis_padding_bottom"/>
             </LinearLayout>
 
         </LinearLayout>

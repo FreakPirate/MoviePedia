@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.BrowseMoviesActivity"
     tools:ignore="MergeRootFrame"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    style="@style/gridViewStyle">
 
     <include
         android:id="@+id/main_activity_toolbar"

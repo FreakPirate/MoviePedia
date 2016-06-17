@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -68,20 +69,47 @@ public class MovieDetailFragment extends Fragment {
     public static final String DETAIL_MODEL = "MODEL";
 
     private MovieDataModel mDataModel;
+//    private CollapsingToolbarLayout collapsedToolbar;
 
-    @Bind(R.id.movie_title) TextView movieTitle;
-    @Bind(R.id.movie_release_date) TextView movieReleaseDate;
-    @Bind(R.id.movie_average_rating) TextView movieAverageRating;
-    @Bind(R.id.plot_synopsis) TextView movieSynopsis;
-    @Bind(R.id.plot_synopsis_title) TextView movieSynopsisTitle;
-    @Bind(R.id.movie_adult) TextView movieAdult;
-    @Bind(R.id.movie_poster) ImageView moviePosterImageView;
-    @Bind(R.id.movie_cover) ImageView movieCoverImageView;
-    @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsedToolbar;
-    @Bind(R.id.movie_details_ll) LinearLayout reviewTrailerLL;
-    @Bind(R.id.play_icon_backdrop) ImageView playIconBackdrop;
-    @Bind(R.id.detail_rating_bar) RatingBar ratingBar;
-    @Bind(R.id.fab_icon) FloatingActionButton fabIcon;
+    @Bind(R.id.movie_title)
+    TextView movieTitle;
+
+    @Bind(R.id.movie_release_date)
+    TextView movieReleaseDate;
+
+    @Bind(R.id.movie_average_rating)
+    TextView movieAverageRating;
+
+    @Bind(R.id.plot_synopsis)
+    TextView movieSynopsis;
+
+    @Bind(R.id.plot_synopsis_title)
+    TextView movieSynopsisTitle;
+
+    @Bind(R.id.movie_adult)
+    TextView movieAdult;
+
+    @Bind(R.id.movie_poster)
+    ImageView moviePosterImageView;
+
+    @Bind(R.id.movie_cover)
+    ImageView movieCoverImageView;
+
+    @Bind(R.id.movie_details_ll)
+    LinearLayout reviewTrailerLL;
+
+    @Bind(R.id.play_icon_backdrop)
+    ImageView playIconBackdrop;
+
+    @Bind(R.id.detail_rating_bar)
+    RatingBar ratingBar;
+
+    @Bind(R.id.fab_icon)
+    FloatingActionButton fabIcon;
+
+    @Nullable
+    @Bind(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsedToolbar;
 
     int mToolbarColor;
     int mStatusBarColor;
@@ -123,21 +151,28 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
+//        if (rootView.findViewById(R.id.collapsing_toolbar) != null){
+//            collapsedToolbar = (CollapsingToolbarLayout) rootView.findViewById(R.id.collapsing_toolbar);
+//        }
+
         ButterKnife.bind(this, rootView);
 
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detail_toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        android.support.v7.app.ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (rootView.findViewById(R.id.detail_toolbar) != null){
+            Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detail_toolbar);
+            ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+            android.support.v7.app.ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-        setHasOptionsMenu(true);
-
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+            setHasOptionsMenu(true);
+            assert actionBar != null;
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         Bundle arguments = getArguments();
 
         if (arguments != null){
             mDataModel = arguments.getParcelable(MovieDetailFragment.DETAIL_MODEL);
+        }else {
+            Log.e(LOG_TAG, "Bundle arguments is null!");
         }
 
         if (mDataModel != null){
@@ -174,7 +209,7 @@ public class MovieDetailFragment extends Fragment {
                         Picasso.with(context)
                                 .load(mDataModel.getPOSTER_PATH(GlobalData.size_w342))
                                 .error(R.drawable.image_load_error)
-                                .resize(300,450)
+                                .resize(300, 450)
                                 .into(moviePosterImageView);
                     }
                 });
@@ -223,7 +258,6 @@ public class MovieDetailFragment extends Fragment {
             collapsedToolbar.setContentScrimColor(mToolbarColor);
             collapsedToolbar.setStatusBarScrimColor(mToolbarColor);
         }
-
 //        moviePosterImageView.setBorderColor(mStatusBarColor);
 //        moviePosterImageView.setBorderWidth(5);
 //        moviePosterImageView.setShadowRadius(11);
@@ -252,6 +286,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         if (mDataModel != null){
+            Log.v(LOG_TAG, "In onViewCreated()\nisFavourite: " + mDataModel.getIS_FAVOURITE());
 
             long movieIdLong = mDataModel.getMOVIE_ID();
             final int movieId = (int) movieIdLong;
@@ -522,62 +557,4 @@ public class MovieDetailFragment extends Fragment {
                     }
                 });
     }
-
-//    private MovieDataModel fetchUriData(Uri uri){
-//        MovieDataModel fetchModel;
-//
-//        Cursor cursor = context.getContentResolver().query(
-//                uri,
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-//
-//        if (cursor != null && cursor.getCount() != 0){
-//            Log.v(LOG_TAG, "Cursor is not empty! CursorCount: " + cursor.getCount());
-//            cursor.moveToFirst();
-//
-//            int indexMovieId = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID);
-//            long movieId = cursor.getInt(indexMovieId);
-//
-//            int indexMovieTitle = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE);
-//            String movieTitle = cursor.getString(indexMovieTitle);
-//
-//            int indexOverview = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW);
-//            String overview = cursor.getString(indexOverview);
-//
-//            int indexBackdropPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH);
-//            String backdropPath = cursor.getString(indexBackdropPath);
-//
-//            int indexPosterPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH);
-//            String posterPath = cursor.getString(indexPosterPath);
-//
-//            int indexReleaseDate = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE);
-//            String releaseDate = cursor.getString(indexReleaseDate);
-//
-//            int indexPopularity = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY);
-//            float popularity = cursor.getFloat(indexPopularity);
-//
-//            int indexVoteAverage = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE);
-//            float voteAverage = cursor.getFloat(indexVoteAverage);
-//
-//            int indexAdult = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ADULT);
-//            int adultTemp = cursor.getInt(indexAdult);
-//            boolean adult = adultTemp == 1;
-//
-//            int indexIsFavourite = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE);
-//            int isFavouriteTemp = cursor.getInt(indexIsFavourite);
-//            boolean isFavourite = isFavouriteTemp == 1;
-//
-//            fetchModel = new MovieDataModel(movieTitle, movieId, posterPath, backdropPath, overview,
-//                    voteAverage, popularity, releaseDate, adult, isFavourite, mToolbarColor, mStatusBarColor, context);
-//        }
-//        else {
-//            Log.e(LOG_TAG, "Intent Cursor is either empty or cannot be opened!");
-//            return null;
-//        }
-//
-//        return fetchModel;
-//    }
 }

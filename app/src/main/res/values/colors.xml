@@ -6,6 +6,9 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorPrimaryText">#FFFFFF</color>
 
+    <!-- Touch Selector colors-->
+    <color name="green">#9DFF2C</color>
+    <color name="fluorescent_green">#ADFF00</color>
     <!-- Text Colors-->
     <color name="body_text_1">#de000000</color>
     <color name="body_text_2">#8a000000</color>

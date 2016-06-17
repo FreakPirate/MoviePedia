@@ -73,6 +73,8 @@ public class Utility {
             int isFavouriteTemp = cursor.getInt(indexIsFavourite);
             boolean isFavourite = isFavouriteTemp == 1;
 
+            Log.v(LOG_TAG, "isFavourite value: " + isFavourite);
+
             int toolbarColor = context.getResources().getColor(R.color.colorPrimary);
             int statusBarColor = context.getResources().getColor(R.color.colorPrimaryDark);
 

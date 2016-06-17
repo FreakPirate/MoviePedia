@@ -1,162 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinatorLayoutDetail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/scrollview_background"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-    <FrameLayout
+    android:layout_height="match_parent">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/poster_image_container"
+        <FrameLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:clickable="true"
-            android:orientation="vertical"
-            android:clipChildren="false">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/movie_cover"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    android:background="@color/colorPrimary"
-                    android:minHeight="@dimen/detail_min_height"
-                    android:src="@drawable/placeholder_backdrop"/>
-
-                <ImageView
-                    android:id="@+id/play_icon_backdrop"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/ic_play_circle_filled_black_48dp"
-                    android:layout_gravity="center"
-                    android:visibility="gone"/>
-            </FrameLayout>
-
-            <RelativeLayout
-                android:id="@+id/movie_poster_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/movie_poster"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/synopsis_padding"
-                    android:paddingBottom="@dimen/synopsis_padding"
-                    android:paddingLeft="@dimen/synopsis_padding"
-                    android:src="@drawable/placeholder_poster"
-                    android:scaleType="fitCenter"/>
-
-                <LinearLayout
-                    android:id="@+id/detail_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/movie_poster"
-                    android:layout_toRightOf="@id/movie_poster"
-                    android:orientation="vertical"
-                    android:padding="@dimen/title_layout">
-
-                    <TextView
-                        android:id="@+id/movie_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size_xxlarge"
-                        android:textStyle="bold"
-                        android:textColor="@color/body_text_1"
-                        android:text="Deadpool"/>
-
-                    <TextView
-                        android:id="@+id/movie_release_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_large"
-                        android:text="February 2016"
-                        android:paddingBottom="10dp"/>
-
-                    <TextView
-                        android:id="@+id/movie_average_rating"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_large"
-                        android:text="TMDB: 8/10" />
-
-                    <RatingBar
-                        android:id="@+id/detail_rating_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:numStars="5"
-                        android:stepSize="0.01"
-                        android:rating="3.50"
-                        android:isIndicator="true"
-                        style="?android:attr/ratingBarStyleSmall"
-                        android:paddingBottom="10dp"/>
-
-                    <TextView
-                        android:id="@+id/movie_adult"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/body_text_2"
-                        android:textSize="@dimen/text_size_large"
-                        android:text="Adult: No"/>
-                </LinearLayout>
-
-            </RelativeLayout>
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/movie_details_ll"
+                android:id="@+id/poster_image_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/synopsis_padding">
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="vertical">
 
-                <View
-                    android:id="@+id/detail_divider"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/line_break_height"
-                    android:background="@color/line_break_color"/>
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/movie_cover"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="@dimen/detail_min_height"/>
 
-                <TextView
-                    android:id="@+id/plot_synopsis_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_xxlarge"
-                    android:textColor="@color/body_text_1"
-                    android:text="@string/plot_synopsis"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="@dimen/synopsis_padding"/>
+                    <ImageView
+                        android:id="@+id/play_icon_backdrop"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_play_circle_filled_black_48dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+                </FrameLayout>
 
-                <TextView
-                    android:id="@+id/plot_synopsis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/body_text_2"
-                    android:textSize="@dimen/text_size_medium"
-                    android:paddingTop="@dimen/synopsis_padding_top"
-                    android:paddingBottom="@dimen/synopsis_padding_bottom"
-                    android:text="@string/placeholder_movie_plot"/>
+                <RelativeLayout
+                    android:id="@+id/movie_poster_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/movie_poster"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/synopsis_padding"
+                        android:paddingBottom="@dimen/synopsis_padding"
+                        android:paddingLeft="@dimen/synopsis_padding"
+                        android:scaleType="fitCenter"/>
+
+                    <LinearLayout
+                        android:id="@+id/detail_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/movie_poster"
+                        android:layout_toRightOf="@id/movie_poster"
+                        android:orientation="vertical"
+                        android:padding="@dimen/title_layout">
+
+                        <TextView
+                            android:id="@+id/movie_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_xxlarge"
+                            android:textStyle="bold"
+                            android:textColor="@color/body_text_1"/>
+
+                        <TextView
+                            android:id="@+id/movie_release_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/body_text_2"
+                            android:textSize="@dimen/text_size_large"
+                            android:paddingBottom="10dp"/>
+
+                        <TextView
+                            android:id="@+id/movie_average_rating"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/body_text_2"
+                            android:textSize="@dimen/text_size_large" />
+
+                        <RatingBar
+                            android:id="@+id/detail_rating_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:numStars="5"
+                            android:stepSize="0.01"
+                            android:rating="3.50"
+                            android:isIndicator="true"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:paddingBottom="10dp"/>
+
+                        <TextView
+                            android:id="@+id/movie_adult"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/body_text_2"
+                            android:textSize="@dimen/text_size_large"/>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/movie_details_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/synopsis_padding">
+
+                    <View
+                        android:id="@+id/detail_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/line_break_height"
+                        android:background="@color/line_break_color"/>
+
+                    <TextView
+                        android:id="@+id/plot_synopsis_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_xxlarge"
+                        android:textColor="@color/body_text_1"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="@dimen/synopsis_padding"/>
+
+                    <TextView
+                        android:id="@+id/plot_synopsis"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/body_text_2"
+                        android:textSize="@dimen/text_size_medium"
+                        android:paddingTop="@dimen/synopsis_padding_top"
+                        android:paddingBottom="@dimen/synopsis_padding_bottom"/>
+                </LinearLayout>
+
             </LinearLayout>
 
-        </LinearLayout>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@drawable/ic_favorite_border_white_24dp"/>
+        </FrameLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_favorite_border_white_24dp"/>
-    </FrameLayout>
-
-</ScrollView>
+    </ScrollView>
+</FrameLayout>

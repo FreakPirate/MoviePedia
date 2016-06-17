@@ -163,6 +163,7 @@ public class BrowseMoviesAdapter extends
                         );
 
                         if (rowsDeleted != 0) {
+                            mMovieDataModel.get(position).setIS_FAVOURITE(false);
                             Toast.makeText(mContext, movieTitle + " removed from favourites successfully!", Toast.LENGTH_SHORT).show();
                             holder.favIconImageView.setImageResource(R.drawable.ic_favorite_border_white_24dp);
                         } else {
@@ -209,6 +210,7 @@ public class BrowseMoviesAdapter extends
 
                             if (cursorCheck != null) {
                                 if (cursorCheck.getCount() != 0) {
+                                    mMovieDataModel.get(position).setIS_FAVOURITE(true);
                                     Toast.makeText(mContext, movieTitle + " inserted Successfully!", Toast.LENGTH_SHORT).show();
                                     holder.favIconImageView.setImageResource(R.drawable.ic_favorite_white_24dp);
                                 } else {
