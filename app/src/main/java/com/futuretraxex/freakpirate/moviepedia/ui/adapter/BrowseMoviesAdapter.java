@@ -27,6 +27,7 @@ import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
 import com.futuretraxex.freakpirate.moviepedia.Models.MovieDataModel;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -277,11 +278,11 @@ public class BrowseMoviesAdapter extends
 
             int position = getLayoutPosition();
             MovieDataModel details = movieDataModelList.get(position);
+            ((Callback) context).onItemSelected(details);
 
-            Intent intent = new Intent(context, MovieDetailActivity.class);
-            intent.putExtra(GlobalData.INTENT_KEY_MOVIE_MODEL, details);
-            context.startActivity(intent);
-
+//            Intent intent = new Intent(context, MovieDetailActivity.class);
+//            intent.putExtra(GlobalData.INTENT_KEY_MOVIE_MODEL, details);
+//            context.startActivity(intent);
         }
     }
 }

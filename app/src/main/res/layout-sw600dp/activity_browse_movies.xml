@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    tools:context="com.example.android.sunshine.app.MainActivity">
+
+    <include
+        android:id="@+id/main_activity_toolbar"
+        layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="?android:attr/dividerHorizontal"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <!--
+        This layout is a two-pane layout for the Items master/detail flow.
+        -->
+
+        <fragment
+            android:id="@+id/fragment_browse_movies"
+            android:name="com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:layout="@android:layout/list_content" />
+
+        <fragment
+            android:id="@+id/fragment_movie_detail"
+            android:name="com.futuretraxex.freakpirate.moviepedia.ui.fragment.MovieDetailFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            tools:layout="@layout/fragment_movie_details" />
+
+    </LinearLayout>
+</LinearLayout>

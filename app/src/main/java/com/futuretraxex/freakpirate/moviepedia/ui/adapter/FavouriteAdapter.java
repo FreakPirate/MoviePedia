@@ -18,7 +18,10 @@ import com.futuretraxex.freakpirate.moviepedia.R;
 import com.futuretraxex.freakpirate.moviepedia.data.provider.FavouriteContract;
 import com.futuretraxex.freakpirate.moviepedia.data.universal.GlobalData;
 import com.futuretraxex.freakpirate.moviepedia.ui.activity.MovieDetailActivity;
+import com.futuretraxex.freakpirate.moviepedia.ui.helper.Callback;
 import com.squareup.picasso.Picasso;
+
+import retrofit2.Call;
 
 /**
  * Created by FreakPirate on 5/22/2016.
@@ -166,10 +169,11 @@ public class FavouriteAdapter extends CursorRecyclerViewAdapter<FavouriteAdapter
         @Override
         public void onClick(View v) {
             Uri uri = FavouriteContract.FavouriteEntry.buildByMovieIdUri(movieId);
+            ((Callback)mContext).onItemSelected(uri);
 
-            Intent intent = new Intent(mContext, MovieDetailActivity.class);
-            intent.putExtra(GlobalData.INTENT_KEY_URI, uri.toString());
-            mContext.startActivity(intent);
+//            Intent intent = new Intent(mContext, MovieDetailActivity.class);
+//            intent.putExtra(GlobalData.INTENT_KEY_URI, uri.toString());
+//            mContext.startActivity(intent);
         }
     }
 }

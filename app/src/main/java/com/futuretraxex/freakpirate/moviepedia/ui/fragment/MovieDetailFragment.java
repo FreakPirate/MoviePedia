@@ -2,7 +2,6 @@ package com.futuretraxex.freakpirate.moviepedia.ui.fragment;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -66,8 +65,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MovieDetailFragment extends Fragment {
 
     private final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
+    public static final String DETAIL_MODEL = "MODEL";
 
-    private MovieDataModel movieDataModel;
+    private MovieDataModel mDataModel;
 
     @Bind(R.id.movie_title) TextView movieTitle;
     @Bind(R.id.movie_release_date) TextView movieReleaseDate;
@@ -82,7 +82,6 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.play_icon_backdrop) ImageView playIconBackdrop;
     @Bind(R.id.detail_rating_bar) RatingBar ratingBar;
     @Bind(R.id.fab_icon) FloatingActionButton fabIcon;
-    @Bind(R.id.coordinatorLayoutDetail) CoordinatorLayout coordinatorLayout;
 
     int mToolbarColor;
     int mStatusBarColor;
@@ -135,97 +134,32 @@ public class MovieDetailFragment extends Fragment {
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getActivity().getIntent();
+        Bundle arguments = getArguments();
 
-        if (intent != null && intent.hasExtra(GlobalData.INTENT_KEY_MOVIE_MODEL)) {
-            movieDataModel = intent.getParcelableExtra(GlobalData.INTENT_KEY_MOVIE_MODEL);
-        }else if (intent != null && intent.hasExtra(GlobalData.INTENT_KEY_URI)){
-            Uri uri = Uri.parse(intent.getStringExtra(GlobalData.INTENT_KEY_URI));
-            Log.v(LOG_TAG, "Received URI: " + uri.toString());
-            movieDataModel = fetchUriData(uri);
-        }else {
-            Log.d(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT, "Unable to fetch Intent data");
+        if (arguments != null){
+            mDataModel = arguments.getParcelable(MovieDetailFragment.DETAIL_MODEL);
         }
 
-        checkParcelableColors();
+        if (mDataModel != null){
+            inflateView();
+            if (mDataModel.getTOOLBAR_COLOR() == getResources().getColor(R.color.colorPrimary)){
+                Log.v(LOG_TAG, "In CheckParcelableColors! toolbarColor == colorPrimary");
+                getToolbarColor();
+            }
+        }else {
+            Log.e(LOG_TAG, "mDataModel is NULL!");
+        }
 
         return rootView;
     }
 
-    public void checkParcelableColors(){
-        inflateView();
-        if (movieDataModel.getTOOLBAR_COLOR() == getResources().getColor(R.color.colorPrimary)){
-            Log.v(LOG_TAG, "In CheckParcelableColors! toolbarColor == colorPrimary");
-            getToolbarColor();
-        }
-    }
-
-    private MovieDataModel fetchUriData(Uri uri){
-        MovieDataModel fetchModel;
-
-        Cursor cursor = context.getContentResolver().query(
-                uri,
-                null,
-                null,
-                null,
-                null
-        );
-
-        if (cursor != null && cursor.getCount() != 0){
-            Log.v(LOG_TAG, "Cursor is not empty! CursorCount: " + cursor.getCount());
-            cursor.moveToFirst();
-
-            int indexMovieId = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID);
-            long movieId = cursor.getInt(indexMovieId);
-
-            int indexMovieTitle = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE);
-            String movieTitle = cursor.getString(indexMovieTitle);
-
-            int indexOverview = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW);
-            String overview = cursor.getString(indexOverview);
-
-            int indexBackdropPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH);
-            String backdropPath = cursor.getString(indexBackdropPath);
-
-            int indexPosterPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH);
-            String posterPath = cursor.getString(indexPosterPath);
-
-            int indexReleaseDate = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE);
-            String releaseDate = cursor.getString(indexReleaseDate);
-
-            int indexPopularity = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY);
-            float popularity = cursor.getFloat(indexPopularity);
-
-            int indexVoteAverage = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE);
-            float voteAverage = cursor.getFloat(indexVoteAverage);
-
-            int indexAdult = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ADULT);
-            int adultTemp = cursor.getInt(indexAdult);
-            boolean adult = adultTemp == 1;
-
-            int indexIsFavourite = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE);
-            int isFavouriteTemp = cursor.getInt(indexIsFavourite);
-            boolean isFavourite = isFavouriteTemp == 1;
-
-            fetchModel = new MovieDataModel(movieTitle, movieId, posterPath, backdropPath, overview,
-                    voteAverage, popularity, releaseDate, adult, isFavourite, mToolbarColor, mStatusBarColor, context);
-        }
-        else {
-            Log.e(LOG_TAG, "Intent Cursor is either empty or cannot be opened!");
-            return null;
-        }
-
-        return fetchModel;
-    }
-
     public void inflateView(){
+        movieCoverImageView.setBackgroundColor(mDataModel.getTOOLBAR_COLOR());
 
-        movieCoverImageView.setBackgroundColor(movieDataModel.getTOOLBAR_COLOR());
-
-        Log.v(LOG_TAG, "In inflateView! PosterPath: " + movieDataModel.getPOSTER_PATH(GlobalData.size_w342));
+        Log.v(LOG_TAG, "In inflateView! PosterPath: " + mDataModel.getPOSTER_PATH(GlobalData.size_w342));
 
         Picasso.with(context)
-                .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
+                .load(mDataModel.getPOSTER_PATH(GlobalData.size_w342))
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .resize(300, 450)
 //                .centerInside()
@@ -238,7 +172,7 @@ public class MovieDetailFragment extends Fragment {
                     @Override
                     public void onError() {
                         Picasso.with(context)
-                                .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w342))
+                                .load(mDataModel.getPOSTER_PATH(GlobalData.size_w342))
                                 .error(R.drawable.image_load_error)
                                 .resize(300,450)
                                 .into(moviePosterImageView);
@@ -246,7 +180,7 @@ public class MovieDetailFragment extends Fragment {
                 });
 
         Picasso.with(context)
-                .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w500))
+                .load(mDataModel.getBACKDROP_PATH(GlobalData.size_w500))
                 .networkPolicy(NetworkPolicy.OFFLINE)
                 .into(movieCoverImageView, new com.squareup.picasso.Callback() {
                     @Override
@@ -257,36 +191,38 @@ public class MovieDetailFragment extends Fragment {
                     @Override
                     public void onError() {
                         Picasso.with(context)
-                                .load(movieDataModel.getBACKDROP_PATH(GlobalData.size_w500))
+                                .load(mDataModel.getBACKDROP_PATH(GlobalData.size_w500))
                                 .error(R.drawable.image_load_error)
                                 .into(movieCoverImageView);
                     }
                 });
 
-        movieTitle.setText(movieDataModel.getMOVIE_TITLE());
+        movieTitle.setText(mDataModel.getMOVIE_TITLE());
 
 //        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
-//        String releaseDate = formatter.format(Date.parse(movieDataModel.getRELEASE_DATE()));
+//        String releaseDate = formatter.format(Date.parse(mDataModel.getRELEASE_DATE()));
 
-        String releaseDate = dateFormatter(movieDataModel.getRELEASE_DATE());
-        String averageRating = "TMDB: " + movieDataModel.getAVERAGE_RATINGS();
-        String adult = "Adult: " + movieDataModel.getADULT();
+        String releaseDate = dateFormatter(mDataModel.getRELEASE_DATE());
+        String averageRating = "TMDB: " + mDataModel.getAVERAGE_RATINGS();
+        String adult = "Adult: " + mDataModel.getADULT();
 
-        movieSynopsisTitle.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
+        movieSynopsisTitle.setTextColor(mDataModel.getSTATUS_BAR_COLOR());
         movieReleaseDate.setText(releaseDate);
         movieAverageRating.setText(averageRating);
-        ratingBar.setRating(movieDataModel.getAVERAGE_RATINGS() / 2);
-        movieSynopsis.setText(movieDataModel.getPLOT_SYNOPSIS());
+        ratingBar.setRating(mDataModel.getAVERAGE_RATINGS() / 2);
+        movieSynopsis.setText(mDataModel.getPLOT_SYNOPSIS());
         movieAdult.setText(adult);
 
-        collapsedToolbar.setTitle(movieDataModel.getMOVIE_TITLE());
-        collapsedToolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
-        collapsedToolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
+        if (collapsedToolbar != null){
+            collapsedToolbar.setTitle(mDataModel.getMOVIE_TITLE());
+            collapsedToolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
+            collapsedToolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
 
-        mToolbarColor = movieDataModel.getTOOLBAR_COLOR();
-        mStatusBarColor = movieDataModel.getSTATUS_BAR_COLOR();
-        collapsedToolbar.setContentScrimColor(mToolbarColor);
-        collapsedToolbar.setStatusBarScrimColor(mToolbarColor);
+            mToolbarColor = mDataModel.getTOOLBAR_COLOR();
+            mStatusBarColor = mDataModel.getSTATUS_BAR_COLOR();
+            collapsedToolbar.setContentScrimColor(mToolbarColor);
+            collapsedToolbar.setStatusBarScrimColor(mToolbarColor);
+        }
 
 //        moviePosterImageView.setBorderColor(mStatusBarColor);
 //        moviePosterImageView.setBorderWidth(5);
@@ -315,136 +251,139 @@ public class MovieDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (mDataModel != null){
 
-        long movieIdLong = movieDataModel.getMOVIE_ID();
-        final int movieId = (int) movieIdLong;
+            long movieIdLong = mDataModel.getMOVIE_ID();
+            final int movieId = (int) movieIdLong;
 
-        if (movieDataModel.getIS_FAVOURITE()){
-            fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
-        }else {
-            fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-        }
+            if (mDataModel.getIS_FAVOURITE()){
+                fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
+            }else {
+                fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+            }
 
-        fabIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (movieDataModel.getIS_FAVOURITE()){
-                    movieDataModel.setIS_FAVOURITE(false);
-                    fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+            fabIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mDataModel.getIS_FAVOURITE()){
+                        mDataModel.setIS_FAVOURITE(false);
+                        fabIcon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
 
-                    int deletedRows = context.getContentResolver().delete(
-                            FavouriteContract.FavouriteEntry.buildByMovieIdUri(movieDataModel.getMOVIE_ID()),
-                            null,
-                            null
-                    );
-
-                    if (deletedRows != 0){
-                        Snackbar snackbar = Snackbar.make(coordinatorLayout,
-                                movieDataModel.getMOVIE_TITLE() + " deleted successfully from database",
-                                Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                    }
-                    Log.v(LOG_TAG, "Row deleted successfully!");
-                }else {
-                    movieDataModel.setIS_FAVOURITE(true);
-                    fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
-                    
-                    int adult;
-                    if (movieDataModel.getADULT())
-                        adult = 1;
-                    else 
-                        adult = 0;
-
-                    ContentValues values = new ContentValues();
-
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID, movieDataModel.getMOVIE_ID());
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE, movieDataModel.getMOVIE_TITLE());
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW, movieDataModel.getPLOT_SYNOPSIS());
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH, movieDataModel.getBACKDROP_PATH(GlobalData.size_w500));
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH, movieDataModel.getPOSTER_PATH(GlobalData.size_w342));
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE, movieDataModel.getRELEASE_DATE());
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE, movieDataModel.getAVERAGE_RATINGS());
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY, movieDataModel.getPOPULARITY());
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_ADULT, adult);
-                    values.put(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE, 1);
-
-                    Uri newUri = context.getContentResolver().insert(
-                            FavouriteContract.FavouriteEntry.CONTENT_URI,
-                            values
-                    );
-
-                    Log.v(LOG_TAG, "Returned URI: " + newUri);
-
-                    if (newUri != null) {
-                        Cursor cursorCheck;
-                        cursorCheck = context.getContentResolver().query(
-                                newUri,
-                                new String[]{FavouriteContract.FavouriteEntry._ID},
-                                null,
+                        int deletedRows = context.getContentResolver().delete(
+                                FavouriteContract.FavouriteEntry.buildByMovieIdUri(mDataModel.getMOVIE_ID()),
                                 null,
                                 null
                         );
 
-                        if (cursorCheck != null && cursorCheck.getCount() != 0) {
-                            Snackbar snackbar = Snackbar.make(coordinatorLayout,
-                                    movieDataModel.getMOVIE_TITLE() + " inserted successfully into database",
+                        if (deletedRows != 0){
+                            Snackbar snackbar = Snackbar.make(
+                                    getView(),
+                                    mDataModel.getMOVIE_TITLE() + " deleted successfully from database",
                                     Snackbar.LENGTH_SHORT);
                             snackbar.show();
-                            cursorCheck.close();
-                        } else {
-                            Log.e(LOG_TAG, "Insert cursor is returned to be null!");
                         }
-                    } else {
-                        Log.e(LOG_TAG, "Returned Uri is null!");
+                        Log.v(LOG_TAG, "Row deleted successfully!");
+                    }else {
+                        mDataModel.setIS_FAVOURITE(true);
+                        fabIcon.setImageResource(R.drawable.ic_favorite_white_24dp);
+
+                        int adult;
+                        if (mDataModel.getADULT())
+                            adult = 1;
+                        else
+                            adult = 0;
+
+                        ContentValues values = new ContentValues();
+
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID, mDataModel.getMOVIE_ID());
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE, mDataModel.getMOVIE_TITLE());
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW, mDataModel.getPLOT_SYNOPSIS());
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH, mDataModel.getBACKDROP_PATH(GlobalData.size_w500));
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH, mDataModel.getPOSTER_PATH(GlobalData.size_w342));
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE, mDataModel.getRELEASE_DATE());
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE, mDataModel.getAVERAGE_RATINGS());
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY, mDataModel.getPOPULARITY());
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_ADULT, adult);
+                        values.put(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE, 1);
+
+                        Uri newUri = context.getContentResolver().insert(
+                                FavouriteContract.FavouriteEntry.CONTENT_URI,
+                                values
+                        );
+
+                        Log.v(LOG_TAG, "Returned URI: " + newUri);
+
+                        if (newUri != null) {
+                            Cursor cursorCheck;
+                            cursorCheck = context.getContentResolver().query(
+                                    newUri,
+                                    new String[]{FavouriteContract.FavouriteEntry._ID},
+                                    null,
+                                    null,
+                                    null
+                            );
+
+                            if (cursorCheck != null && cursorCheck.getCount() != 0) {
+                                Snackbar snackbar = Snackbar.make(
+                                        getView(),
+                                        mDataModel.getMOVIE_TITLE() + " inserted successfully into database",
+                                        Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                                cursorCheck.close();
+                            } else {
+                                Log.e(LOG_TAG, "Insert cursor is returned to be null!");
+                            }
+                        } else {
+                            Log.e(LOG_TAG, "Returned Uri is null!");
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL_REVIEW_TRAILER)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL_REVIEW_TRAILER)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
 
-        GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
+            GeneralizedAPI generalizedAPI = retrofit.create(GeneralizedAPI.class);
 
-        Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
-        final Call<VideosModel> callVideos = generalizedAPI.getMovieVideos(movieId, API_KEY);
+            Call<ReviewModel> callReview = generalizedAPI.getMovieReviews(movieId, API_KEY);
+            final Call<VideosModel> callVideos = generalizedAPI.getMovieVideos(movieId, API_KEY);
 
-        callReview.enqueue(new Callback<ReviewModel>() {
-            @Override
-            public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
+            callReview.enqueue(new Callback<ReviewModel>() {
+                @Override
+                public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
-                if (response.body().getTotalResults() != 0 && getActivity() != null){
-                    loadReviews(response.body());
+                    if (response.body().getTotalResults() != 0 && getActivity() != null){
+                        loadReviews(response.body());
 
-                    callVideos.enqueue(new Callback<VideosModel>() {
-                        @Override
-                        public void onResponse(Call<VideosModel> call, Response<VideosModel> response) {
-                            if (response.body().getResults().size() != 0 && getActivity() != null) {
-                                loadVideos(response.body());
+                        callVideos.enqueue(new Callback<VideosModel>() {
+                            @Override
+                            public void onResponse(Call<VideosModel> call, Response<VideosModel> response) {
+                                if (response.body().getResults().size() != 0 && getActivity() != null) {
+                                    loadVideos(response.body());
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<VideosModel> call, Throwable t) {
+                            @Override
+                            public void onFailure(Call<VideosModel> call, Throwable t) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ReviewModel> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ReviewModel> call, Throwable t) {
 
-            }
-        });
-
+                }
+            });
+        }
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -464,7 +403,7 @@ public class MovieDetailFragment extends Fragment {
 
         TextView titleView = new TextView(getActivity());
         titleView.setLayoutParams(layoutParams);
-        titleView.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
+        titleView.setTextColor(mDataModel.getSTATUS_BAR_COLOR());
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimension(R.dimen.text_size_xxlarge));
         titleView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
@@ -514,7 +453,7 @@ public class MovieDetailFragment extends Fragment {
         TextView titleView = new TextView(getActivity());
         titleView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        titleView.setTextColor(movieDataModel.getSTATUS_BAR_COLOR());
+        titleView.setTextColor(mDataModel.getSTATUS_BAR_COLOR());
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimension(R.dimen.text_size_xxlarge));
         titleView.setPadding(0, getResources().getDimensionPixelSize(R.dimen.synopsis_padding), 0, 0);
@@ -539,7 +478,7 @@ public class MovieDetailFragment extends Fragment {
             trailerTitle.setText(title);
 
             ImageView playView = (ImageView) view.findViewById(R.id.trailer_play_view);
-            playView.setColorFilter(movieDataModel.getSTATUS_BAR_COLOR());
+            playView.setColorFilter(mDataModel.getSTATUS_BAR_COLOR());
 
             view.setOnClickListener(new CustomOnClickListener(getActivity(), result, i));
 
@@ -551,7 +490,7 @@ public class MovieDetailFragment extends Fragment {
 
     private void getToolbarColor() {
         Picasso.with(getActivity())
-                .load(movieDataModel.getPOSTER_PATH(GlobalData.size_w92))
+                .load(mDataModel.getPOSTER_PATH(GlobalData.size_w92))
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -568,7 +507,7 @@ public class MovieDetailFragment extends Fragment {
 //                        Log.v(GlobalData.LOG_TAG_DETAIL_ACTIVITY_FRAGMENT,
 //                                "Toolbar: " + toolbarColor + "\tStatusBar: " + statusBarColor);
 
-                        movieDataModel.addColors(mToolbarColor, mStatusBarColor);
+                        mDataModel.addColors(mToolbarColor, mStatusBarColor);
                         inflateView();
                     }
 
@@ -583,4 +522,62 @@ public class MovieDetailFragment extends Fragment {
                     }
                 });
     }
+
+//    private MovieDataModel fetchUriData(Uri uri){
+//        MovieDataModel fetchModel;
+//
+//        Cursor cursor = context.getContentResolver().query(
+//                uri,
+//                null,
+//                null,
+//                null,
+//                null
+//        );
+//
+//        if (cursor != null && cursor.getCount() != 0){
+//            Log.v(LOG_TAG, "Cursor is not empty! CursorCount: " + cursor.getCount());
+//            cursor.moveToFirst();
+//
+//            int indexMovieId = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_MOVIE_ID);
+//            long movieId = cursor.getInt(indexMovieId);
+//
+//            int indexMovieTitle = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ORIGINAL_TITLE);
+//            String movieTitle = cursor.getString(indexMovieTitle);
+//
+//            int indexOverview = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_OVERVIEW);
+//            String overview = cursor.getString(indexOverview);
+//
+//            int indexBackdropPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_BACKDROP_PATH);
+//            String backdropPath = cursor.getString(indexBackdropPath);
+//
+//            int indexPosterPath = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POSTER_PATH);
+//            String posterPath = cursor.getString(indexPosterPath);
+//
+//            int indexReleaseDate = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_RELEASE_DATE);
+//            String releaseDate = cursor.getString(indexReleaseDate);
+//
+//            int indexPopularity = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_POPULARITY);
+//            float popularity = cursor.getFloat(indexPopularity);
+//
+//            int indexVoteAverage = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_VOTE_AVERAGE);
+//            float voteAverage = cursor.getFloat(indexVoteAverage);
+//
+//            int indexAdult = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_ADULT);
+//            int adultTemp = cursor.getInt(indexAdult);
+//            boolean adult = adultTemp == 1;
+//
+//            int indexIsFavourite = cursor.getColumnIndex(FavouriteContract.FavouriteEntry.COLUMN_IS_FAVOURITE);
+//            int isFavouriteTemp = cursor.getInt(indexIsFavourite);
+//            boolean isFavourite = isFavouriteTemp == 1;
+//
+//            fetchModel = new MovieDataModel(movieTitle, movieId, posterPath, backdropPath, overview,
+//                    voteAverage, popularity, releaseDate, adult, isFavourite, mToolbarColor, mStatusBarColor, context);
+//        }
+//        else {
+//            Log.e(LOG_TAG, "Intent Cursor is either empty or cannot be opened!");
+//            return null;
+//        }
+//
+//        return fetchModel;
+//    }
 }

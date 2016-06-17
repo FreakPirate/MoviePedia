@@ -83,9 +83,7 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
         ButterKnife.bind(this, rootView);
 //            rvMovieData.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
-        if (isNetworkAvailable()) {
-            addGridViewDecoration();
-        }
+        addGridViewDecoration();
 
         initUI();
         return rootView;
@@ -94,14 +92,19 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onResume() {
-        if(GlobalData.preferenceChanged){
-            GlobalData.preferenceChanged = false;
-            initUI();
-        }
+//        if(GlobalData.preferenceChanged){
+//            GlobalData.preferenceChanged = false;
+//            initUI();
+//        }
         super.onResume();
     }
 
+    public void onSortOrderChanged(){
+        initUI();
+    }
+
     private void initUI(){
+        rvMovieData.setVisibility(View.VISIBLE);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -126,6 +129,7 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
             rvMovieData.setAdapter(mFavouriteAdapter);
             getLoaderManager().initLoader(FAVOURITE_LOADER_ID, null, this);
         }else {
+            Log.v(LOG_TAG, "In else: not favorites");
             if (isNetworkAvailable()){
                 addGridOnScrollListener();
                 errorLayout.setVisibility(View.GONE);
@@ -167,16 +171,34 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
                     }
                 });
             }else {
-                Snackbar snackbar = Snackbar.make(parentLayout, "No network connection detected!", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Exit", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                getActivity().finish();
-                            }
-                        });
-                snackbar.show();
+                rvMovieData.setVisibility(View.GONE);
                 errorLayout.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        sortOrder = sharedPreferences.getString(
+                getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_default_value)
+        );
+
+        if (! isNetworkAvailable() && !sortOrder.equalsIgnoreCase(getString(R.string.pref_value_favourite))){
+            swipeContainer.setEnabled(false);
+            Snackbar snackbar = Snackbar.make(parentLayout, "No network connection detected!", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Exit", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getActivity().finish();
+                        }
+                    });
+            snackbar.show();
+            errorLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -304,6 +326,8 @@ public class BrowseMoviesFragment extends Fragment implements LoaderManager.Load
         }else {
             errorLayout.setVisibility(View.GONE);
             mFavouriteAdapter.swapCursor(data);
+            mFavouriteAdapter.notifyDataSetChanged();
+            Log.v(LOG_TAG, "In onLoadFinished()\nCursorCount: " + data.getCount());
         }
     }
 

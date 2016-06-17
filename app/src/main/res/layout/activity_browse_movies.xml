@@ -11,4 +11,10 @@
         android:id="@+id/main_activity_toolbar"
         layout="@layout/toolbar"/>
 
+    <fragment
+        android:name="com.futuretraxex.freakpirate.moviepedia.ui.fragment.BrowseMoviesFragment"
+        android:id="@+id/fragment_browse_movies"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_browse_movies"/>
 </LinearLayout>
